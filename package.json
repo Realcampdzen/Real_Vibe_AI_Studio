@@ -1,11 +1,12 @@
 {
-  "name": "real_site",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "real-vibe-ai-studio",
+  "version": "3.1.0",
+  "type": "module",
+  "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node server.js",
-    "dev:simple": "npx http-server . -p 3001 -c-1 --cors"
+    "dev": "node server/index.js",
+    "dev:simple": "npx http-server . -p 3001 -c-1 --cors",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -18,9 +19,8 @@
     "url": "https://github.com/Realcampdzen/Real_Vibe_AI_Studio_New/issues"
   },
   "homepage": "https://github.com/Realcampdzen/Real_Vibe_AI_Studio_New#readme",
-  "description": "",
+  "description": "Real Vibe AI Studio — AI persona bots platform",
   "dependencies": {
-    "@minchat/react-chat-ui": "^0.16.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -28,9 +28,7 @@
     "express-winston": "^4.2.0",
     "helmet": "^8.1.0",
     "joi": "^17.13.3",
-    "openai": "^4.103.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "openai": "^6.36.0",
     "winston": "^3.17.0"
   }
 }

@@ -1,5 +1,5 @@
 // Hero clip-path reveal animation - COLUMN BY COLUMN from left to right
-console.log('Hero reveal script loaded');
+
 
 function initHeroReveal() {
   const video = document.getElementById('hero-reel-video');
@@ -10,7 +10,7 @@ function initHeroReveal() {
     return;
   }
 
-  console.log('Video found, starting column-by-column animation');
+
 
   // Remove any conflicting classes
   video.classList.remove('hero-bg-clip');
@@ -71,7 +71,7 @@ function initHeroReveal() {
       // Animation complete - full reveal
       video.style.setProperty('clip-path', 'inset(0 0 0 0)', 'important');
       video.style.setProperty('-webkit-clip-path', 'inset(0 0 0 0)', 'important');
-      console.log('Column-by-column animation complete');
+
     }
   }
 
@@ -82,10 +82,10 @@ function initHeroReveal() {
 function tryInit() {
   const video = document.getElementById('hero-reel-video');
   if (video) {
-    console.log('Video element found, initializing...');
+
     initHeroReveal();
   } else {
-    console.log('Video not found yet, retrying...');
+
     setTimeout(tryInit, 50);
   }
 }
@@ -96,13 +96,13 @@ tryInit();
 // Also try on DOMContentLoaded
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded fired');
+
     tryInit();
   });
 }
 
 // And on window load
 window.addEventListener('load', function() {
-  console.log('Window load fired');
+
   tryInit();
 });

@@ -106,38 +106,7 @@
     }, 120);
   }
 
-  // Загружаем снежинку сразу после DOM готовности, чтобы кнопка была видна сразу
-  function loadSnowEffect() {
-    // Проверяем, не загружены ли уже файлы снежинки напрямую в HTML
-    const snowCSSLoaded = Array.from(document.styleSheets).some(sheet => {
-      try {
-        return sheet.href && sheet.href.includes('snow-effect.css');
-      } catch (e) {
-        return false;
-      }
-    });
-    const snowJSLoaded = window.snowEffect !== undefined;
-    
-    // Если файлы уже загружены напрямую, не загружаем их повторно
-    if (snowCSSLoaded && snowJSLoaded) {
-      return;
-    }
-    
-    if (!prefersReducedMotion && !saveData && !slowNetwork) {
-      // Загружаем CSS и JS только если они ещё не загружены
-      if (!snowCSSLoaded) {
-         loadStyle('css/snow-effect.css?v=20251223-snow-dots-header-v8');
-      }
-      if (!snowJSLoaded) {
-         loadScript('js/snow-effect.js?v=20251223-snow-dots-header-v8');
-      }
-    } else {
-      const snowContainer = document.getElementById('snow-container');
-      if (snowContainer) {
-        snowContainer.remove();
-      }
-    }
-  }
+  // Snow effect removed (seasonal)
 
   let deferredStarted = false;
 
@@ -161,7 +130,7 @@
           Promise.all([
             loadScript('js/glass-ui-hipych.js?v=20251127-emoji4'),
             loadScript('js/glass-ui-bro-cat.js?v=20251127-emoji4'),
-            loadScript('js/glass-ui-valyusha.js?v=20251127-emoji4'),
+            loadScript('js/glass-ui-valyusha.js?v=20250121-valyusha-proxy'),
           ])
         )
         .catch((err) => {
@@ -173,14 +142,10 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       runCoreOptimizers();
-      // Загружаем снежинку сразу после DOM готовности
-      loadSnowEffect();
       schedule(() => startDeferredExtras(), 120);
     });
   } else {
     runCoreOptimizers();
-    // Загружаем снежинку сразу, если DOM уже готов
-    loadSnowEffect();
     schedule(() => startDeferredExtras(), 120);
   }
 

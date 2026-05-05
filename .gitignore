@@ -1,63 +1,62 @@
+# =============================================================================
+# Real Vibe AI Studio — .gitignore
+# =============================================================================
+
+# OS files
 .DS_Store
 Thumbs.db
 
-# Логи
-*.log
-logs/
-
-# Секретные файлы
+# Secrets
 .env
 apikey.txt
 
-# Временные файлы редакторов
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editors
 .vscode/
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# Кеши и папки билдов
-node_modules/
-dist/
-
-# Временные файлы разработки
+# Temp dev files
 *_temp.css
 *_backup.css
 *_fixed.css
 debug*.html
 test-*.html
 fix-*.html
-deep-debug.html
 
-# Logs
-logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-dev-debug.log
-# Dependency directories
-# Environment variables
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-# OS specific
-
-# Task files
+# Task / orchestration state
 tasks.json
 tasks/
-
-# Deployment folder (optional - можно включить если хотите версионировать)
-deploy-ready/
-
-# Local Cloudflare API repo clone (kept only for local work, not part of this repo)
-cf-api/
-
-# Local helper outputs
-files-to-upload.txt
-
-# Cursor/Taskmaster local state files that should not be committed
 .cursor/worktrees.json
 .cursor/rules/taskmaster/hamster.mdc
 .taskmaster/docs/hero_animation_prd.txt
+
+# Deployment artifacts
+deploy-ready/
+files-to-upload.txt
+
+# Cloudflare API (local work only)
+cf-api/
+
+# Archived documentation (from refactoring cleanup)
+docs/archive/
+
+# Wrangler local state
+.wrangler/

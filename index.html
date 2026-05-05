@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Cache buster: 2025-12-23-snow-dots-header-v8 -->
+  <!-- Cache buster: 2026-05-05-qa-cleanup -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -39,8 +39,7 @@
   <!-- Mobile advanced features -->
   <link rel="stylesheet" href="css/mobile-advanced.css" media="(max-width: 900px)">
   
-  <!-- Snow Effect CSS - загружаем напрямую для немедленной видимости кнопки -->
-  <link rel="stylesheet" href="css/snow-effect.css?v=20251223-snow-dots-header-v8">
+  <!-- Snow Effect CSS removed (seasonal, not needed in May+) -->
   
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -82,8 +81,7 @@
 
   <!-- Background visualization отключена по требованию -->
 
-  <!-- Snow Effect Container -->
-  <div id="snow-container"></div>
+  <!-- Snow Effect Container removed (seasonal) -->
 
   <header class="site-header">
     <!-- Navigation -->
@@ -118,9 +116,9 @@
             <i class="fab fa-telegram-plane"></i>
           </a>
           <a data-contact-link="primary" href="tel:+79319671483" class="nav-cta">
-            +79319671483
+            +7 931 967 14 83
           </a>
-          <button class="nav-lang-toggle" type="button">
+          <button class="nav-lang-toggle" type="button" style="display:none" aria-hidden="true">
             EN
           </button>
 
@@ -146,19 +144,18 @@
         </div>
         <div class="mobile-nav-links">
           <a href="#about" class="mobile-nav-link">О нас</a>
-          <a href="#benefits" class="mobile-nav-link">Преимущества</a>
           <a href="#services" class="mobile-nav-link">Услуги</a>
-          <a href="#portfolio" class="mobile-nav-link">Работы</a>
+          <a href="#benefits" class="mobile-nav-link">Преимущества</a>
+          <a href="#projects-showreel" class="mobile-nav-link">Работы</a>
           <a href="#assistants" class="mobile-nav-link">Ассистенты</a>
           <a href="#process" class="mobile-nav-link">Процесс</a>
           <a href="#testimonials" class="mobile-nav-link">Отзывы</a>
-          <a href="#contact" class="mobile-nav-link">Контакт</a>
         </div>
         <div class="mobile-nav-meta">
           <div class="mobile-nav-label">Контакты</div>
           <div class="mobile-nav-actions">
             <a data-contact-link="phone" data-contact-text="phone" href="tel:+79319671483" class="mobile-nav-chip">
-              <i class="fas fa-phone"></i><span>+79319671483</span>
+              <i class="fas fa-phone"></i><span>+7 931 967 14 83</span>
             </a>
             <a data-contact-link="telegram" data-contact-text="telegramHandle" href="https://t.me/Stivanovv" class="mobile-nav-chip">
               <i class="fab fa-telegram-plane"></i><span>@Stivanovv</span>
@@ -170,7 +167,7 @@
               <i class="fas fa-envelope"></i><span>Почта</span>
             </a>
           </div>
-          <button class="nav-lang-toggle mobile-nav-lang" type="button">
+          <button class="nav-lang-toggle mobile-nav-lang" type="button" style="display:none" aria-hidden="true">
             EN
           </button>
         </div>
@@ -455,14 +452,7 @@
           СОЗДАЁМ ПРОЕКТЫ,<br>Которые говорят сами за себя
         </h2>
       </div>
-      <div class="projects-banner-nav">
-        <button class="projects-arrow projects-arrow-left" type="button" aria-label="Предыдущие проекты">
-          <i class="fas fa-arrow-left"></i>
-        </button>
-        <button class="projects-arrow projects-arrow-right" type="button" aria-label="Следующие проекты">
-          <i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
+      <!-- Project nav arrows removed (no carousel logic connected) -->
     </div>
 
     <div class="projects-reel-grid">
@@ -473,7 +463,7 @@
           <div class="projects-reel-media">
             <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82.jpg" alt="AI-видео для бренда с атмосферой города" loading="lazy" decoding="async">
           </div>
-          <p class="projects-reel-caption">AI-видео для бренда с атмосферой города</p>
+          <p class="projects-reel-caption">AI-видео для бренда<br>с атмосферой города</p>
         </div>
 
         <!-- Project 2: Промо-ролик (малый) -->
@@ -481,7 +471,7 @@
           <div class="projects-reel-media">
             <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82%20%D0%BE%D0%B1%D0%BB%D0%BE%D0%B6%D0%BA%D0%B0.jpg" alt="Промо-ролик с ИИ-анимацией и графикой" loading="lazy" decoding="async">
           </div>
-          <p class="projects-reel-caption">Промо-ролик с ИИ-анимацией и графикой</p>
+          <p class="projects-reel-caption">Промо-ролик с ИИ-анимацией<br>и графикой</p>
         </div>
       </div>
 
@@ -492,7 +482,7 @@
           <div class="projects-reel-media">
             <img class="projects-reel-image" src="public/works/%D0%B7%D0%B5%D0%BB%D0%B5%D0%BD%D1%8B%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD.jpg" alt="Креативный клип в стиле будущего" loading="lazy" decoding="async">
           </div>
-          <p class="projects-reel-caption">Креативный клип в стиле будущего</p>
+          <p class="projects-reel-caption">Креативный клип<br>в стиле будущего</p>
         </div>
 
         <!-- Project 4: AI-видео для бренда (БОЛЬШОЙ, дубликат для сетки) -->
@@ -500,7 +490,7 @@
           <div class="projects-reel-media">
             <img class="projects-reel-image" src="public/works/%D0%B1%D0%B0%D0%B1%D0%B0%20%D0%B2%20%D1%86%D0%B8%D1%80%D0%BA%D0%B5.jpg" alt="AI-видео для бренда (вариация сетки)" loading="lazy" decoding="async">
           </div>
-          <p class="projects-reel-caption">AI-видео для бренда (вариация сетки)</p>
+          <p class="projects-reel-caption">AI-видео для бренда<br>(вариация сетки)</p>
         </div>
       </div>
 
@@ -509,27 +499,27 @@
         <!-- Project 5: Промо-ролик (БОЛЬШОЙ, дубликат) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <video class="projects-reel-video" muted playsinline preload="none">
+            <video class="projects-reel-video" muted playsinline preload="metadata">
               <source src="public/works/Hyperrealistic_cinematic_video_202511230411.mp4" type="video/mp4">
             </video>
             <button class="projects-reel-play" type="button" aria-label="Смотреть видео">
               <i class="fas fa-play"></i>
             </button>
           </div>
-          <p class="projects-reel-caption">Промо-ролик с ИИ-графикой (вариация сетки)</p>
+          <p class="projects-reel-caption">Промо-ролик с ИИ-графикой<br>(вариация сетки)</p>
         </div>
 
         <!-- Project 6: Креативный клип (малый, дубликат) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <video class="projects-reel-video" muted playsinline preload="none" poster="public/works/Oct_25__2209_16s_202510252255_leh5x-poster.jpg">
+            <video class="projects-reel-video" muted playsinline preload="metadata">
               <source src="public/works/Oct_25__2209_16s_202510252255_leh5x.mp4" type="video/mp4">
             </video>
             <button class="projects-reel-play" type="button" aria-label="Смотреть видео">
               <i class="fas fa-play"></i>
             </button>
           </div>
-          <p class="projects-reel-caption">Креативный клип в стиле будущего</p>
+          <p class="projects-reel-caption">Вирусное видео<br>для соцсетей</p>
         </div>
       </div>
     </div>
@@ -543,6 +533,7 @@
           <p class="cta-kicker">Реальный Vайб AI Studio</p>
           <h2 class="cta-title">Готовы обсудить ваш проект?</h2>
           <p class="cta-text">Оставьте заявку — вернёмся с идеями и сметой под ваши задачи.</p>
+          <a class="btn-primary" data-contact-link="telegram" href="https://t.me/Stivanovv" style="margin-top: 1.5rem; display: inline-block;">Оставить заявку</a>
         </div>
       </div>
     </div>
@@ -667,7 +658,7 @@
       <div class="testimonials-slider">
         <div class="testimonial-card active">
           <div class="testimonial-content">
-            \"AI&nbsp;Studio превратила наш бизнес. Telegram-бот обрабатывает 80% запросов клиентов автоматически. Эффективность выросла в разы!\"
+            «AI&nbsp;Studio превратила наш бизнес. Telegram-бот обрабатывает 80% запросов клиентов автоматически. Эффективность выросла в разы!»
           </div>
           <div class="testimonial-author">
             <div class="author-avatar">👨‍💼</div>
@@ -680,7 +671,7 @@
         
         <div class="testimonial-card">
           <div class="testimonial-content">
-            \"Степан создал для нас AI&nbsp;ассистента, который генерирует контент лучше копирайтеров. Сэкономили 60% времени на создании постов.\"
+            «Степан создал для нас AI&nbsp;ассистента, который генерирует контент лучше копирайтеров. Сэкономили 60% времени на создании постов.»
           </div>
           <div class="testimonial-author">
             <div class="author-avatar">👩‍💻</div>
@@ -693,7 +684,7 @@
         
         <div class="testimonial-card">
           <div class="testimonial-content">
-            \"Профессиональный подход и современные технологии. Автоматизация процессов окупилась за 2 месяца. Рекомендую!\"
+            «Профессиональный подход и современные технологии. Автоматизация процессов окупилась за 2 месяца. Рекомендую!»
           </div>
           <div class="testimonial-author">
             <div class="author-avatar">👨‍🎓</div>
@@ -769,10 +760,9 @@
   <script src="js/script.js?v=20251216-reveal-force" defer></script> 
   <script src="js/chat.js?v=20251216-reveal-force" defer></script> 
   <script src="js/services-carousel.js?v=20251223-services-carousel-no-nav-v1" defer></script>
-  <script src="js/performance-loader.js?v=20251223-snow-dots-header-v8" defer></script>
+  <script src="js/performance-loader.js?v=20251228-valyusha-api-fail-closed" defer></script>
   
-  <!-- Snow Effect JS - загружаем напрямую для немедленной видимости кнопки -->
-  <script src="js/snow-effect.js?v=20251223-snow-dots-header-v8"></script>
+  <!-- Snow Effect JS removed (seasonal) -->
 
   <script>
     // Handle service card clicks

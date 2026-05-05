@@ -68,7 +68,7 @@
   --panel-bg: rgba(10, 10, 10, 0.92);
   --panel-border: 1px solid rgba(255, 255, 255, 0.12);
   --panel-shadow: 0 22px 60px rgba(0, 0, 0, 0.65);
-  --panel-radius: 26px;
+  --panel-radius: 32px;
 
   /* Унифицированные вертикальные отступы секций */
   --section-space: 4rem;
@@ -2339,24 +2339,24 @@ body::before {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.875rem; /* вертикальный зазор между рядами */
+  gap: clamp(1rem, 2vw, 1.875rem); /* вертикальный зазор между рядами */
 }
 
 .projects-row {
   display: grid;
   grid-template-rows: var(--service-card-height-desktop);
-  column-gap: 1.875rem; /* расстояние между большим и малым контейнером */
-  row-gap: 1.875rem;
+  column-gap: clamp(1rem, 2vw, 1.875rem); /* расстояние между большим и малым контейнером */
+  row-gap: clamp(1rem, 2vw, 1.875rem);
 }
 
 /* Ряды с большим контейнером слева */
 .projects-row-big-left {
-  grid-template-columns: 925px 445px;
+  grid-template-columns: 2.1fr 1fr;
 }
 
 /* Ряды с маленьким контейнером слева */
 .projects-row-small-left {
-  grid-template-columns: 445px 925px;
+  grid-template-columns: 1fr 2.1fr;
 }
 
 .projects-reel-card {
@@ -2428,7 +2428,7 @@ body::before {
   left: 12px;
   bottom: 12px;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   gap: 0.375rem;
   padding: 0.625rem 0.75rem;
@@ -2439,6 +2439,8 @@ body::before {
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  white-space: normal;
+  text-align: left;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
   color: #ffffff;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.12));
@@ -2447,6 +2449,7 @@ body::before {
   border-radius: var(--btn-radius);
   border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  line-height: 1.3;
 }
 
 @media (max-width: 1024px) {
@@ -2921,7 +2924,7 @@ body::before {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.875rem;
+  gap: clamp(1rem, 2vw, 1.875rem);
 }
 
 /* Adjust services section spacing so the heading sits ещё ближе к верхнему краю блока */
@@ -2939,33 +2942,33 @@ body::before {
 .service-row {
   display: grid;
   grid-template-rows: var(--service-card-height-desktop);
-  column-gap: 1.875rem; /* расстояние между большим и малым контейнером в ряду */
-  row-gap: 1.875rem;
+  column-gap: clamp(1rem, 2vw, 1.875rem); /* расстояние между большим и малым контейнером в ряду */
+  row-gap: clamp(1rem, 2vw, 1.875rem);
 }
 
 /* Ряды с большим контейнером слева */
 .service-row-big-left {
-  grid-template-columns: 925px 445px;
+  grid-template-columns: 2.1fr 1fr;
 }
 
 /* Ряды с маленьким контейнером слева */
 .service-row-small-left {
-  grid-template-columns: 445px 925px;
+  grid-template-columns: 1fr 2.1fr;
 }
 
 /* Ряды с тремя контейнерами одинакового размера */
 .service-row-three {
   grid-template-columns: repeat(3, 1fr);
-  column-gap: 1.875rem;
+  column-gap: clamp(1rem, 2vw, 1.875rem);
 }
 
 /* Ряд: два маленьких слева (один под другим), один большой справа */
 .service-row-two-small-one-big {
   display: grid;
-  grid-template-columns: 445px 925px;
+  grid-template-columns: 1fr 2.1fr;
   grid-template-rows: var(--service-card-height-desktop) var(--service-card-height-desktop);
-  column-gap: 1.875rem;
-  row-gap: 1.875rem;
+  column-gap: clamp(1rem, 2vw, 1.875rem);
+  row-gap: clamp(1rem, 2vw, 1.875rem);
 }
 
 /* Первый маленький контейнер - слева, сверху */
@@ -2989,7 +2992,7 @@ body::before {
 
 .service-simple-card {
   position: relative;
-  border-radius: 40px;
+  border-radius: 32px;
   overflow: hidden;
   /* Фиксированная высота для десктопа (как на Neuro Twin); для tablet/mobile переопределяется медиазапросами */
   height: var(--service-card-height-desktop);
@@ -3074,10 +3077,9 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   position: relative;
   z-index: 1;
   padding: 1.125rem 1.125rem 1rem;
-  display: flex;
-  flex-direction: column;
+  display: block; /* Removed flex since footer is absolute */
   height: 100%;
-  justify-content: space-between;
+  width: 100%;
 }
 
 .service-simple-title {
@@ -3106,37 +3108,45 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .service-simple-footer {
-  margin-top: auto;
-  display: flex;
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.1);
+  justify-content: flex-start;
+  gap: 0.375rem;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  max-width: calc(100% - 32px);
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.12));
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: var(--btn-radius);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
   cursor: pointer;
-  transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-  min-height: 50px;
-  font-family: var(--font-primary);
-  font-size: clamp(0.875rem, 1.2vw, 1rem);
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.05em;
-  line-height: 1.4;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  line-height: 1.3;
 }
 
 .service-simple-footer:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2));
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.55);
 }
 
 .service-simple-footer:active {
   transform: translateY(0);
-  background: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08));
 }
 
 .service-simple-price {
@@ -3999,19 +4009,22 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 .step-footer {
   position: absolute;
   left: 8px;
-  right: 8px;
   bottom: 8px;
+  max-width: calc(100% - 16px);
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
   gap: 0.1875rem;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.1));
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: var(--btn-radius);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 0.1875rem 0.4375rem;
+  padding: 0.25rem 0.6rem;
   cursor: pointer;
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
   min-height: 0;
@@ -4029,36 +4042,17 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 /* Уменьшаем размер контейнера для первого шага */
 .process-step:nth-child(1) .step-footer {
-  padding: 0.1875rem 0.4375rem;
+  padding: 0.25rem 0.6rem;
   min-height: 0;
 }
 
-/* Центр. шаг: держим подпись в одну строку на десктопе */
-.process-step:nth-child(2) .step-footer {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: 0.02em;
-}
-
-/* Левый/правый шаги: такая же компактная одна строка */
+/* Удален white-space: nowrap для всех шагов, чтобы длинные подписи переносились */
+.process-step:nth-child(2) .step-footer,
 .process-step:nth-child(1) .step-footer,
 .process-step:nth-child(3) .step-footer {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   letter-spacing: 0.02em;
 }
 
-@media (max-width: 768px) {
-  .process-step:nth-child(2) .step-footer {
-    white-space: normal;
-  }
-  .process-step:nth-child(1) .step-footer,
-  .process-step:nth-child(3) .step-footer {
-    white-space: normal;
-  }
-}
 
 .step-footer:hover {
   background: rgba(255, 255, 255, 0.15);
@@ -9024,8 +9018,8 @@ body.new-year-page {
   opacity: 0;
   transform: translateX(0);
   transition:
-    opacity 0.55s ease,
-    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.8s ease-out,
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 

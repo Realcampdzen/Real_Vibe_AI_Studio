@@ -8,7 +8,7 @@ window.__AI_STUDIO_BUILD = '20251216-reveal-force';
 window.__AI_API_BASE__ = window.__AI_API_BASE__ || 'https://real-vibe-ai-studio.pages.dev';
 
 const CONTACTS = {
-    phone: { href: 'tel:+79319671483', display: '+79319671483' },
+    phone: { href: 'tel:+79319671483', display: '+7 931 967 14 83' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
     whatsapp: { href: 'https://wa.me/79319671483' },
@@ -107,26 +107,7 @@ function initCookieBanner() {
     });
 }
 
-// Modern website functionality
-function toggleSection(id) {
-    const content = document.getElementById(id + '-content');
-    const arrow = document.getElementById(id + '-arrow');
-    const show = !content.classList.contains('show');
-  
-    ['content', 'tech', 'process', 'benefits'].forEach(key => {
-      if (key !== id) {
-        const otherContent = document.getElementById(key + '-content');
-        const otherArrow = document.getElementById(key + '-arrow');
-        if (otherContent && otherArrow) {
-          otherContent.classList.remove('show');
-          otherArrow.className = 'fas fa-chevron-down arrow';
-        }
-      }
-    });
-  
-    content.classList.toggle('show');
-    arrow.className = show ? 'fas fa-chevron-up arrow' : 'fas fa-chevron-down arrow';
-  }
+// toggleSection removed — no matching HTML elements exist
   
 // Smooth scrolling for navigation links
 function scrollToSection(sectionId) {
@@ -554,78 +535,7 @@ function preloadImagesForUpcomingElements() {
 
 // Main DOMContentLoaded Event
 document.addEventListener('DOMContentLoaded', () => {
-  // Проверяем, что мы на главной странице, а не на новогодней
-  const isNewYearPage = document.body && document.body.classList.contains('new-year-page');
-  
-  if (!isNewYearPage) {
-    // Убеждаемся, что кнопка новогодних предложений всегда видна и правильно стилизована
-    const newYearWrapper = document.querySelector('.new-year-banner-wrapper');
-    if (newYearWrapper) {
-      newYearWrapper.style.display = 'flex';
-      newYearWrapper.style.visibility = 'visible';
-      newYearWrapper.style.opacity = '1';
-    }
-    
-    // Восстанавливаем правильные размеры кнопки новогодних предложений
-    const newYearButton = document.querySelector('.hero-actions .new-year-button, .hero .new-year-button');
-    if (newYearButton) {
-      newYearButton.style.width = '478px';
-      newYearButton.style.height = '96px';
-      newYearButton.style.maxWidth = '478px';
-      newYearButton.style.maxHeight = '96px';
-      newYearButton.style.flexShrink = '0';
-      // Убеждаемся, что анимация не перезаписана
-      newYearButton.style.animation = 'newYearPulse 3s ease-in-out infinite';
-    }
-    
-    // Восстанавливаем правильные размеры видео и принудительно загружаем
-    const newYearVideo = document.querySelector('.hero-actions .new-year-video, .hero .new-year-video');
-    if (newYearVideo) {
-      newYearVideo.style.width = '100%';
-      newYearVideo.style.height = '100%';
-      newYearVideo.style.maxWidth = '478px';
-      newYearVideo.style.maxHeight = '96px';
-      newYearVideo.style.objectFit = 'cover';
-      
-      // Принудительная загрузка и воспроизведение видео
-      newYearVideo.load();
-      
-      // Обработка ошибок загрузки
-      newYearVideo.addEventListener('error', (e) => {
-        console.error('Ошибка загрузки видео:', e);
-        // Пробуем альтернативный путь с URL-кодированием
-        const videoSource = newYearVideo.querySelector('source');
-        if (videoSource) {
-          const originalSrc = videoSource.getAttribute('src');
-          const encodedSrc = encodeURI(originalSrc);
-          videoSource.setAttribute('src', encodedSrc);
-          newYearVideo.load();
-        }
-      });
-      
-      // Принудительное воспроизведение после загрузки
-      newYearVideo.addEventListener('loadeddata', () => {
-        newYearVideo.play().catch(err => {
-          console.warn('Автозапуск видео заблокирован браузером:', err);
-        });
-      });
-    }
-    
-    // Дополнительная защита: удаляем любые стили, которые могли быть применены с новогодней страницы
-    if (newYearButton) {
-      // Удаляем классы, которые могут быть с новогодней страницы
-      newYearButton.classList.remove('new-year-hero-image');
-      newYearButton.style.removeProperty('min-width');
-      newYearButton.style.removeProperty('min-height');
-    }
-    
-    // Удаляем старые стили с видео, если они есть
-    if (newYearVideo) {
-      newYearVideo.classList.remove('new-year-hero-image');
-      newYearVideo.style.removeProperty('min-width');
-      newYearVideo.style.removeProperty('min-height');
-    }
-  }
+  // New Year seasonal code removed (no matching HTML elements)
   
   // Предзагружаем изображения для элементов, которые скоро появятся
   preloadImagesForUpcomingElements();
@@ -786,12 +696,7 @@ function initHeroSoundToggle() {
     return;
   }
   
-  console.log('Initializing hero sound toggle...', {
-    heroReel: !!heroReel,
-    heroVideo: !!heroVideo,
-    videoMuted: heroVideo.muted,
-    videoReadyState: heroVideo.readyState
-  });
+
   
   function toggleSound(e) {
     // Игнорируем клики по кнопкам - они должны работать как обычно
@@ -827,24 +732,23 @@ function initHeroSoundToggle() {
   
   // Обработчик клика на контейнер
   heroReel.addEventListener('click', toggleSound);
-  console.log('Added click handler to heroReel');
   
   // Обработчик на само видео
   heroVideo.addEventListener('click', toggleSound);
-  console.log('Added click handler to heroVideo');
+
   
   // Обработчик на overlay
   if (heroOverlay) {
     heroOverlay.style.pointerEvents = 'auto';
     heroOverlay.style.cursor = 'pointer';
     heroOverlay.addEventListener('click', toggleSound);
-    console.log('Added click handler to heroOverlay');
+
   }
   
   // Курсор-указатель на контейнере
   heroReel.style.cursor = 'pointer';
   
-  console.log('✅ Hero sound toggle initialized');
+
 }
 
 // Scroll reveal animations (covers new sections even if legacy observer missed them)
@@ -980,23 +884,38 @@ function initScrollRevealV2(force = false) {
       return;
     }
 
+    let revealQueue = [];
+    let revealTimer = null;
+
     const observer = new IntersectionObserver((entries) => {
+      let hasIntersecting = false;
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          // Reveal on next frame so the transition reliably plays
-          requestAnimationFrame(() => {
-            revealElement(entry.target);
-            try {
-              observer.unobserve(entry.target);
-            } catch (e) {}
-          });
+          hasIntersecting = true;
+          revealQueue.push(entry.target);
+          try {
+            observer.unobserve(entry.target);
+          } catch (e) {}
         }
       });
+
+      if (hasIntersecting && !revealTimer) {
+        revealTimer = requestAnimationFrame(() => {
+          // Sort queue by DOM order if needed, but array order usually matches DOM order
+          revealQueue.forEach((target, index) => {
+            setTimeout(() => {
+              revealElement(target);
+            }, index * 100);
+          });
+          revealQueue = [];
+          revealTimer = null;
+        });
+      }
     }, {
-      // Trigger later so user actually sees the slide-in (prevents "played before I saw it")
-      threshold: 0.18,
-      rootMargin: '0px 0px -12% 0px'
+      threshold: 0.1,
+      rootMargin: '0px'
     });
+
 
     prepared.forEach((el) => observer.observe(el));
     // One pass for elements already in viewport (avoid hidden gaps on load)
@@ -1063,16 +982,16 @@ function initHeroEnterAnimation() {
   }
   
   const children = heroContent.children;
-  console.log('🔍 Hero content children:', children.length);
+
   
   hero.classList.add('hero-enter');
-  console.log('✅ Hero enter animation initialized, class added to:', hero);
+
 }
 
 // Process scroll animation
 function initProcessScrollAnimation() {
   const steps = document.querySelectorAll('.process-step');
-  console.log('🔍 Process steps found:', steps.length);
+
   
   if (!steps.length) {
     console.warn('No process steps found');
@@ -1093,7 +1012,7 @@ function initProcessScrollAnimation() {
       const index = Array.from(steps).indexOf(step);
       const delay = index * 100; // 0.1s
 
-      console.log('👁️ Process step visible:', index, step);
+
 
       setTimeout(() => {
         step.classList.add('is-visible');
@@ -1106,5 +1025,5 @@ function initProcessScrollAnimation() {
   });
 
   steps.forEach((step) => observer.observe(step));
-  console.log('✅ Process scroll animation initialized');
+
 }

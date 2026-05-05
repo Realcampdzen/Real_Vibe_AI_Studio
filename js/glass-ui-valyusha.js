@@ -9,7 +9,7 @@ class GlassUIValyusha {
         this.isVisible = false;
 
         this.responses = [
-            "Привет! Я НейроVалюша — дружелюбная вожатая Реального Лагеря. Здесь дети прокачивают 4К навыки и изучают нейросети! 🌈✨",
+            "Привет! Я НейроVалюша — дружелюбная вожатая Реального Лагеря. Здесь дети прокачивают 4К навыки и изучают нейросети! 💜✨",
             "Люблю помогать ребятам вникать в программу лагеря и находить своё призвание. Хочешь рассказать, что тебя вдохновляет? 💜",
             "В Реальном Лагере мы учим быть вожатыми, создавать проекты и вести сообщества. Погнали в команду мечты! 🎯",
             "Я могу поддержать, подсказать упражнения или помочь с нейропроектом. Просто спроси! 📚✨",
@@ -18,7 +18,7 @@ class GlassUIValyusha {
             "Хочешь узнать, как мы внедряем AI в детские программы и медиа? Расскажу все фишки! 🤖💬",
             "Люблю писать тёплые комментарии в ВК и Telegram сообществах лагеря. Присоединяйся к нашему доброму движению! 💌",
             "Вожатый — это тот, кто помогает раскрыть талант. В Реальном Лагере этому можно научиться. Готов попробовать? 🏕️",
-            "Если тебе нужно вдохновение для поста или проекта лагеря — давай brainstorm вместе! 🌈🧠"
+            "Если тебе нужно вдохновение для поста или проекта лагеря — давай brainstorm вместе! 💜🧠"
         ];
 
         this.init();
@@ -263,7 +263,7 @@ class GlassUIValyusha {
     }
 
     addValyushaSparkle() {
-        const sparkles = ['✨', '🌟', '💜', '🌈', '⭐'];
+        const sparkles = ['✨', '🌟', '💜', '⭐'];
         const sparkle = document.createElement('div');
         sparkle.className = 'valyusha-sparkle';
         sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
@@ -289,65 +289,73 @@ class GlassUIValyusha {
                 userId: 'user-' + Date.now()
             };
 
-            const apiBase = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
-            const endpoint = apiBase ? `${apiBase}/api/valyusha/chat` : '/api/valyusha/chat';
+            // Use local proxy by default to bypass pages.dev blocking
+            // Прокси api-proxy.php обходит блокировку pages.dev из браузера
+            // Only use direct API if explicitly set to non-default value (for testing)
+            const customApiBase = window.__AI_API_BASE__;
+            const isDefaultApiBase = !customApiBase || customApiBase === 'https://real-vibe-ai-studio.pages.dev';
+            const endpoint = isDefaultApiBase
+                ? '/api-proxy.php' 
+                : `${customApiBase.replace(/\/$/, '')}/api/valyusha/chat`;
 
             console.log('💜 НейроВалюша: отправляю запрос к', endpoint, requestBody);
             
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            console.log('💜 НейроВалюша: получен ответ, статус:', response.status, response.statusText);
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('💜 НейроВалюша: ошибка HTTP:', response.status, errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('💜 НейроВалюша: получены данные:', data);
+            // Добавляем таймаут 60 секунд для запроса
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 секунд
             
-            const reply = data.reply || data.response;
-            if (reply) {
-                console.log('💜 НейроВалюша: возвращаю ответ от AI:', reply.substring(0, 100));
-                return reply;
-            } else {
-                console.warn('💜 НейроВалюша: ответ пустой, используем fallback');
-                return this.getFallbackResponse(message);
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                console.log('💜 НейроВалюша: получен ответ, статус:', response.status, response.statusText);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('💜 НейроВалюша: ошибка HTTP:', response.status, errorText);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('💜 НейроВалюша: получены данные:', data);
+                
+                const reply = data.reply || data.response;
+                if (reply && typeof reply === 'string' && reply.trim().length > 0) {
+                    console.log('💜 НейроВалюша: возвращаю ответ от AI:', reply.substring(0, 100));
+                    return reply;
+                } else {
+                    console.warn('💜 НейроВалюша: ответ пустой или некорректный, используем fallback. Data:', data);
+                    return this.getFallbackResponse(message);
+                }
+            } catch (fetchError) {
+                clearTimeout(timeoutId);
+                if (fetchError.name === 'AbortError') {
+                    console.error('💜 НейроВалюша: запрос превысил таймаут (60 секунд)');
+                    throw new Error('Запрос превысил время ожидания');
+                }
+                throw fetchError;
             }
         } catch (error) {
             console.error('💜 Ошибка при запросе к НейроВалюше:', error);
             console.error('💜 Детали ошибки:', error.message);
-            // Fallback на статичные ответы
+            console.error('💜 Stack:', error.stack);
+            // Fail-closed: без "выдуманных" ответов. Показываем явную проблему с API.
             return this.getFallbackResponse(message);
         }
     }
 
     getFallbackResponse(message) {
-        const lowerMessage = message.toLowerCase();
-        
-        // Проверяем ключевые слова для более релевантных ответов
-        if (lowerMessage.includes('привет') || lowerMessage.includes('здравствуй')) {
-            return this.responses[0];
-        }
-        if (lowerMessage.includes('лагер') || lowerMessage.includes('4к') || lowerMessage.includes('навык')) {
-            return this.responses[2];
-        }
-        if (lowerMessage.includes('значок') || lowerMessage.includes('достижен')) {
-            return "Я знаю все 246 значков Реального Лагеря! 💜 Могу рассказать про любой и как его получить. Какой значок тебя интересует? 📚✨";
-        }
-        if (lowerMessage.includes('бот') || lowerMessage.includes('персона')) {
-            return "Персона-боты с AI — это круто! 🌈 Я сама такой бот! Мы оживляем сайты и соцсети, создаем атмосферу. Хочешь такого же для своего проекта? @Stivanovv создаст! 💜✨";
-        }
-        
-        // Случайный ответ из массива
-        return this.responses[Math.floor(Math.random() * this.responses.length)];
+        const apiBase = (window.__AI_API_BASE__ || 'https://real-vibe-ai-studio.pages.dev').replace(/\/$/, '');
+        const host = apiBase ? apiBase.replace(/^https?:\/\//, '') : 'AI API';
+        return `Сейчас я не могу подключиться к AI‑сервису (${host}). Похоже, ошибка соединения — поэтому я не буду выдумывать ответ.\n\nПопробуй обновить страницу (Ctrl+F5) или зайти позже. Если проблема повторяется — напиши @Stivanovv.`;
     }
 
     closeOtherChats() {

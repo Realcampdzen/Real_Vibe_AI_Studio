@@ -79,19 +79,13 @@ class VideoOptimizer {
     video.autoplay = shouldAutoplay;
     if (shouldAutoplay) {
       video.setAttribute('autoplay', '');
-      console.log('🎬 Автозапуск видео включен');
+
     } else {
       video.removeAttribute('autoplay');
-      console.log('⏸️ Автозапуск видео отключен (настройки)');
+
     }
     
-    console.log('📹 Настройки hero видео:', {
-      preload: preloadMode,
-      autoplay: shouldAutoplay,
-      muted: video.muted,
-      readyState: video.readyState,
-      src: video.currentSrc || video.src
-    });
+
   }
 
   ensurePlayback(video) {
@@ -116,8 +110,7 @@ class VideoOptimizer {
       if (playPromise && playPromise.catch) {
         playPromise
           .then(() => {
-            console.log('✅ Видео успешно запущено');
-            played = true;
+
           })
           .catch((err) => {
             console.warn('⚠️ Автовоспроизведение ограничено браузером:', err?.name || err);
@@ -210,13 +203,7 @@ class VideoOptimizer {
       return;
     }
     this.heroVideo = heroVideo;
-    console.log('🎥 Инициализация hero видео:', {
-      id: heroVideo.id,
-      autoplay: heroVideo.autoplay,
-      muted: heroVideo.muted,
-      readyState: heroVideo.readyState,
-      src: heroVideo.currentSrc || heroVideo.src
-    });
+
 
     // Проверяем, есть ли уже адаптивные источники
     if (heroVideo.querySelector('source[media]')) {
@@ -754,9 +741,9 @@ if (!window.videoOptimizerInitialized) {
       console.warn('⚠️ VideoOptimizer уже инициализирован, пропускаем повторную инициализацию');
       return;
     }
-    console.log('🚀 Инициализация VideoOptimizer...');
+
     window.videoOptimizer = new VideoOptimizer();
-    console.log('✅ VideoOptimizer инициализирован');
+
   };
 
   if (document.readyState === 'loading') {
