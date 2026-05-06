@@ -57,11 +57,13 @@ class VideoOptimizer {
   }
 
   ensureHeroAttributes(video) {
-    // Для hero видео используем 'auto' для более быстрого автозапуска
+    // На мобиле используем metadata для экономии трафика
     const preloadMode =
-      this.isYandex || (!this.slowNetwork && !this.saveData)
-        ? 'auto'
-        : 'metadata';
+      this.isMobile
+        ? 'metadata'
+        : (this.isYandex || (!this.slowNetwork && !this.saveData))
+          ? 'auto'
+          : 'metadata';
 
     video.setAttribute('preload', preloadMode);
     video.preload = preloadMode;
@@ -73,19 +75,15 @@ class VideoOptimizer {
     video.setAttribute('muted', '');
     video.defaultMuted = true;
 
-    // Для hero видео всегда включаем автозапуск (игнорируем prefers-reduced-motion)
-    // так как это критичный элемент дизайна
+    // На мобиле автозапуск включён, но с metadata preload видео
+    // начнёт играть позже (после загрузки первого фрейма)
     const shouldAutoplay = this.autoPlayDesktop;
     video.autoplay = shouldAutoplay;
     if (shouldAutoplay) {
       video.setAttribute('autoplay', '');
-
     } else {
       video.removeAttribute('autoplay');
-
     }
-    
-
   }
 
   ensurePlayback(video) {

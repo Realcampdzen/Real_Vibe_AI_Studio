@@ -1,5 +1,10 @@
 /* AI Studio - Enhanced Modern Design */
 
+/* Remove mobile tap highlight & focus outline */
+*:focus { outline: none; }
+*:focus-visible { outline: 2px solid var(--accent-primary, #ff9b4a); outline-offset: 2px; }
+* { -webkit-tap-highlight-color: transparent; }
+
 :root {
   /* Colors */
   --bg-primary: #050505;
@@ -633,11 +638,7 @@ body::before {
 }
 
 @media (max-width: 768px) {
-  /* На мобильных показываем только логотип, скрываем nav-pill-group */
-  .nav-left {
-    display: flex !important;
-  }
-  
+  /* Hide desktop nav items */
   .nav-left .nav-pill-group {
     display: none;
   }
@@ -645,53 +646,75 @@ body::before {
   .nav-links {
     display: none;
   }
+
+  .nav-center {
+    display: none;
+  }
   
   .mobile-menu-btn {
     display: flex;
   }
 
-  /* Уплотняем шапку, чтобы все кнопки вмещались */
+  /* ── Compact single-row navbar (Neuro Twin style) ── */
   .nav-container {
     padding: 0 12px;
-    gap: 0.625rem;
-    min-height: 56px;
+    gap: 0.5rem;
+    min-height: 48px;
   }
 
-  .nav-center {
-    display: none;
+  .nav-left {
+    display: flex !important;
+    flex-shrink: 0;
+  }
+
+  .nav-logo .logo-image {
+    width: 36px;
+    height: 36px;
   }
 
   .nav-right {
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    gap: 0.375rem;
+    flex-wrap: nowrap;
     justify-content: flex-end;
+    align-items: center;
   }
 
   .nav-icon-btn {
-    width: 50px;
-    height: 50px;
-    font-size: 26px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    flex-shrink: 0;
   }
 
-  .nav-icon-btn + .nav-icon-btn {
-    margin-left: 0;
-  }
-
+  /* Phone: compact pill, not full-width block */
   .nav-cta {
     min-width: 0;
-    width: 100%;
-    padding: 0.75rem 1rem;
+    width: auto;
+    padding: 0.375rem 0.625rem;
     margin-left: 0;
-    order: 5;
+    order: 0;
     justify-content: center;
     min-height: 0;
-    gap: 0.375rem;
+    gap: 0.25rem;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+    white-space: nowrap;
   }
 
   .nav-lang-toggle {
-    width: 40px;
-    height: 40px;
-    font-size: 12px;
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .mobile-menu-btn {
+    padding: 0.375rem;
+    margin-left: 0;
+  }
+
+  .mobile-menu-btn span {
+    width: 20px;
   }
 }
 
@@ -789,26 +812,40 @@ body::before {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(5, 5, 5, 0.92);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 1.75rem 1.375rem 2.5rem;
-  z-index: 1200;
+  background: rgba(8, 8, 10, 0.97);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  padding: 0;
+  z-index: 10100;
   overflow-y: auto;
-  animation: fadeIn 0.3s ease;
+  overflow-x: hidden;
+  animation: mobileNavSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes mobileNavSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mobile-nav.active {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
 }
 
+/* ── Header ── */
 .mobile-nav-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .mobile-nav-brand {
@@ -819,108 +856,150 @@ body::before {
 
 .mobile-nav-brand .brand-title {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .mobile-nav-brand .brand-subtitle {
-  font-size: 13px;
-  color: var(--text-secondary);
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  color: var(--accent-primary, #ff9b4a);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .mobile-nav-close {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text-primary);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  font-size: 16px;
+  transition: all 0.2s ease;
 }
 
-.mobile-nav-close:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.25);
+.mobile-nav-close:active {
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.12);
 }
 
+/* ── Navigation links — vertical list ── */
 .mobile-nav-links {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0.75rem 0;
 }
 
 .mobile-nav-link {
-  display: block;
+  display: flex;
+  align-items: center;
   color: var(--text-primary);
   text-decoration: none;
-  padding: 0.875rem 1rem;
-  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease, color 0.15s ease;
+  position: relative;
+}
+
+.mobile-nav-link::after {
+  content: '→';
+  position: absolute;
+  right: 1.5rem;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 1rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.mobile-nav-link:active {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.25s ease;
 }
 
-.mobile-nav-link:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
+.mobile-nav-link:active::after {
+  transform: translateX(4px);
+  color: var(--accent-primary, #ff9b4a);
 }
 
+/* ── CTA button in menu ── */
 .mobile-nav-meta {
-  margin-top: 0.25rem;
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.875rem;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 0.875rem;
+  padding: 1.25rem 1.5rem 2rem;
+  background: linear-gradient(to top, rgba(255, 155, 74, 0.06), transparent);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .mobile-nav-label {
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
 }
 
 .mobile-nav-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.625rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
 }
 
 .mobile-nav-chip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.5rem;
   padding: 0.75rem 0.875rem;
-  border-radius: 14px;
+  border-radius: 12px;
   text-decoration: none;
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.mobile-nav-chip:hover {
+.mobile-nav-chip i {
+  font-size: 15px;
+  opacity: 0.7;
+}
+
+.mobile-nav-chip[data-contact-link="phone"] i {
+  color: #4ade80;
+}
+
+.mobile-nav-chip[data-contact-link="telegram"] i {
+  color: #38bdf8;
+}
+
+.mobile-nav-chip[data-contact-link="whatsapp"] i {
+  color: #22c55e;
+}
+
+.mobile-nav-chip[data-contact-link="email"] i {
+  color: #f59e0b;
+}
+
+.mobile-nav-chip:active {
   background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
+  transform: scale(0.97);
 }
 
 .mobile-nav-chip[data-contact-link="phone"] span {
   font-family: var(--font-numerals);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   font-weight: 700;
 }
 
@@ -1536,72 +1615,7 @@ body::before {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
-/* Стили для кнопки новогодних предложений на главной странице */
-.hero-actions .new-year-button,
-.hero .new-year-button {
-  display: block;
-  text-decoration: none;
-  transition: filter 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  z-index: 1;
-  animation: newYearPulse 3s ease-in-out infinite !important;
-  margin: 0.625rem auto 0;
-  width: 478px !important;
-  height: 96px !important;
-  max-width: 478px !important;
-  max-height: 96px !important;
-  overflow: visible;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  flex-shrink: 0;
-}
-
-
-.new-year-button:hover {
-  filter: drop-shadow(0 10px 30px rgba(255, 155, 74, 0.5));
-  box-shadow: 0 12px 40px rgba(255, 155, 74, 0.6);
-  /* Анимация продолжается, transform уже в анимации */
-}
-
-.new-year-button:active {
-  /* transform уже применяется через анимацию, не перезаписываем */
-  filter: drop-shadow(0 15px 35px rgba(255, 155, 74, 0.7)) !important;
-}
-
-/* Стили для видео в кнопке новогодних предложений на главной странице */
-.hero-actions .new-year-video,
-.hero .new-year-video,
-.new-year-button .new-year-video {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 478px !important;
-  max-height: 96px !important;
-  display: block;
-  object-fit: cover !important;
-  object-position: center;
-  border-radius: 12px;
-  transition: filter 0.3s ease;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  animation: newYearPulse 3s ease-in-out infinite !important;
-}
-
-.new-year-button:hover .new-year-video {
-  /* transform уже применяется через анимацию кнопки */
-}
-
-@keyframes newYearPulse {
-  0%, 100% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-  50% {
-    transform: scale(1.02);
-    filter: brightness(1.1);
-  }
-}
+/* new-year styles removed (seasonal) */
 
 .gradient-text {
   background: linear-gradient(90deg, 
@@ -1647,48 +1661,7 @@ body::before {
   margin-bottom: 48px;
 }
 
-.new-year-banner-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-  flex-wrap: nowrap;
-  width: 100%;
-  max-width: 100%;
-  position: relative;
-}
-
-.new-year-text-left,
-.new-year-text-right {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 600;
-  white-space: nowrap;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
-  line-height: 1.2;
-  color: #ffffff;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  pointer-events: none;
-  text-align: center;
-}
-
-.new-year-text-left {
-  top: 30%;
-  font-size: 18px;
-}
-
-.new-year-text-right {
-  top: 65%;
-  font-size: 16px;
-}
-
-.hero-actions .new-year-button,
-.hero .new-year-button {
-  flex-shrink: 0;
-}
+/* new-year-banner styles removed (seasonal) */
 
 /* Hero Stats - Скрыто */
 .hero-stats {
@@ -9078,3 +9051,236 @@ body.new-year-page {
 .hero.hero-in-view .hero-reel-content > *:nth-child(2) { animation-delay: 0.30s; }
 .hero.hero-in-view .hero-reel-content > *:nth-child(3) { animation-delay: 0.45s; }
 .hero.hero-in-view .hero-reel-content > *:nth-child(4) { animation-delay: 0.60s; }
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE OPTIMIZATIONS — Neuro Twin-style hero layout
+   Text above video, not overlaid. No backdrop-filter.
+   ══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* ── HERO: restructure to vertical stack ── */
+  .hero {
+    min-height: auto;
+    padding: 5rem 0 0;
+    overflow: visible;
+  }
+
+  /* Remove heavy background blur */
+  .hero::before {
+    display: none;
+  }
+
+  /* Hero reel becomes a flex column: text → video */
+  .hero-reel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-height: auto;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+    cursor: default;
+  }
+
+  /* Text area — above the video, on dark background */
+  .hero-reel-content {
+    position: relative;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 1.5rem 1.25rem 1.25rem;
+    pointer-events: auto;
+    z-index: 2;
+    order: 1;
+    background: var(--bg-primary, #0a0a0a);
+  }
+
+  /* Video — below text, standalone block */
+  .hero-reel-video {
+    position: relative;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    order: 3;
+    transform: none;
+    filter: none;
+    border-radius: 12px;
+    margin: 0 auto;
+    max-width: calc(100% - 1.5rem);
+  }
+
+  /* Remove overlay on mobile — text is separate now */
+  .hero-reel-overlay {
+    display: none;
+  }
+
+  /* Hero controls — below video, order 4 */
+  .hero-controls {
+    position: relative;
+    inset: auto;
+    order: 4;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    width: calc(100% - 1.5rem);
+    max-width: 100%;
+    margin: 0.5rem auto 0;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+
+  .hero-control-right {
+    width: auto;
+    gap: 0.25rem;
+  }
+
+  .hero-progress-time {
+    min-width: 70px;
+    font-size: 11px;
+  }
+
+  /* Hide speed/quality controls on mobile — too cluttered */
+  .hero-control-speed,
+  #hero-control-quality {
+    display: none;
+  }
+
+  .hero-menu {
+    display: none !important;
+  }
+
+  /* ── HERO TEXT — Neuro Twin style ── */
+  .hero-tagline {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .hero-title,
+  .hero-title-reel {
+    font-size: clamp(2rem, 9vw, 2.75rem) !important;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+    text-align: left;
+    text-shadow: none;
+    text-transform: uppercase;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: left;
+    color: var(--text-secondary);
+    max-width: 100%;
+    margin: 0 0 1.25rem;
+  }
+
+  /* ── CTA buttons — full-width primary, hide secondary circles ── */
+  .hero-cta-row {
+    order: 2;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-top: 0;
+    padding: 0 1.25rem 1rem;
+    background: var(--bg-primary, #0a0a0a);
+  }
+
+  .hero-cta-row .btn-primary {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 14px;
+    text-align: center;
+  }
+
+  /* Hide circular secondary buttons on mobile — they look like glitches */
+  .hero-secondary-btn {
+    display: none !important;
+  }
+
+  /* ── Sound toggle — simpler on mobile ── */
+  .hero-sound-toggle {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    top: 12px;
+    right: 20px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.6);
+    border-width: 1px;
+  }
+
+  /* ── Hero badge — no blur ── */
+  .hero-badge {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(15, 14, 19, 0.8);
+    padding: 0.5rem 1rem;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  /* ── Hero enter animation — simpler on mobile ── */
+  .hero.hero-enter .hero-content > * {
+    filter: none;
+    transform: translateY(12px);
+  }
+
+  @keyframes heroFadeUpBlur {
+    0% {
+      opacity: 0;
+      transform: translateY(12px);
+      filter: none;
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+      filter: none;
+    }
+  }
+
+  /* ── GLOBAL PERFORMANCE — kill all backdrop-filter on mobile ── */
+  .mobile-nav {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    /* Keep nav blur — it's opened rarely */
+  }
+
+  /* ── Scroll reveal: vertical fade-up instead of horizontal ── */
+  .reveal-base--left,
+  .reveal-base--right {
+    transform: translateY(20px) !important;
+  }
+
+  .reveal-base.is-visible {
+    transform: translateY(0) !important;
+  }
+
+  /* ── Disable will-change on mobile for better scroll ── */
+  * {
+    will-change: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title,
+  .hero-title-reel {
+    font-size: clamp(1.75rem, 8.5vw, 2.5rem) !important;
+  }
+
+  .hero-reel-video {
+    border-radius: 10px;
+  }
+}
+

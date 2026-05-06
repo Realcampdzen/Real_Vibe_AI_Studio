@@ -186,6 +186,8 @@ function initMobileMenu() {
     mobileNav.classList.add('active');
     mobileNav.setAttribute('aria-hidden', 'false');
     document.body.classList.add('no-scroll');
+    // Hide bot widgets so they don't overlap the menu
+    document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.style.setProperty('display', 'none', 'important'));
   };
 
   const closeMenu = () => {
@@ -193,6 +195,8 @@ function initMobileMenu() {
     mobileNav.classList.remove('active');
     mobileNav.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('no-scroll');
+    // Restore bot widgets
+    document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.style.removeProperty('display'));
   };
 
   mobileMenuBtn.addEventListener('click', () => {
@@ -902,10 +906,11 @@ function initScrollRevealV2(force = false) {
       if (hasIntersecting && !revealTimer) {
         revealTimer = requestAnimationFrame(() => {
           // Sort queue by DOM order if needed, but array order usually matches DOM order
+          const stagger = window.innerWidth < 768 ? 50 : 100;
           revealQueue.forEach((target, index) => {
             setTimeout(() => {
               revealElement(target);
-            }, index * 100);
+            }, index * stagger);
           });
           revealQueue = [];
           revealTimer = null;
