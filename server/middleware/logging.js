@@ -4,6 +4,7 @@
 import winston from 'winston';
 import fs from 'fs';
 import path from 'path';
+import { randomUUID } from 'crypto';
 import config from '../config/env.js';
 
 // Создаём директорию для логов если её нет
@@ -38,6 +39,7 @@ function safePath(rawUrl = '') {
 
 function requestMeta(req) {
   return {
+    requestId: req.requestId,
     method: req.method,
     path: safePath(req.originalUrl || req.url),
     ip: req.ip,
@@ -79,6 +81,34 @@ export function createRequestLogger() {
   };
 }
 
+export function attachRequestId() {
+  return function requestIdMiddleware(req, res, next) {
+    const headerValue = req.get('x-request-id');
+    const requestId = typeof headerValue === 'string' && /^[a-zA-Z0-9._:-]{8,80}$/.test(headerValue)
+      ? headerValue
+      : randomUUID();
+
+    req.requestId = requestId;
+    res.setHeader('X-Request-Id', requestId);
+    next();
+  };
+}
+
+export function sanitizedApiMeta(req, options = {}) {
+  const startedAt = Number(options.startedAt || req.startedAt || Date.now());
+  return {
+    requestId: req.requestId,
+    method: req.method,
+    path: safePath(req.originalUrl || req.url),
+    botId: options.botId,
+    statusCode: options.statusCode,
+    outcome: options.outcome,
+    reason: options.reason,
+    errorName: options.error ? options.error.name || 'Error' : undefined,
+    durationMs: Math.max(0, Date.now() - startedAt),
+  };
+}
+
 export function createErrorLogger() {
   return function errorLogger(err, req, res, next) {
     const status = errorStatus(err);
@@ -86,7 +116,7 @@ export function createErrorLogger() {
       const log = status >= 500 ? logger.error.bind(logger) : logger.warn.bind(logger);
       log('HTTP request error', {
         ...requestMeta(req),
-        error: err.message,
+        error: config.isDevelopment ? err.message : err.name || 'Error',
         statusCode: status,
         stack: config.isDevelopment ? err.stack : undefined,
       });

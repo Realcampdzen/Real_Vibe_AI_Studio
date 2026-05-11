@@ -262,12 +262,10 @@ document.addEventListener('DOMContentLoaded', () => {
     content.textContent = message;
     
     if (isError) {
-      content.style.color = '#ef4444';
+      content.classList.add('is-error');
     }
     
-    // Add message animation
-    messageDiv.style.opacity = '0';
-    messageDiv.style.transform = 'translateY(20px)';
+    messageDiv.classList.add('chat-message-enter');
     
     messageDiv.appendChild(avatar);
     messageDiv.appendChild(content);
@@ -275,11 +273,9 @@ document.addEventListener('DOMContentLoaded', () => {
     chatMessages.appendChild(messageDiv);
     
     // Animate message appearance
-    setTimeout(() => {
-      messageDiv.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      messageDiv.style.opacity = '1';
-      messageDiv.style.transform = 'translateY(0)';
-    }, 10);
+    requestAnimationFrame(() => {
+      messageDiv.classList.add('is-visible');
+    });
     
     chatMessages.scrollTop = chatMessages.scrollHeight;
   };
@@ -299,20 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dots.className = 'typing-dots';
     dots.textContent = '●●●';
     content.appendChild(dots);
-    content.style.opacity = '0.7';
-    
-    // Add typing animation
-    const style = document.createElement('style');
-    style.textContent = `
-      .typing-dots {
-        animation: typing 1.4s infinite;
-      }
-      @keyframes typing {
-        0%, 60%, 100% { opacity: 0.3; }
-        30% { opacity: 1; }
-      }
-    `;
-    document.head.appendChild(style);
+    content.classList.add('is-muted');
     
     typingDiv.appendChild(avatar);
     typingDiv.appendChild(content);
@@ -341,13 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     const firstMessage = document.querySelector('.chat-message.assistant');
     if (firstMessage) {
-      firstMessage.style.opacity = '0';
-      firstMessage.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        firstMessage.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        firstMessage.style.opacity = '1';
-        firstMessage.style.transform = 'translateY(0)';
-      }, 100);
+      firstMessage.classList.add('chat-message-enter');
+      requestAnimationFrame(() => {
+        firstMessage.classList.add('is-visible');
+      });
     }
   }, 500);
 

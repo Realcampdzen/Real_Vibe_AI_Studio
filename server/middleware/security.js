@@ -4,6 +4,12 @@
 import helmet from 'helmet';
 import config from '../config/env.js';
 
+const allowedStyleSources = [
+  "'self'",
+  'https://fonts.googleapis.com',
+  'https://cdnjs.cloudflare.com',
+];
+
 const cspReportOnlyDirectives = {
   'default-src': ["'self'"],
   'script-src': ["'self'"],
@@ -20,13 +26,9 @@ const cspReportOnlyDirectives = {
   ],
   'img-src': ["'self'", 'data:', 'https:', 'blob:'],
   'media-src': ["'self'", 'blob:'],
-  'style-src': [
-    "'self'",
-    "'unsafe-inline'",
-    'https://fonts.googleapis.com',
-    'https://cdnjs.cloudflare.com',
-  ],
+  'style-src': allowedStyleSources,
   'style-src-attr': ["'none'"],
+  'style-src-elem': allowedStyleSources,
   'font-src': [
     "'self'",
     'https://fonts.gstatic.com',
@@ -51,10 +53,7 @@ export function createHelmetMiddleware() {
     contentSecurityPolicy: config.isDevelopment ? false : {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc: [
-          "'self'", "'unsafe-inline'",
-          "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com",
-        ],
+        styleSrc: allowedStyleSources,
         scriptSrc: ["'self'"],
         imgSrc: ["'self'", "data:", "https:", "blob:"],
         mediaSrc: ["'self'", "blob:"],
@@ -67,10 +66,7 @@ export function createHelmetMiddleware() {
           "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:",
         ],
         styleSrcAttr: ["'none'"],
-        styleSrcElem: [
-          "'self'", "'unsafe-inline'",
-          "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com",
-        ],
+        styleSrcElem: allowedStyleSources,
         upgradeInsecureRequests: null,
       },
     },

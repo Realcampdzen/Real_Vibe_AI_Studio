@@ -79,7 +79,7 @@ ssh root@89.223.126.190 "docker logs --tail=150 real-vibe-web"
 
 Expected results: `/health` 200, localhost CORS rejected in production, invalid chat rejected without OpenAI call, webhook forbidden without token, CSP headers present, hero WebM served with range support, old hero master unavailable, no secrets/request bodies in logs.
 The Docker image should stay under the current budget of `1.5GB`; public media larger than `80MB` must be excluded from the runtime image by `.dockerignore`.
-Enforced CSP must include `script-src 'self'` and `style-src-attr 'none'`; `style-src 'unsafe-inline'` may remain until third-party/style-element cleanup is handled separately.
+Enforced CSP must include `script-src 'self'`, `style-src-attr 'none'`, and no `unsafe-inline` in `style-src` or `style-src-elem`.
 
 ## Browser Smoke
 
@@ -89,6 +89,7 @@ Enforced CSP must include `script-src 'self'` and `style-src-attr 'none'`; `styl
 - `service-detail.html?id=0..7` and `ai-photo-detail.html` render without console errors.
 - Chat widgets open, send invalid/limited requests gracefully, and stay visually usable.
 - CSP report-only violations can be sampled in logs, but they must not include raw request bodies, cookies, tokens, full URLs with query strings, or user messages.
+- Detail CTA blocks expose working Telegram, phone, and email links.
 
 ## CI Gate
 

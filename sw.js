@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.20-20260511-stylecsp';
+const CACHE_VERSION = 'v1.21-20260512-observeux';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -22,11 +22,12 @@ const STATIC_ASSETS = [
   withBase('/js/scroll-manager.js'),
   withBase('/js/video-optimizer.js'),
   withBase('/js/script.js'),
+  withBase('/js/page-common.js'),
   withBase('/js/service-detail-page.js'),
-  withBase('/js/chat.js'),
+  withBase('/js/chat.js?v=20260512-observeux'),
   withBase('/js/services-carousel.js'),
-  withBase('/js/performance-loader.js?v=20260511-stylecsp'),
-  withBase('/js/mobile-enhancements.js?v=20260510-bots-cache-fix'),
+  withBase('/js/performance-loader.js?v=20260512-observeux'),
+  withBase('/js/mobile-enhancements.js?v=20260512-observeux'),
   withBase('/js/glass-ui-hipych.js?v=20260511-stylecsp'),
   withBase('/js/glass-ui-bro-cat.js?v=20260511-stylecsp'),
   withBase('/js/glass-ui-valyusha.js?v=20260511-stylecsp'),

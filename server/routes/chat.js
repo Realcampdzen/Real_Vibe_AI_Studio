@@ -6,7 +6,7 @@ import express from 'express';
 import Joi from 'joi';
 import { timingSafeEqual } from 'crypto';
 import config from '../config/env.js';
-import { logger } from '../middleware/logging.js';
+import { logger, sanitizedApiMeta } from '../middleware/logging.js';
 import { appVersion } from '../config/version.js';
 import { chatCompletion, isConnected } from '../services/openai-client.js';
 import { stripMarkdown } from '../services/text-cleaner.js';
@@ -42,10 +42,17 @@ const messageSchema = Joi.object({
  * Общий handler чата для любого бота.
  */
 async function handleChat(req, res, botId) {
+  const startedAt = Date.now();
   try {
     const { error, value } = messageSchema.validate(req.body);
     if (error) {
-      logger.warn(`Validation error: ${error.details[0].message}`, { botId, ip: req.ip });
+      logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
+        botId,
+        startedAt,
+        statusCode: 400,
+        outcome: 'validation_error',
+        reason: error.details[0]?.type || 'validation',
+      }));
       return res.status(400).json({
         error: 'Неверный формат данных',
         details: error.details[0].message,
@@ -54,16 +61,34 @@ async function handleChat(req, res, botId) {
 
     const bot = getBot(botId);
     if (!bot) {
-      logger.warn(`Bot not found: ${botId}`, { ip: req.ip });
+      logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
+        botId,
+        startedAt,
+        statusCode: 404,
+        outcome: 'bot_not_found',
+      }));
       return res.status(404).json({ error: 'Ассистент не найден' });
     }
 
     const { message } = value;
-    logger.info('Chat request accepted', { botId, botName: bot.name, ip: req.ip });
+    if (config.isDevelopment) {
+      logger.info('Chat request accepted', sanitizedApiMeta(req, {
+        botId,
+        startedAt,
+        statusCode: 202,
+        outcome: 'accepted',
+      }));
+    }
 
     const quota = await consumeChatQuota(req, res, botId);
     if (!quota.allowed) {
-      logger.warn(`Daily chat quota exceeded for ${bot.name}`, { botId, ip: req.ip });
+      logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
+        botId,
+        startedAt,
+        statusCode: quota.status,
+        outcome: 'quota_limited',
+        reason: quota.body?.code || 'quota',
+      }));
       return res.status(quota.status).json(quota.body);
     }
 
@@ -79,7 +104,12 @@ async function handleChat(req, res, botId) {
       }
 
       if (!reply || reply.trim() === '') {
-        logger.warn(`⚠️ Пустой ответ от API для ${bot.name}`, { botId });
+        logger.warn('Chat/API fallback', sanitizedApiMeta(req, {
+          botId,
+          startedAt,
+          statusCode: 200,
+          outcome: 'empty_ai_reply',
+        }));
         reply = getFallbackResponse(botId, message);
       } else {
         reply = stripMarkdown(reply);
@@ -88,10 +118,23 @@ async function handleChat(req, res, botId) {
       reply = getFallbackResponse(botId, message);
     }
 
-    logger.info('Chat response generated', { botId, botName: bot.name });
+    if (config.isDevelopment) {
+      logger.info('Chat response generated', sanitizedApiMeta(req, {
+        botId,
+        startedAt,
+        statusCode: 200,
+        outcome: 'ok',
+      }));
+    }
     res.json({ reply });
   } catch (error) {
-    logger.error('Chat request failed', { botId, error: error.message, ip: req.ip });
+    logger.error('Chat/API error', sanitizedApiMeta(req, {
+      botId,
+      startedAt,
+      statusCode: 200,
+      outcome: 'emergency_reply',
+      error,
+    }));
 
     const bot = getBot(botId);
     const emergencyReply = bot?.emergencyReply || 'Извините, временные неполадки. Обращайтесь к @Stivanovv!';
@@ -104,18 +147,38 @@ router.post('/chat', (req, res) => handleChat(req, res, 'bro-cat'));
 
 // ────── SSE Streaming endpoint ──────
 router.post('/api/chat/:botId/stream', async (req, res) => {
+  const startedAt = Date.now();
   const { error, value } = messageSchema.validate(req.body);
   if (error) {
+    logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
+      botId: req.params.botId,
+      startedAt,
+      statusCode: 400,
+      outcome: 'stream_validation_error',
+      reason: error.details[0]?.type || 'validation',
+    }));
     return res.status(400).json({ error: error.details[0].message });
   }
   const bot = getBot(req.params.botId);
   if (!bot) {
+    logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
+      botId: req.params.botId,
+      startedAt,
+      statusCode: 404,
+      outcome: 'stream_bot_not_found',
+    }));
     return res.status(404).json({ error: 'Ассистент не найден' });
   }
 
   const quota = await consumeChatQuota(req, res, req.params.botId);
   if (!quota.allowed) {
-    logger.warn(`Daily chat quota exceeded for ${bot.name}`, { botId: req.params.botId, ip: req.ip });
+    logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
+      botId: req.params.botId,
+      startedAt,
+      statusCode: quota.status,
+      outcome: 'stream_quota_limited',
+      reason: quota.body?.code || 'quota',
+    }));
     return res.status(quota.status).json(quota.body);
   }
 
@@ -126,7 +189,14 @@ router.post('/api/chat/:botId/stream', async (req, res) => {
     'X-Accel-Buffering': 'no',
   });
 
-  logger.info('SSE chat stream started', { botId: req.params.botId, botName: bot.name });
+  if (config.isDevelopment) {
+    logger.info('SSE chat stream started', sanitizedApiMeta(req, {
+      botId: req.params.botId,
+      startedAt,
+      statusCode: 200,
+      outcome: 'stream_started',
+    }));
+  }
   await streamAgentChat(res, bot.prompt, value.message);
 });
 
@@ -139,7 +209,9 @@ router.post('/api/valyusha/chat', (req, res) => handleChat(req, res, 'valyusha')
 
 // ────── Status endpoints ──────
 router.get('/api/valyusha/test', (req, res) => {
-  logger.info('💜 Тестовый endpoint НейроВалюши вызван');
+  if (config.isDevelopment) {
+    logger.info('Valyusha test endpoint called', { requestId: req.requestId });
+  }
   res.json({ status: 'ok', message: 'НейроВалюша endpoint работает!' });
 });
 
@@ -207,15 +279,27 @@ const webhookSchema = Joi.object({
 });
 
 router.post('/api/webhook/:botId', async (req, res) => {
+  const startedAt = Date.now();
   try {
     if (!isWebhookAuthorized(req)) {
-      logger.warn('Webhook forbidden', { botId: req.params.botId, ip: req.ip });
+      logger.warn('Webhook forbidden', sanitizedApiMeta(req, {
+        botId: req.params.botId,
+        startedAt,
+        statusCode: 403,
+        outcome: 'webhook_forbidden',
+      }));
       return res.status(403).json({ error: 'Webhook forbidden' });
     }
 
     const { error, value } = webhookSchema.validate(req.body);
     if (error) {
-      logger.warn(`Webhook validation error: ${error.details[0].message}`, { botId: req.params.botId, ip: req.ip });
+      logger.warn('Webhook validation error', sanitizedApiMeta(req, {
+        botId: req.params.botId,
+        startedAt,
+        statusCode: 400,
+        outcome: 'webhook_validation_error',
+        reason: error.details[0]?.type || 'validation',
+      }));
       return res.status(400).json({
         error: 'Неверный формат webhook данных',
         details: error.details[0].message,
@@ -223,7 +307,15 @@ router.post('/api/webhook/:botId', async (req, res) => {
     }
 
     const { botId } = req.params;
-    logger.info(`🔗 Webhook от ${botId}:`, { type: value.type, ip: req.ip });
+    if (config.isDevelopment) {
+      logger.info('Webhook received', sanitizedApiMeta(req, {
+        botId,
+        startedAt,
+        statusCode: 200,
+        outcome: 'webhook_received',
+        reason: value.type,
+      }));
+    }
 
     res.json({
       status: 'received',
@@ -232,7 +324,13 @@ router.post('/api/webhook/:botId', async (req, res) => {
       processed: true,
     });
   } catch (error) {
-    logger.error('Webhook error', { error: error.message, ip: req.ip });
+    logger.error('Webhook error', sanitizedApiMeta(req, {
+      botId: req.params.botId,
+      startedAt,
+      statusCode: 500,
+      outcome: 'webhook_error',
+      error,
+    }));
     res.status(500).json({ error: 'Webhook error' });
   }
 });

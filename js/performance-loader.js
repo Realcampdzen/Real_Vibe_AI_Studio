@@ -123,7 +123,7 @@
 
     // Mobile helpers
     if (isMobile) {
-    schedule(() => loadScript('js/mobile-enhancements.js?v=20260510-bots-cache-fix'), 220);
+    schedule(() => loadScript('js/mobile-enhancements.js?v=20260512-observeux'), 220);
     schedule(() => loadScript('js/pull-to-refresh.js?v=20260506-mobile-hero-nav'), 260);
       schedule(() => loadScript('js/haptic-feedback.js'), 300);
     }
@@ -132,7 +132,7 @@
     schedule(() => {
       const chatReady = window.RealVibeChat
         ? Promise.resolve()
-        : loadScript('js/chat.js?v=20260511-security');
+        : loadScript('js/chat.js?v=20260512-observeux');
 
       chatReady
         .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260511-stylecsp'))

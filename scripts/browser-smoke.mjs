@@ -120,6 +120,22 @@ try {
   });
   await page.locator('.glass-ui-widget.is-visible .glass-chat-close').click({ timeout: 10_000 });
   await page.locator('.glass-ui-widget.is-visible').waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
+
+  const widgetOpenClose = [];
+  for (const selector of ['.glass-ui-hipych-button', '.glass-ui-bro-cat-button', '.glass-ui-valyusha-button']) {
+    const button = page.locator(selector).first();
+    await button.waitFor({ state: 'visible', timeout: 10_000 });
+    await button.click();
+    const visibleWidget = page.locator('.glass-ui-widget.is-visible').first();
+    await visibleWidget.waitFor({ state: 'visible', timeout: 10_000 });
+    widgetOpenClose.push({
+      selector,
+      visible: await visibleWidget.isVisible(),
+    });
+    await page.locator('.glass-ui-widget.is-visible .glass-chat-close').first().click({ timeout: 10_000 });
+    await page.locator('.glass-ui-widget.is-visible').waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
+  }
+
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(1500);
   await page.evaluate(() => window.scrollTo(0, 0));
@@ -140,6 +156,8 @@ try {
       errorHidden: document.querySelector('#service-error')?.hidden ?? null,
       heroChildren: document.querySelector('#service-hero-reel')?.children.length ?? 0,
       hasInlineScript: [...document.scripts].some((script) => !script.src && script.textContent.trim()),
+      ctaHrefs: [...document.querySelectorAll('.service-detail-cta-section a[href]')]
+        .map((link) => link.getAttribute('href') || ''),
     })));
   }
 
@@ -149,6 +167,8 @@ try {
     title: await page.title(),
     bodyTextLength: await page.evaluate(() => document.body.textContent.trim().length),
     hasInlineScript: await hasInlineScript(page),
+    ctaHrefs: await page.evaluate(() => [...document.querySelectorAll('.service-detail-cta-section a[href]')]
+      .map((link) => link.getAttribute('href') || '')),
   };
 
   const freshDetailPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
@@ -179,6 +199,7 @@ try {
     ctaLinks,
     hero,
     chatUi,
+    widgetOpenClose,
     heroAfterScroll,
     serviceCardNavigationUrl,
     detail,
@@ -198,6 +219,9 @@ try {
   if (!chatUi.visible || chatUi.messageCount < 3 || chatUi.inputDisabled || chatUi.buttonDisabled) {
     fail('browser smoke chat widget interaction failed', chatUi);
   }
+  if (widgetOpenClose.length !== 3 || widgetOpenClose.some((entry) => !entry.visible)) {
+    fail('browser smoke chat widgets did not open/close cleanly', widgetOpenClose);
+  }
   if (!heroAfterScroll || heroAfterScroll.paused) {
     fail('browser smoke hero did not resume after scroll back', heroAfterScroll);
   }
@@ -205,11 +229,18 @@ try {
     fail('browser smoke service card navigation failed', serviceCardNavigationUrl);
   }
   for (const entry of detail) {
-    if (!entry.errorHidden || entry.heroChildren < 1 || entry.hasInlineScript) {
+    const requiredCtas = ['https://t.me/Stivanovv', 'tel:+79319671483', 'mailto:polstan1986@gmail.com'];
+    const hasRequiredCtas = requiredCtas.every((href) => entry.ctaHrefs.includes(href));
+    if (!entry.errorHidden || entry.heroChildren < 1 || entry.hasInlineScript || !hasRequiredCtas) {
       fail('browser smoke service detail failed', entry);
     }
   }
-  if (aiPhoto.hasInlineScript || aiPhoto.bodyTextLength < 100) {
+  if (
+    aiPhoto.hasInlineScript ||
+    aiPhoto.bodyTextLength < 100 ||
+    !['https://t.me/Stivanovv', 'tel:+79319671483', 'mailto:polstan1986@gmail.com']
+      .every((href) => aiPhoto.ctaHrefs.includes(href))
+  ) {
     fail('browser smoke AI photo detail failed', aiPhoto);
   }
   if (

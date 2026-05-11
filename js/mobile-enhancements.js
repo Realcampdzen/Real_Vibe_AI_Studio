@@ -193,14 +193,12 @@ class MobileNavigation {
     
     touchElements.forEach(element => {
       element.addEventListener('touchstart', () => {
-        element.style.transform = 'scale(0.95)';
-        element.style.opacity = '0.8';
+        element.classList.add('mobile-touch-active');
       }, { passive: true });
       
       element.addEventListener('touchend', () => {
         setTimeout(() => {
-          element.style.transform = '';
-          element.style.opacity = '';
+          element.classList.remove('mobile-touch-active');
         }, 150);
       }, { passive: true });
     });
@@ -329,16 +327,7 @@ class MobileChatOptimizer {
     
     chats.forEach(chat => {
       if (chat.classList.contains('active') || !chat.classList.contains('hidden')) {
-        chat.style.cssText = `
-          width: 100vw !important;
-          height: 100vh !important;
-          max-height: none !important;
-          border-radius: 0 !important;
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          z-index: 9999 !important;
-        `;
+        chat.classList.add('mobile-chat-fullscreen');
         
         // Скрываем адресную строку
         this.hideAddressBar();
@@ -361,7 +350,7 @@ class MobileChatOptimizer {
     `);
     
     chatMessages.forEach(container => {
-      container.style.webkitOverflowScrolling = 'touch';
+      container.classList.add('mobile-smooth-scroll');
       
       // Автоматический скролл к последнему сообщению
       const observer = new MutationObserver(() => {
@@ -410,11 +399,11 @@ class MobilePerformanceOptimizer {
     if (isLowEnd) {
       const particleCanvas = document.getElementById('particle-canvas');
       if (particleCanvas) {
-        particleCanvas.style.display = 'none';
+        particleCanvas.classList.add('is-hidden-mobile-optimized');
       }
       
       // Упрощаем CSS анимации
-      document.documentElement.style.setProperty('--animation-speed', '0.1s');
+      document.body.classList.add('low-end-device');
     }
   }
   
@@ -519,25 +508,6 @@ class MobileAccessibility {
     skipLink.href = '#main-content';
     skipLink.className = 'skip-link';
     skipLink.textContent = 'Перейти к основному содержанию';
-    skipLink.style.cssText = `
-      position: absolute;
-      top: -40px;
-      left: 6px;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      padding: 8px;
-      text-decoration: none;
-      border-radius: 4px;
-      z-index: 10000;
-    `;
-    
-    skipLink.addEventListener('focus', () => {
-      skipLink.style.top = '6px';
-    });
-    
-    skipLink.addEventListener('blur', () => {
-      skipLink.style.top = '-40px';
-    });
     
     document.body.insertBefore(skipLink, document.body.firstChild);
   }
@@ -998,31 +968,11 @@ class BatteryOptimizer {
   enablePowerSaveMode() {
     document.body.classList.add('power-save-mode');
     
-    // Отключаем анимации
-    const style = document.createElement('style');
-    style.id = 'power-save-styles';
-    style.textContent = `
-      .power-save-mode * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-      .power-save-mode .bg-animation {
-        display: none !important;
-      }
-    `;
-    document.head.appendChild(style);
-    
     console.log('🔋 Энергосберегающий режим включен');
   }
 
   disablePowerSaveMode() {
     document.body.classList.remove('power-save-mode');
-    
-    const powerSaveStyles = document.getElementById('power-save-styles');
-    if (powerSaveStyles) {
-      powerSaveStyles.remove();
-    }
     
     console.log('🔋 Энергосберегающий режим отключен');
   }
@@ -1064,7 +1014,7 @@ class NetworkOptimizer {
     const heavyElements = document.querySelectorAll('.bg-animation, video, .particle-canvas');
     heavyElements.forEach(el => {
       if (el.id === 'hero-reel-video') return; // Герой оставляем
-      el.style.display = 'none';
+      el.classList.add('data-save-paused');
     });
     
     console.log('📶 Режим экономии трафика включен');
@@ -1076,7 +1026,7 @@ class NetworkOptimizer {
     // Включаем обратно тяжелые элементы
     const heavyElements = document.querySelectorAll('.bg-animation, video, .particle-canvas');
     heavyElements.forEach(el => {
-      el.style.display = '';
+      el.classList.remove('data-save-paused');
     });
     
     console.log('📶 Режим экономии трафика отключен');
@@ -1151,8 +1101,7 @@ function optimizeImages() {
     
     // Вместо этого просто оптимизируем качество для мобильных
     if (isMobile() && img.src.includes('avatar')) {
-      img.style.imageRendering = 'auto';
-      img.style.transform = 'translateZ(0)'; // GPU acceleration
+      img.classList.add('mobile-avatar-optimized');
     }
   });
 }

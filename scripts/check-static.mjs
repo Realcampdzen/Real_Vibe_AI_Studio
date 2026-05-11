@@ -12,6 +12,7 @@ const criticalDomFiles = [
   'js/glass-ui-hipych.js',
   'js/glass-ui-valyusha.js',
   'js/mobile-enhancements.js',
+  'js/page-common.js',
   'js/performance-loader.js',
   'js/pull-to-refresh.js',
   'js/script.js',
@@ -22,9 +23,14 @@ const criticalDomFiles = [
   'chat-components/GlassUIWidget.js',
 ];
 const strictStyleRuntimeFiles = [
+  'js/chat.js',
   'js/glass-ui-bro-cat.js',
   'js/glass-ui-hipych.js',
   'js/glass-ui-valyusha.js',
+  'js/mobile-enhancements.js',
+  'js/page-common.js',
+  'js/performance-loader.js',
+  'js/script.js',
   'chat-components/GlassUIWidget.js',
 ];
 const mediaBudgetBytes = 80 * 1024 * 1024;
@@ -105,6 +111,20 @@ function checkCspPolicy() {
 
   if (!/styleSrcAttr\s*:\s*\[[^\]]*['"]none['"]/s.test(text)) {
     fail("server/middleware/security.js: enforced CSP must include styleSrcAttr 'none'");
+  }
+
+  const unsafeStylePatterns = [
+    /allowedStyleSources\s*=\s*\[[^\]]*['"]unsafe-inline['"]/s,
+    /styleSrc\s*:\s*\[[^\]]*['"]unsafe-inline['"]/s,
+    /styleSrcElem\s*:\s*\[[^\]]*['"]unsafe-inline['"]/s,
+    /['"]style-src['"]\s*:\s*\[[^\]]*['"]unsafe-inline['"]/s,
+    /['"]style-src-elem['"]\s*:\s*\[[^\]]*['"]unsafe-inline['"]/s,
+  ];
+
+  for (const pattern of unsafeStylePatterns) {
+    if (pattern.test(text)) {
+      fail('server/middleware/security.js: enforced/report-only style CSP must not allow unsafe-inline');
+    }
   }
 }
 

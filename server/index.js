@@ -13,7 +13,7 @@ import config from './config/env.js';
 import { createCspReportOnlyMiddleware, createHelmetMiddleware } from './middleware/security.js';
 import { createRateLimiters } from './middleware/rate-limit.js';
 import { createCooldownMiddleware } from './middleware/cooldown.js';
-import { logger, createRequestLogger, createErrorLogger, safePath } from './middleware/logging.js';
+import { logger, attachRequestId, createRequestLogger, createErrorLogger, safePath } from './middleware/logging.js';
 import { appVersion } from './config/version.js';
 
 // Routes
@@ -30,6 +30,7 @@ app.set('trust proxy', config.trustProxy);
 // ────── Security ──────
 app.use(createHelmetMiddleware());
 app.use(createCspReportOnlyMiddleware());
+app.use(attachRequestId());
 
 // ────── CORS ──────
 app.use(cors({
@@ -150,11 +151,12 @@ app.use((err, req, res, next) => {
   if (status >= 500 || config.isDevelopment) {
     const log = status >= 500 ? logger.error.bind(logger) : logger.warn.bind(logger);
     log('Request error handled', {
-      error: err.message,
+      error: config.isDevelopment ? err.message : err.name || 'Error',
       stack: config.isDevelopment ? err.stack : undefined,
       path: safePath(req.originalUrl || req.url),
       method: req.method,
       ip: req.ip,
+      requestId: req.requestId,
       statusCode: status,
     });
   }
