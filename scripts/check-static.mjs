@@ -7,7 +7,18 @@ const criticalDomFiles = [
   'index.html',
   'service-detail.html',
   'ai-photo-detail.html',
+  'js/chat.js',
+  'js/glass-ui-bro-cat.js',
+  'js/glass-ui-hipych.js',
+  'js/glass-ui-valyusha.js',
+  'js/mobile-enhancements.js',
+  'js/performance-loader.js',
+  'js/pull-to-refresh.js',
+  'js/script.js',
   'js/service-detail-page.js',
+  'js/services-carousel.js',
+  'js/skeleton-loader.js',
+  'js/video-optimizer.js',
   'chat-components/GlassUIWidget.js',
 ];
 const mediaBudgetBytes = 80 * 1024 * 1024;
@@ -43,9 +54,32 @@ function checkHtmlEntrypoints() {
 function checkCriticalDomSinks() {
   for (const file of criticalDomFiles) {
     const text = readText(file);
-    if (/\b(?:innerHTML|outerHTML|insertAdjacentHTML|document\.write)\b/.test(text)) {
+    if (/\b(?:innerHTML|outerHTML|insertAdjacentHTML|document\.write|document\.writeln|eval|Function)\b/.test(text)) {
       fail(`${file}: dangerous HTML sink found`);
     }
+    if (/setAttribute\(\s*['"]on[a-z]+['"]/i.test(text)) {
+      fail(`${file}: dynamic event handler attribute found`);
+    }
+  }
+}
+
+function checkCspPolicy() {
+  const text = readText('server/middleware/security.js');
+  const unsafeScriptPatterns = [
+    /scriptSrc\s*:\s*\[[^\]]*['"]unsafe-inline['"]/s,
+    /['"]script-src['"]\s*:\s*\[[^\]]*['"]unsafe-inline['"]/s,
+    /scriptSrc\s*:\s*\[[^\]]*['"]unsafe-eval['"]/s,
+    /['"]script-src['"]\s*:\s*\[[^\]]*['"]unsafe-eval['"]/s,
+  ];
+
+  for (const pattern of unsafeScriptPatterns) {
+    if (pattern.test(text)) {
+      fail('server/middleware/security.js: script CSP must not allow unsafe-inline or unsafe-eval');
+    }
+  }
+
+  if (!/['"]style-src-attr['"]\s*:\s*\[[^\]]*['"]none['"]/s.test(text)) {
+    fail("server/middleware/security.js: report-only CSP must include style-src-attr 'none'");
   }
 }
 
@@ -87,6 +121,7 @@ function checkMediaBudget() {
 
 checkHtmlEntrypoints();
 checkCriticalDomSinks();
+checkCspPolicy();
 checkMediaBudget();
 
 if (process.exitCode) {

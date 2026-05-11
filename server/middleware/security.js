@@ -7,6 +7,7 @@ import config from '../config/env.js';
 const cspReportOnlyDirectives = {
   'default-src': ["'self'"],
   'script-src': ["'self'"],
+  'script-src-attr': ["'none'"],
   'object-src': ["'none'"],
   'base-uri': ["'self'"],
   'frame-ancestors': ["'self'"],
@@ -25,6 +26,7 @@ const cspReportOnlyDirectives = {
     'https://fonts.googleapis.com',
     'https://cdnjs.cloudflare.com',
   ],
+  'style-src-attr': ["'none'"],
   'font-src': [
     "'self'",
     'https://fonts.gstatic.com',

@@ -8,8 +8,11 @@
     "dev": "node server/index.js",
     "dev:simple": "npx http-server . -p 3001 -c-1 --cors",
     "check": "node scripts/check-js.mjs && node scripts/check-static.mjs",
+    "check:security": "node scripts/check-static.mjs",
     "audit:prod": "npm audit --omit=dev --json",
     "smoke:api": "node scripts/api-smoke.mjs",
+    "smoke:browser": "node scripts/browser-smoke.mjs",
+    "smoke:prod": "node scripts/prod-smoke.mjs",
     "test": "npm run check"
   },
   "repository": {
@@ -36,5 +39,8 @@
     "openai": "^6.36.0",
     "socks-proxy-agent": "^8.0.5",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
   }
 }
