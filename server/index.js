@@ -115,8 +115,12 @@ app.use(express.static(path.join(__dirname, '..'), {
         'Expires': '0',
       });
     }
-    if (filePath.match(/\.(mp4|webm|ogg)$/)) {
+    if (filePath.endsWith('.mp4')) {
       res.set('Content-Type', 'video/mp4');
+    } else if (filePath.endsWith('.webm')) {
+      res.set('Content-Type', 'video/webm');
+    } else if (filePath.endsWith('.ogg')) {
+      res.set('Content-Type', 'video/ogg');
     }
   },
   index: false,
