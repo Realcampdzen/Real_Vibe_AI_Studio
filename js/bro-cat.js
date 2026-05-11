@@ -11,7 +11,7 @@ class BroCatWidget {
     this.isOpen = false;
     this.isTyping = false;
     this.sessionId = this.generateSessionId();
-    this.apiBaseUrl = 'http://localhost:3001'; // Проксирование через AI Studio API
+    this.apiBaseUrl = (window.__AI_API_BASE__ || '').replace(/\/$/, ''); // Empty means same-origin
     // #region agent log
     fetch('http://127.0.0.1:7242/ingest/123b5067-f4c4-44e8-8d77-9891ae5437b6',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'bro-cat.js:12',message:'BroCatWidget constructor before init',data:{sessionId:this.sessionId,apiBaseUrl:this.apiBaseUrl},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
     // #endregion

@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.13-20250121-valyusha-proxy';
+const CACHE_VERSION = 'v1.16-20260511-video-performance';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -24,12 +24,12 @@ const STATIC_ASSETS = [
   withBase('/js/script.js'),
   withBase('/js/chat.js'),
   withBase('/js/services-carousel.js'),
-  withBase('/js/performance-loader.js'),
-  withBase('/js/mobile-enhancements.js'),
-  withBase('/js/glass-ui-hipych.js'),
-  withBase('/js/glass-ui-bro-cat.js'),
-  withBase('/js/glass-ui-valyusha.js'),
-  withBase('/chat-components/GlassUIWidget.js'),
+  withBase('/js/performance-loader.js?v=20260510-bots-cache-fix'),
+  withBase('/js/mobile-enhancements.js?v=20260510-bots-cache-fix'),
+  withBase('/js/glass-ui-hipych.js?v=20260510-bots-v1'),
+  withBase('/js/glass-ui-bro-cat.js?v=20260510-bots-v1'),
+  withBase('/js/glass-ui-valyusha.js?v=20260510-bots-v1'),
+  withBase('/chat-components/GlassUIWidget.js?v=20260510-bots-v1'),
   withBase('/images/hipych-avatar.jpg'),
   withBase('/images/bro-avatar.jpg'),
   withBase('/images/neon-room.png')
@@ -126,6 +126,12 @@ self.addEventListener('fetch', (event) => {
           );
         })
     );
+    return;
+  }
+
+  // Large media must stream directly from the network/CDN. Caching full video
+  // responses in Cache Storage causes quota pressure and playback stalls.
+  if (isMediaRequest(request, url)) {
     return;
   }
 
@@ -349,6 +355,13 @@ function isStaticAsset(url) {
   return staticExtensions.some(ext => url.includes(ext));
 }
 
+function isMediaRequest(request, url) {
+  if (request.destination === 'video' || request.destination === 'audio') {
+    return true;
+  }
+  return /\.(mp4|webm|ogg|mp3|wav|m4a)(\?.*)?$/i.test(url.pathname + url.search);
+}
+
 async function getCacheSize() {
   const cacheNames = await caches.keys();
   let totalSize = 0;
@@ -421,4 +434,4 @@ async function clearStoredMessages() {
   // Очищаем сохраненные сообщения
 }
 
-console.log('🎯 Service Worker загружен и готов к работе'); 
+console.log('🎯 Service Worker загружен и готов к работе');

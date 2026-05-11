@@ -116,21 +116,19 @@
 
     // Mobile helpers
     if (isMobile) {
-      schedule(() => loadScript('js/mobile-enhancements.js'), 220);
-      schedule(() => loadScript('js/pull-to-refresh.js'), 260);
+    schedule(() => loadScript('js/mobile-enhancements.js?v=20260510-bots-cache-fix'), 220);
+    schedule(() => loadScript('js/pull-to-refresh.js?v=20260506-mobile-hero-nav'), 260);
       schedule(() => loadScript('js/haptic-feedback.js'), 300);
-    } else {
-      schedule(() => loadScript('js/haptic-feedback.js'), 240);
     }
 
     // Glass UI widgets
     schedule(() => {
-      loadScript('chat-components/GlassUIWidget.js')
+      loadScript('chat-components/GlassUIWidget.js?v=20260510-bots-v1')
         .then(() =>
           Promise.all([
-            loadScript('js/glass-ui-hipych.js?v=20251127-emoji4'),
-            loadScript('js/glass-ui-bro-cat.js?v=20251127-emoji4'),
-            loadScript('js/glass-ui-valyusha.js?v=20250121-valyusha-proxy'),
+            loadScript('js/glass-ui-hipych.js?v=20260510-bots-v1'),
+            loadScript('js/glass-ui-bro-cat.js?v=20260510-bots-v1'),
+            loadScript('js/glass-ui-valyusha.js?v=20260510-bots-v1'),
           ])
         )
         .catch((err) => {

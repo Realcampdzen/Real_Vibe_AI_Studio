@@ -46,7 +46,22 @@ class PullToRefresh {
     let touchCurrentY = 0;
     let isAtTop = false;
 
+    const isBlockedByOverlay = (target) => {
+      return Boolean(
+        document.body.classList.contains('mobile-nav-open') ||
+        document.documentElement.classList.contains('mobile-nav-open') ||
+        document.getElementById('mobile-nav')?.classList.contains('active') ||
+        target?.closest?.('.mobile-nav, .chat-overlay, .hipych-widget, .bro-cat-widget')
+      );
+    };
+
     document.addEventListener('touchstart', (e) => {
+      if (isBlockedByOverlay(e.target)) {
+        isAtTop = false;
+        this.isPulling = false;
+        return;
+      }
+
       // Проверяем, что мы в самом верху страницы
       isAtTop = window.scrollY === 0;
       
@@ -57,6 +72,12 @@ class PullToRefresh {
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
+      if (isBlockedByOverlay(e.target)) {
+        if (this.isPulling) this.resetIndicator();
+        this.isPulling = false;
+        return;
+      }
+
       if (!isAtTop || this.isRefreshing) return;
       
       touchCurrentY = e.touches[0].clientY;
@@ -73,6 +94,14 @@ class PullToRefresh {
 
     document.addEventListener('touchend', () => {
       if (!this.isPulling) return;
+
+      if (isBlockedByOverlay(document.activeElement)) {
+        this.resetIndicator();
+        this.isPulling = false;
+        this.startY = 0;
+        this.currentY = 0;
+        return;
+      }
       
       if (this.currentY > this.threshold) {
         this.triggerRefresh();

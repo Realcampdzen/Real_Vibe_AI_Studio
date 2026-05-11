@@ -64,6 +64,8 @@ class TouchGestureHandler {
   }
   
   detectSwipe() {
+    if (document.getElementById('mobile-nav')?.classList.contains('active')) return;
+
     const deltaX = this.endX - this.startX;
     const deltaY = this.endY - this.startY;
     const absDeltaX = Math.abs(deltaX);
@@ -95,7 +97,10 @@ class TouchGestureHandler {
     
     if (mobileNav && mobileNav.classList.contains('active')) {
       mobileNav.classList.remove('active');
+      mobileNav.setAttribute('aria-hidden', 'true');
       mobileMenuBtn.classList.remove('active');
+      document.documentElement.classList.remove('mobile-nav-open');
+      document.body.classList.remove('mobile-nav-open', 'no-scroll');
     }
     
     // Переключение слайдов в testimonials
@@ -110,7 +115,10 @@ class TouchGestureHandler {
       
       if (mobileNav && !mobileNav.classList.contains('active')) {
         mobileNav.classList.add('active');
+        mobileNav.setAttribute('aria-hidden', 'false');
         mobileMenuBtn.classList.add('active');
+        document.documentElement.classList.add('mobile-nav-open');
+        document.body.classList.add('mobile-nav-open', 'no-scroll');
       }
     }
     
@@ -655,7 +663,7 @@ class ServiceWorkerManager {
     if ('serviceWorker' in navigator) {
       try {
         // Важно: относительный путь, чтобы работало и в подкаталоге (GitHub Pages / stage)
-        const registration = await navigator.serviceWorker.register('sw.js');
+        const registration = await navigator.serviceWorker.register('sw.js?v=20260510-bots-cache-fix');
         console.log('✅ Service Worker зарегистрирован:', registration);
         // Пытаемся проверить обновления на каждом заходе
         try {
@@ -911,14 +919,21 @@ class AdvancedTouchGestures {
     
     if (mobileNav) mobileNav.classList.remove('active');
     if (menuBtn) menuBtn.classList.remove('active');
+    document.documentElement.classList.remove('mobile-nav-open');
+    document.body.classList.remove('mobile-nav-open', 'no-scroll');
   }
 
   openMobileMenu() {
     const mobileNav = document.getElementById('mobile-nav');
     const menuBtn = document.getElementById('mobile-menu-btn');
     
-    if (mobileNav) mobileNav.classList.add('active');
+    if (mobileNav) {
+      mobileNav.classList.add('active');
+      mobileNav.setAttribute('aria-hidden', 'false');
+    }
     if (menuBtn) menuBtn.classList.add('active');
+    document.documentElement.classList.add('mobile-nav-open');
+    document.body.classList.add('mobile-nav-open', 'no-scroll');
   }
 
   closeChat() {

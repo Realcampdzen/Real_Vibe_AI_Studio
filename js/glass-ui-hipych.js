@@ -149,6 +149,8 @@ class GlassUIHipych {
             botName: this.name,
             botAvatar: this.avatar,
             theme: this.theme,
+            welcomeMessage: "Го! Я Хипыч, геймерский AI-персонаж для стримеров и сообществ. Могу рассказать, как оживлять Telegram и контент. 🎮",
+            placeholder: "Спроси Хипыча про стримы и AI-ботов...",
             position: { bottom: '100px', right: '20px' },
             onSendMessage: (message) => this.handleMessage(message),
             onClose: () => this.hideChat(),
@@ -233,21 +235,17 @@ class GlassUIHipych {
 
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: window.RealVibeChat?.getHeaders?.() || { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: message,
                     userId: 'user-' + Date.now()
                 })
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.reply || data.response || this.getFallbackResponse(message);
+            const reply = window.RealVibeChat?.parseResponse
+                ? await window.RealVibeChat.parseResponse(response)
+                : (await response.json()).reply;
+            return reply || this.getFallbackResponse(message);
         } catch (error) {
             console.error('🎮 Ошибка при запросе к Хипычу:', error);
             // Fallback на статичные ответы

@@ -1,5 +1,48 @@
 const API_BASE = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
-const OPENAI_API_URL = API_BASE ? `${API_BASE}/chat` : 'http://localhost:3001/chat';
+const OPENAI_API_URL = API_BASE ? `${API_BASE}/chat` : '/chat';
+const OWNER_TOKEN_STORAGE_KEY = 'rv_owner_token';
+
+function syncOwnerTokenFromUrl() {
+  const url = new URL(window.location.href);
+  const ownerToken = url.searchParams.get(OWNER_TOKEN_STORAGE_KEY);
+  if (!ownerToken) return;
+
+  window.localStorage.setItem(OWNER_TOKEN_STORAGE_KEY, ownerToken);
+  url.searchParams.delete(OWNER_TOKEN_STORAGE_KEY);
+  window.history.replaceState({}, document.title, `${url.pathname}${url.search}${url.hash}`);
+}
+
+function getChatHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  const ownerToken = window.localStorage.getItem(OWNER_TOKEN_STORAGE_KEY);
+
+  if (ownerToken) {
+    headers['X-RV-Owner-Token'] = ownerToken;
+  }
+
+  return headers;
+}
+
+async function parseChatResponse(response) {
+  const data = await response.json().catch(() => ({}));
+
+  if (response.status === 429 && data.code === 'chat_daily_limit') {
+    return data.error || 'На сегодня лимит ответов этого бота исчерпан. Попробуй завтра.';
+  }
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Сервер недоступен');
+  }
+
+  return (data.reply || data.response || '').trim();
+}
+
+syncOwnerTokenFromUrl();
+
+window.RealVibeChat = {
+  getHeaders: getChatHeaders,
+  parseResponse: parseChatResponse,
+};
 
 // Проверяем, загружается ли аватар кота Бро
 function checkBroAvatarLoading() {
@@ -102,22 +145,15 @@ async function sendMessageToBro(message) {
   try {
     const response = await fetch(OPENAI_API_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getChatHeaders(),
       body: JSON.stringify({ message })
     });
 
-    if (!response.ok) {
-      throw new Error('Сервер недоступен');
-    }
-
-    const data = await response.json();
-    return data.reply.trim();
+    return await parseChatResponse(response);
   } catch (error) {
     // Если сервер недоступен, используем fallback
     console.log('Используем fallback ответ:', error.message);
-    return getFallbackResponse(message);
+    return getFallbackResponse(message).replace(/\*\*/g, '').replace(/\*/g, '');
   }
 }
 
@@ -131,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatMessages = document.getElementById('chat-messages');
   const chatInput = document.getElementById('chat-input');
   const chatSend = document.getElementById('chat-send');
-  const quickBtns = document.querySelectorAll('.quick-btn');
 
   // Open chat functions
   function openChat() {
@@ -177,17 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Quick questions functionality
-  quickBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const question = btn.getAttribute('data-question');
-      if (question && chatInput) {
-        chatInput.value = question;
-        sendMessage();
-      }
-    });
-  });
-
   // Send message function
   const sendMessage = async () => {
     const userMessage = chatInput.value.trim();
@@ -196,12 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add user message
     addMessage(userMessage, 'user');
     chatInput.value = '';
-
-    // Hide quick questions after first message
-    const quickQuestions = document.querySelector('.quick-questions');
-    if (quickQuestions) {
-      quickQuestions.style.display = 'none';
-    }
 
     // Add typing indicator
     const typingDiv = addTypingIndicator();

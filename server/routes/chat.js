@@ -10,6 +10,7 @@ import { stripMarkdown } from '../services/text-cleaner.js';
 import { getBot, getAllBotIds, getBotName, getFallbackResponse } from '../bots/registry.js';
 import { agentChat } from '../agents/agent-chat.js';
 import { streamAgentChat } from '../agents/stream-chat.js';
+import { consumeChatQuota } from '../services/chat-quota.js';
 
 const router = express.Router();
 
@@ -43,6 +44,12 @@ async function handleChat(req, res, botId) {
 
     const { message } = value;
     logger.info(`🤖 Запрос к ${bot.name}:`, { message: message.substring(0, 100), ip: req.ip });
+
+    const quota = await consumeChatQuota(req, res, botId);
+    if (!quota.allowed) {
+      logger.warn(`Daily chat quota exceeded for ${bot.name}`, { botId, ip: req.ip });
+      return res.status(quota.status).json(quota.body);
+    }
 
     let reply;
 
@@ -88,6 +95,12 @@ router.post('/api/chat/:botId/stream', async (req, res) => {
   const bot = getBot(req.params.botId);
   if (!bot) {
     return res.status(404).json({ error: 'Ассистент не найден' });
+  }
+
+  const quota = await consumeChatQuota(req, res, req.params.botId);
+  if (!quota.allowed) {
+    logger.warn(`Daily chat quota exceeded for ${bot.name}`, { botId: req.params.botId, ip: req.ip });
+    return res.status(quota.status).json(quota.body);
   }
 
   res.writeHead(200, {

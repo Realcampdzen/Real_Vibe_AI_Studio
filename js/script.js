@@ -3,9 +3,9 @@
 // Build marker (helps debug cache/service worker issues)
 window.__AI_STUDIO_BUILD = '20251216-reveal-force';
 
-// Cloudflare Pages API base (NIC.RU is static, so API lives on Pages)
-// Override in console if needed: window.__AI_API_BASE__ = 'http://localhost:3001'
-window.__AI_API_BASE__ = window.__AI_API_BASE__ || 'https://real-vibe-ai-studio.pages.dev';
+// API base. Empty value means same-origin, which is the production VPS default.
+// Override before this script if needed: window.__AI_API_BASE__ = 'http://localhost:3000'
+window.__AI_API_BASE__ = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
 
 const CONTACTS = {
     phone: { href: 'tel:+79319671483', display: '+7 931 967 14 83' },
@@ -186,6 +186,8 @@ function initMobileMenu() {
     mobileNav.classList.add('active');
     mobileNav.setAttribute('aria-hidden', 'false');
     document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('mobile-nav-open');
+    document.body.classList.add('mobile-nav-open');
     // Hide bot widgets so they don't overlap the menu
     document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.style.setProperty('display', 'none', 'important'));
   };
@@ -195,6 +197,8 @@ function initMobileMenu() {
     mobileNav.classList.remove('active');
     mobileNav.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('mobile-nav-open');
+    document.body.classList.remove('mobile-nav-open');
     // Restore bot widgets
     document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.style.removeProperty('display'));
   };
@@ -659,6 +663,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function togglePlay() {
       if (video.paused) {
         video.muted = false;
+        if (window.videoOptimizer?.ensureLazyVideoSource) {
+          window.videoOptimizer.ensureLazyVideoSource(video);
+        } else if (video.dataset.src && video.dataset.sourceAttached !== '1') {
+          const source = document.createElement('source');
+          source.src = video.dataset.src;
+          source.type = video.dataset.type || 'video/mp4';
+          video.appendChild(source);
+          video.dataset.sourceAttached = '1';
+        }
+        video.preload = 'auto';
+        if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
+          video.load();
+        }
         video.play().catch(() => {});
       } else {
         video.pause();
@@ -675,9 +692,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initCookieBanner();
   
-  // Hero video sound toggle
-  initHeroSoundToggle();
-  
   // Hero enter animation
   initHeroEnterAnimation();
   
@@ -687,73 +701,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Scroll reveal animations (single system)
   initScrollRevealV2();
 });
-
-// Hero video sound toggle functionality
-function initHeroSoundToggle() {
-  const heroReel = document.getElementById('hero-reel-container');
-  const heroVideo = document.getElementById('hero-reel-video');
-  const heroContent = heroReel ? heroReel.querySelector('.hero-reel-content') : null;
-  const heroOverlay = heroReel ? heroReel.querySelector('.hero-reel-overlay') : null;
-  
-  if (!heroReel || !heroVideo) {
-    console.warn('Hero reel elements not found');
-    return;
-  }
-  
-
-  
-  function toggleSound(e) {
-    // Игнорируем клики по кнопкам - они должны работать как обычно
-    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-      return;
-    }
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Переключаем звук
-    const wasMuted = heroVideo.muted;
-    heroVideo.muted = !wasMuted;
-    
-    // Устанавливаем громкость и пытаемся воспроизвести при включении звука
-    if (!heroVideo.muted) {
-      heroVideo.volume = 1.0;
-      // Вызываем play() чтобы обойти политики автоплея браузера
-      const playPromise = heroVideo.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          console.log('🔊 Звук включен');
-        }).catch(err => {
-          console.error('❌ Не удалось воспроизвести видео со звуком:', err);
-          // Если не получилось, возвращаем muted
-          heroVideo.muted = true;
-        });
-      }
-    } else {
-      console.log('🔇 Звук выключен');
-    }
-  }
-  
-  // Обработчик клика на контейнер
-  heroReel.addEventListener('click', toggleSound);
-  
-  // Обработчик на само видео
-  heroVideo.addEventListener('click', toggleSound);
-
-  
-  // Обработчик на overlay
-  if (heroOverlay) {
-    heroOverlay.style.pointerEvents = 'auto';
-    heroOverlay.style.cursor = 'pointer';
-    heroOverlay.addEventListener('click', toggleSound);
-
-  }
-  
-  // Курсор-указатель на контейнере
-  heroReel.style.cursor = 'pointer';
-  
-
-}
 
 // Scroll reveal animations (covers new sections even if legacy observer missed them)
 let scrollRevealInitialized = false;

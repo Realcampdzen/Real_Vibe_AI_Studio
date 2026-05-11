@@ -15,8 +15,8 @@ const SERVICES_DATA = [
       "Поддержка и развитие после запуска"
     ],
     price: "от 30 000₽",
-    backgroundImage: "public/создание ботов.png",
-    avatarImage: "public/аватар для создание ботов.png",
+    backgroundImage: "public/works/баба курица.jpg",
+    avatarImage: "public/works/ии аватары.jpg",
     buttonText: "Заказать",
     buttonIcon: "fab fa-telegram",
     // Детальная информация для страницы услуги
@@ -97,8 +97,8 @@ const SERVICES_DATA = [
       "Внутренние ассистенты по базе знаний"
     ],
     price: "от 15 000₽",
-    backgroundImage: "public/Создание GPTs.png",
-    avatarImage: "public/аватар GPTs.png",
+    backgroundImage: "public/works/работа.jpg",
+    avatarImage: "public/works/ии аватары 2.jpg",
     buttonText: "Заказать",
     buttonIcon: "fab fa-telegram",
     // Детальная информация для страницы услуги
@@ -172,8 +172,8 @@ const SERVICES_DATA = [
       "Нейросети как инструмент для ускорения контента"
     ],
     price: "от 40 000₽",
-    backgroundImage: "public/СММ и контент.png",
-    avatarImage: "public/аватар СММ и контент.png",
+    backgroundImage: "public/работа.jpg",
+    avatarImage: "public/НейроВалюша_аватар.jpg",
     buttonText: "Заказать",
     buttonIcon: "fab fa-telegram",
     // Детальная информация для страницы услуги
@@ -250,7 +250,7 @@ const SERVICES_DATA = [
     ],
     price: "Уточняется",
     backgroundImage: "public/works/AI‑видео картинка.jpg",
-    avatarImage: "public/аватар создание видео.png",
+    avatarImage: "public/works/AI‑видео картинка.jpg",
     buttonText: "Обсудить проект",
     buttonIcon: "fab fa-telegram",
     // Детальная информация для страницы услуги
@@ -340,8 +340,8 @@ const SERVICES_DATA = [
       "Коммерческие права на использование"
     ],
     price: "Уточняется",
-    backgroundImage: "public/создание музыки.png",
-    avatarImage: "public/аватар создание музыки.png",
+    backgroundImage: "public/works/создание музыки.jpg",
+    avatarImage: "public/works/создание музыки.jpg",
     buttonText: "Обсудить проект",
     buttonIcon: "fab fa-telegram",
     // Детальная информация для страницы услуги
@@ -418,8 +418,8 @@ const SERVICES_DATA = [
       "Подготовка звука под нужные площадки"
     ],
     price: "Обсуждается",
-    backgroundImage: "public/создание звуков 2.png",
-    avatarImage: "public/аватар создание звуков и озвучки.png",
+    backgroundImage: "public/works/озвучка и саунддизайн 1.jpg",
+    avatarImage: "public/works/озвучка и саунддизайн  2.jpg",
     buttonText: "Узнать подробнее",
     buttonIcon: "fab fa-telegram",
     // Детальная информация для страницы услуги
@@ -480,8 +480,8 @@ const SERVICES_DATA = [
       "Подключение чат-ботов и нейрофункций по запросу"
     ],
     price: "Уточняется",
-    backgroundImage: "public/создание приложений с ии.png",
-    avatarImage: "public/аватар создание приложений с ии.png",
+    backgroundImage: "public/works/зеленый телефон.jpg",
+    avatarImage: "public/works/зеленый телефон.jpg",
     buttonText: "Обсудить проект",
     buttonIcon: "fab fa-telegram",
     // Детальная информация для страницы услуги
@@ -556,8 +556,8 @@ const SERVICES_DATA = [
       "Формы заявок, квизы, чат-боты и интеграции с CRM"
     ],
     price: "Уточняется",
-    backgroundImage: "public/создание сайтов 2.png",
-    avatarImage: "public/аватар для создание сайтов с ии.png",
+    backgroundImage: "public/works/создание сайтов.jpg",
+    avatarImage: "public/works/создание сайтов.jpg",
     buttonText: "Обсудить проект",
     buttonIcon: "fab fa-telegram",
     // Детальная информация для страницы услуги

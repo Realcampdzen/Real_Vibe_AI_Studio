@@ -5,6 +5,8 @@
 import config from '../config/env.js';
 import winston from 'winston';
 import OpenAI from 'openai';
+import fetch from 'node-fetch';
+import { SocksProxyAgent } from 'socks-proxy-agent';
 
 const logger = winston.createLogger({
   level: 'info',
@@ -14,9 +16,36 @@ const logger = winston.createLogger({
 
 let openai = null;
 
+function maskProxyUrl(rawUrl) {
+  try {
+    const url = new URL(rawUrl);
+    if (url.username) url.username = '***';
+    if (url.password) url.password = '***';
+    return url.toString();
+  } catch {
+    return 'configured';
+  }
+}
+
+function createOpenAIClientOptions() {
+  const options = { apiKey: config.openai.apiKey };
+
+  if (config.openai.baseURL) {
+    options.baseURL = config.openai.baseURL;
+  }
+
+  if (config.openai.proxyUrl) {
+    const proxyAgent = new SocksProxyAgent(config.openai.proxyUrl);
+    options.fetch = (url, init = {}) => fetch(url, { ...init, agent: proxyAgent });
+    logger.info('OpenAI proxy enabled', { proxy: maskProxyUrl(config.openai.proxyUrl) });
+  }
+
+  return options;
+}
+
 if (config.openai.isConfigured) {
   try {
-    openai = new OpenAI({ apiKey: config.openai.apiKey });
+    openai = new OpenAI(createOpenAIClientOptions());
     logger.info('✅ OpenAI API подключен');
   } catch (error) {
     logger.error('⚠️ OpenAI API недоступен', { error: error.message });

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Cache buster: 2026-05-05-qa-cleanup -->
+  <!-- Cache buster: 2026-05-06-mobile-hero-nav -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Реальный Vайб AI&nbsp;Studio | Персональные AI-решения для бизнеса</title>
+  <link rel="icon" type="image/svg+xml" href="public/logo-mark.svg">
   <meta name="description" content="AI&nbsp;Studio - создаем умные боты, автоматизируем процессы и внедряем нейросети для вашего бизнеса. Персональный подход и результат 24/7.">
   <meta name="keywords" content="AI, нейросети, боты, автоматизация, OpenAI, ChatGPT, Telegram боты">
 
@@ -18,8 +19,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20251221-navbar-black-snow-v2" as="style">
-  <link rel="preload" href="css/mobile-improvements.css" as="style" media="(max-width: 900px)">
+  <link rel="preload" href="css/style.css?v=20260511-performance" as="style">
+  <link rel="preload" href="css/mobile-improvements.css?v=20260506-mobile-hero-nav" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,13 +29,13 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20251221-navbar-black-snow-v2">
+  <link rel="stylesheet" href="css/style.css?v=20260511-performance">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css">
   
   <!-- Mobile optimizations -->
-  <link rel="stylesheet" href="css/mobile-improvements.css" media="(max-width: 900px)">
+  <link rel="stylesheet" href="css/mobile-improvements.css?v=20260506-mobile-hero-nav" media="(max-width: 900px)">
   
   <!-- Mobile advanced features -->
   <link rel="stylesheet" href="css/mobile-advanced.css" media="(max-width: 900px)">
@@ -182,30 +183,41 @@
     <!-- Hero Section -->
     <section class="hero">
     <div class="hero-reel" id="hero-reel-container">
-      <video
-        class="hero-reel-video"
-        id="hero-reel-video"
-        loop
-        muted
-        autoplay
-        playsinline
-        preload="auto"
-        poster="public/works/hero-poster.jpg"
-        data-autoplay-desktop="true"
-        data-desktop-src="public/works/опенинг новый.mp4"
-        data-mobile-src="public/works/опенинг новый.mp4"
-      >
-        <!-- Мобильная версия (будет добавлена video-optimizer.js, если файл существует) -->
-        <source src="public/works/опенинг новый.mp4" type="video/mp4">
-      </video>
+      <div class="hero-video-frame">
+        <video
+          class="hero-reel-video"
+          id="hero-reel-video"
+          data-managed-video
+          loop
+          muted
+          autoplay
+          playsinline
+          preload="metadata"
+          poster="public/works/hero-poster.jpg"
+          data-autoplay-desktop="true"
+          data-desktop-webm-src="public/works/hero-reel-desktop.webm"
+          data-desktop-src="public/works/hero-reel-desktop.mp4"
+          data-mobile-src="public/works/hero-reel-mobile.mp4"
+        >
+          <source src="public/works/hero-reel-mobile.mp4" type="video/mp4" media="(max-width: 900px)">
+          <source src="public/works/hero-reel-desktop.webm" type="video/webm">
+          <source src="public/works/hero-reel-desktop.mp4" type="video/mp4">
+        </video>
+        <p class="hero-video-tagline" aria-hidden="true">AI контент, шоурил 2026</p>
+      </div>
       <div class="hero-reel-overlay"></div>
       <div class="hero-reel-content hero-content">
         <p class="hero-tagline">AI контент, шоурил 2026</p>
         <h1 class="hero-title hero-title-reel">
-          РЕАЛЬНЫЙ VАЙБ<br>AI&nbsp;STUDIO
+          РЕАЛЬНЫЙ<br>VАЙБ<br>AI&nbsp;STUDIO
         </h1>
         <p class="hero-subtitle">
-          Рекламные AI-видео, музыка, боты и контент, которые работают на ваш бренд 24/7.
+          Мы — креативная студия AI&#8209;контента<br>
+          и&nbsp;веб&#8209;разработки.<br><br>
+          Создаём рекламные видео и&nbsp;трендовые рилсы.<br>
+          Пишем музыку, делаем озвучку и&nbsp;саунд&#8209;дизайн.<br>
+          Разрабатываем сайты, приложения, ботов и&nbsp;AI&#8209;агентов для бизнеса.<br>
+          Продюсируем творческие проекты.
         </p>
         <div class="hero-cta-row">
           <button class="btn-primary" onclick="event.stopPropagation(); scrollToSection('projects-showreel')">
@@ -214,51 +226,56 @@
           <button class="btn-secondary hero-secondary-btn" onclick="event.stopPropagation(); scrollToSection('services')">
             Услуги AI&nbsp;Studio
           </button>
-          <button class="btn-primary" type="button" data-contact-link="telegram" onclick="event.stopPropagation();">
+          <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" onclick="event.stopPropagation();">
             Оставить заявку
           </button>
         </div>
-        <div class="hero-controls" id="hero-controls" aria-label="Управление шоурилом">
-          <div class="hero-control-left">
-            <button class="hero-control-btn" type="button" id="hero-control-play" aria-label="Пауза/Пуск">
-              <i class="fas fa-pause"></i>
-            </button>
-            <button class="hero-control-btn" type="button" id="hero-control-restart" aria-label="Смотреть с начала">
-              <i class="fas fa-rotate-left"></i>
-            </button>
-            <button class="hero-control-btn" type="button" id="hero-control-volume" aria-label="Звук">
-              <i class="fas fa-volume-up"></i>
-            </button>
-          </div>
-          <div class="hero-progress">
-            <div class="hero-progress-track" id="hero-progress-track" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
-              <div class="hero-progress-fill" id="hero-progress-fill"></div>
-            </div>
-            <div class="hero-progress-time" id="hero-progress-time">00:00 / 00:00</div>
-          </div>
-          <div class="hero-control-right">
-            <button class="hero-control-btn" type="button" id="hero-control-quality" aria-label="Качество">
-              <i class="fas fa-cog"></i>
-            </button>
-            <button class="hero-control-btn hero-control-speed" type="button" id="hero-control-speed" aria-label="Скорость">
-              <span class="hero-btn-text" id="hero-speed-label">1x</span>
-            </button>
-            <button class="hero-control-btn" type="button" id="hero-control-fullscreen" aria-label="На весь экран">
-              <i class="fas fa-expand"></i>
-            </button>
-          </div>
+      </div>
+      <div class="hero-controls" id="hero-controls" aria-label="Управление шоурилом">
+        <div class="hero-control-left">
+          <button class="hero-control-btn" type="button" id="hero-control-play" aria-label="Пауза/Пуск">
+            <i class="fas fa-pause"></i>
+          </button>
+          <button class="hero-control-btn" type="button" id="hero-control-restart" aria-label="Смотреть с начала">
+            <i class="fas fa-rotate-left"></i>
+          </button>
+          <button class="hero-control-btn" type="button" id="hero-control-volume" aria-label="Звук">
+            <i class="fas fa-volume-up"></i>
+          </button>
         </div>
-        <div class="hero-menu" id="hero-speed-menu" aria-label="Выбор скорости">
-          <button class="hero-menu-item" data-speed="0.75">0.75x</button>
-          <button class="hero-menu-item" data-speed="1">1x</button>
-          <button class="hero-menu-item" data-speed="1.25">1.25x</button>
-          <button class="hero-menu-item" data-speed="1.5">1.5x</button>
+        <div class="hero-progress">
+          <div class="hero-progress-track" id="hero-progress-track" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+            <div class="hero-progress-fill" id="hero-progress-fill"></div>
+          </div>
+          <div class="hero-progress-time" id="hero-progress-time">00:00 / 00:00</div>
         </div>
-        <div class="hero-menu" id="hero-quality-menu" aria-label="Выбор качества">
-          <button class="hero-menu-item" data-quality="auto">Auto</button>
-          <button class="hero-menu-item" data-quality="hd">HD</button>
-          <button class="hero-menu-item" data-quality="sd">SD</button>
+        <div class="hero-control-right">
+          <button class="hero-control-btn" type="button" id="hero-control-quality" aria-label="Качество">
+            <i class="fas fa-cog"></i>
+          </button>
+          <button class="hero-control-btn hero-control-speed" type="button" id="hero-control-speed" aria-label="Скорость">
+            <span class="hero-btn-text" id="hero-speed-label">1x</span>
+          </button>
+          <button class="hero-control-btn" type="button" id="hero-control-fullscreen" aria-label="На весь экран">
+            <i class="fas fa-expand"></i>
+          </button>
         </div>
+      </div>
+      <div class="hero-mobile-cta">
+        <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" onclick="event.stopPropagation();">
+          Оставить заявку
+        </button>
+      </div>
+      <div class="hero-menu" id="hero-speed-menu" aria-label="Выбор скорости">
+        <button class="hero-menu-item" data-speed="0.75">0.75x</button>
+        <button class="hero-menu-item" data-speed="1">1x</button>
+        <button class="hero-menu-item" data-speed="1.25">1.25x</button>
+        <button class="hero-menu-item" data-speed="1.5">1.5x</button>
+      </div>
+      <div class="hero-menu" id="hero-quality-menu" aria-label="Выбор качества">
+        <button class="hero-menu-item" data-quality="auto">Auto</button>
+        <button class="hero-menu-item" data-quality="hd">HD</button>
+        <button class="hero-menu-item" data-quality="sd">SD</button>
       </div>
     </div>
   </section>
@@ -499,9 +516,14 @@
         <!-- Project 5: Промо-ролик (БОЛЬШОЙ, дубликат) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <video class="projects-reel-video" muted playsinline preload="metadata">
-              <source src="public/works/Hyperrealistic_cinematic_video_202511230411.mp4" type="video/mp4">
-            </video>
+            <video
+              class="projects-reel-video"
+              muted
+              playsinline
+              preload="none"
+              data-src="public/works/Hyperrealistic_cinematic_video_202511230411.mp4"
+              data-type="video/mp4"
+            ></video>
             <button class="projects-reel-play" type="button" aria-label="Смотреть видео">
               <i class="fas fa-play"></i>
             </button>
@@ -512,9 +534,14 @@
         <!-- Project 6: Креативный клип (малый, дубликат) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <video class="projects-reel-video" muted playsinline preload="metadata">
-              <source src="public/works/Oct_25__2209_16s_202510252255_leh5x.mp4" type="video/mp4">
-            </video>
+            <video
+              class="projects-reel-video"
+              muted
+              playsinline
+              preload="none"
+              data-src="public/works/Oct_25__2209_16s_202510252255_leh5x.mp4"
+              data-type="video/mp4"
+            ></video>
             <button class="projects-reel-play" type="button" aria-label="Смотреть видео">
               <i class="fas fa-play"></i>
             </button>
@@ -595,18 +622,11 @@
         <div class="chat-message assistant">
           <div class="message-avatar"></div>
           <div class="message-content">
-            Мяу! 🐾 *потягивается* Я Бро, рыжий кот этого сайта! Хочешь поболтать? *мурчит*
+            Мяу! 🐾 Я Бро, рыжий персона-бот этого сайта. Хочешь поболтать?
           </div>
         </div>
       </div>
       
-      <!-- Quick Questions -->
-      <div class="quick-questions">
-        <button class="quick-btn" data-question="Покажи как ты работаешь">🎪 Как работаешь?</button>
-        <button class="quick-btn" data-question="Сколько стоит такой бот?">💰 Сколько стоишь?</button>
-        <button class="quick-btn" data-question="Хочу заказать такого же бота">🚀 Хочу такого!</button>
-      </div>
-
       <div class="chat-input-container">
         <input id="chat-input" type="text" placeholder="Напиши что-нибудь коту... мяу!" />
         <button id="chat-send">
@@ -756,11 +776,11 @@
   <script src="js/hero-reveal.js?v=20251216-reveal-force"></script>
   <!-- Core scripts (defer для оптимизации загрузки) -->
   <script src="js/scroll-manager.js?v=20251216-reveal-force" defer></script>
-  <script src="js/video-optimizer.js?v=20251216-reveal-force" defer></script>
-  <script src="js/script.js?v=20251216-reveal-force" defer></script> 
-  <script src="js/chat.js?v=20251216-reveal-force" defer></script> 
+  <script src="js/video-optimizer.js?v=20260511-managed-video" defer></script>
+  <script src="js/script.js?v=20260506-mobile-hero-nav" defer></script>
+  <script src="js/chat.js?v=20260510-bots-v1" defer></script> 
   <script src="js/services-carousel.js?v=20251223-services-carousel-no-nav-v1" defer></script>
-  <script src="js/performance-loader.js?v=20251228-valyusha-api-fail-closed" defer></script>
+  <script src="js/performance-loader.js?v=20260510-bots-cache-fix" defer></script>
   
   <!-- Snow Effect JS removed (seasonal) -->
 

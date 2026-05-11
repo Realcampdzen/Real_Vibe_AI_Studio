@@ -1,297 +1,380 @@
 /**
- * Video Optimizer - Адаптивные видео источники и оптимизация загрузки
- * Оптимизирует загрузку видео для мобильных устройств
+ * Managed video loading for hero/detail reels and lazy portfolio clips.
  */
 
 class VideoOptimizer {
   constructor() {
-    this.isMobile = window.matchMedia
-      ? window.matchMedia('(max-width: 900px)').matches
-      : window.innerWidth <= 768;
-    this.isYandex =
-      navigator.userAgent &&
-      /YaBrowser|Yandex/i.test(navigator.userAgent);
     this.connection =
       navigator.connection ||
       navigator.mozConnection ||
       navigator.webkitConnection;
-    this.saveData = !!(this.connection && this.connection.saveData);
-    this.slowNetwork =
-      this.connection &&
-      ['slow-2g', '2g', '3g'].includes(this.connection.effectiveType);
     this.prefersReducedMotion =
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.mobileQuery = window.matchMedia
+      ? window.matchMedia('(max-width: 900px)')
+      : null;
+    this.states = new WeakMap();
     this.heroVideo = document.getElementById('hero-reel-video');
-    this.autoPlayDesktop = this.heroVideo
-      ? this.heroVideo.dataset.autoplayDesktop !== 'false'
-      : true;
     this.init();
+  }
+
+  init() {
+    this.refresh();
+    this.initHeroControls();
+    this.setupPortfolioLazyLoading();
+    this.observeDynamicVideos();
+
+    document.addEventListener('visibilitychange', () => {
+      this.refreshVisiblePlayback();
+    });
   }
 
   normalizeSrc(src) {
     if (!src) return '';
     try {
-      return encodeURI(src);
+      return encodeURI(decodeURI(src));
     } catch (e) {
-      console.warn('Не удалось нормализовать src видео', src, e);
       return src;
     }
   }
 
-  getHeroSources(video) {
-    const desktopRaw =
+  isPrimaryHero(video) {
+    return video?.id === 'hero-reel-video';
+  }
+
+  isElementVisible(element, threshold = 0.15) {
+    if (!element) return false;
+    const rect = element.getBoundingClientRect();
+    const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+    const visibleWidth = Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0);
+    if (visibleHeight <= 0 || visibleWidth <= 0) return false;
+    const area = rect.width * rect.height;
+    if (!area) return false;
+    return (visibleHeight * visibleWidth) / area >= threshold;
+  }
+
+  suppressInternalPause(video, duration = 1800) {
+    const state = this.states.get(video);
+    if (!state) return;
+    const until = performance.now() + duration;
+    state.suppressPauseUntil = Math.max(state.suppressPauseUntil || 0, until);
+  }
+
+  prepareLazyVideoSource(video) {
+    const source = video.querySelector('source[src]');
+    if (source && !video.dataset.src) {
+      video.dataset.src = source.getAttribute('src') || '';
+      video.dataset.type = source.type || 'video/mp4';
+    }
+    if (source) source.remove();
+    video.removeAttribute('src');
+    if (!video.dataset.sourceAttached) {
+      video.dataset.sourceAttached = video.dataset.src ? '0' : '1';
+    }
+  }
+
+  ensureLazyVideoSource(video) {
+    if (!video || video.dataset.sourceAttached === '1') return;
+    if (video.getAttribute('src') || video.querySelector('source[src]')) {
+      video.dataset.sourceAttached = '1';
+      return;
+    }
+    const src = video.dataset.src;
+    if (!src) return;
+    const source = document.createElement('source');
+    source.src = this.normalizeSrc(src);
+    source.type = video.dataset.type || 'video/mp4';
+    video.appendChild(source);
+    video.dataset.sourceAttached = '1';
+  }
+
+  isMobile() {
+    return this.mobileQuery ? this.mobileQuery.matches : window.innerWidth <= 900;
+  }
+
+  networkAllowsAutoPreload() {
+    if (!this.connection) return true;
+    if (this.connection.saveData) return false;
+    return !['slow-2g', '2g', '3g'].includes(this.connection.effectiveType);
+  }
+
+  refresh() {
+    document
+      .querySelectorAll('video[data-managed-video], #hero-reel-video, .hero-reel video')
+      .forEach((video) => this.setupManagedVideo(video));
+  }
+
+  observeDynamicVideos() {
+    if (!('MutationObserver' in window)) return;
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach(({ addedNodes }) => {
+        addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+          if (node.matches?.('video')) {
+            this.setupManagedVideo(node);
+          }
+          node
+            .querySelectorAll?.('video[data-managed-video], #hero-reel-video, .hero-reel video')
+            .forEach((video) => this.setupManagedVideo(video));
+        });
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  getSourceConfig(video) {
+    const desktopMp4 =
       video.dataset.desktopSrc ||
+      video.querySelector('source[type="video/mp4"]:not([media])')?.getAttribute('src') ||
+      video.querySelector('source[type="video/mp4"]')?.getAttribute('src') ||
       video.getAttribute('src') ||
-      video.querySelector('source')?.src ||
-      'public/works/шоурил.mp4';
-    const mobileRaw =
-      video.dataset.mobileSrc ||
-      video.querySelector('source[data-mobile]')?.src ||
       '';
+    const desktopWebm = video.dataset.desktopWebmSrc || '';
+    const mobileMp4 = video.dataset.mobileSrc || '';
+
+    if (!desktopMp4 && !desktopWebm && !mobileMp4) return null;
 
     return {
-      desktop: this.normalizeSrc(desktopRaw),
-      mobile: mobileRaw ? this.normalizeSrc(mobileRaw) : ''
+      desktopMp4: this.normalizeSrc(desktopMp4),
+      desktopWebm: this.normalizeSrc(desktopWebm),
+      mobileMp4: this.normalizeSrc(mobileMp4),
     };
   }
 
-  ensureHeroAttributes(video) {
-    // На мобиле используем metadata для экономии трафика
-    const preloadMode =
-      this.isMobile
-        ? 'metadata'
-        : (this.isYandex || (!this.slowNetwork && !this.saveData))
-          ? 'auto'
-          : 'metadata';
+  applySources(video, { load = true } = {}) {
+    if (video.dataset.sourcesApplied === '1') return;
+    const sources = this.getSourceConfig(video);
+    if (!sources) return;
 
-    video.setAttribute('preload', preloadMode);
-    video.preload = preloadMode;
+    const existingSrc = video.currentSrc || video.getAttribute('src') || '';
+    const preferred = this.isMobile()
+      ? sources.mobileMp4 || sources.desktopMp4 || sources.desktopWebm
+      : sources.desktopWebm || sources.desktopMp4 || sources.mobileMp4;
 
+    if (existingSrc && preferred && existingSrc.includes(preferred)) {
+      video.dataset.sourcesApplied = '1';
+      return;
+    }
+
+    video.removeAttribute('src');
+    video.querySelectorAll('source').forEach((source) => source.remove());
+
+    if (sources.mobileMp4) {
+      const mobile = document.createElement('source');
+      mobile.src = sources.mobileMp4;
+      mobile.type = 'video/mp4';
+      mobile.media = '(max-width: 900px)';
+      mobile.dataset.mobile = 'true';
+      video.appendChild(mobile);
+    }
+
+    if (sources.desktopWebm) {
+      const webm = document.createElement('source');
+      webm.src = sources.desktopWebm;
+      webm.type = 'video/webm';
+      webm.dataset.quality = 'desktop';
+      video.appendChild(webm);
+    }
+
+    if (sources.desktopMp4) {
+      const mp4 = document.createElement('source');
+      mp4.src = sources.desktopMp4;
+      mp4.type = 'video/mp4';
+      mp4.dataset.quality = 'desktop';
+      video.appendChild(mp4);
+    }
+
+    video.dataset.sourcesApplied = '1';
+    if (load) {
+      this.suppressInternalPause(video);
+      video.load();
+    }
+  }
+
+  setupManagedVideo(video) {
+    if (!video || video.dataset.videoOptimizerReady === '1') return;
+
+    video.dataset.videoOptimizerReady = '1';
+    if (video.id === 'hero-reel-video') this.heroVideo = video;
+
+    const shouldAutoplay = video.dataset.autoplayDesktop !== 'false';
+    const state = {
+      visible: false,
+      userPaused: !shouldAutoplay,
+      shouldAutoplay,
+      pausedByVisibility: false,
+      wasPlayingBeforeHidden: false,
+      suppressPauseUntil: 0,
+    };
+    this.states.set(video, state);
+
+    video.preload = 'metadata';
+    video.setAttribute('preload', 'metadata');
     video.playsInline = true;
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
+    video.defaultMuted = true;
     video.muted = true;
     video.setAttribute('muted', '');
-    video.defaultMuted = true;
 
-    // На мобиле автозапуск включён, но с metadata preload видео
-    // начнёт играть позже (после загрузки первого фрейма)
-    const shouldAutoplay = this.autoPlayDesktop;
-    video.autoplay = shouldAutoplay;
     if (shouldAutoplay) {
+      video.autoplay = true;
       video.setAttribute('autoplay', '');
     } else {
+      video.autoplay = false;
       video.removeAttribute('autoplay');
     }
+
+    this.setupManagedVideoEvents(video);
+    this.observeVideoVisibility(video);
+
+    if (this.isPrimaryHero(video) || this.isElementVisible(video)) {
+      this.applySources(video);
+    }
   }
 
-  ensurePlayback(video) {
-    let played = false;
-
-    // Убеждаемся, что видео muted для автозапуска
-    if (!video.muted) {
-      video.muted = true;
-      video.setAttribute('muted', '');
-    }
-
-    const attemptPlay = () => {
-      if (played || video.ended) return;
-      
-      // Проверяем, что видео не на паузе и не закончилось
-      if (!video.paused && video.currentTime > 0) {
-        played = true;
-        return;
-      }
-
-      const playPromise = video.play();
-      if (playPromise && playPromise.catch) {
-        playPromise
-          .then(() => {
-
-          })
-          .catch((err) => {
-            console.warn('⚠️ Автовоспроизведение ограничено браузером:', err?.name || err);
-            // Продолжаем попытки даже при ошибке
-          });
-      }
-    };
-
-    const markPlayed = () => {
-      played = true;
-    };
-
-    video.addEventListener('play', markPlayed, { once: true });
-    video.addEventListener('playing', markPlayed, { once: true });
-
-    // Немедленная попытка, если видео уже готово
-    if (video.readyState >= 2) {
-      attemptPlay();
-    } else {
-      // Пробуем сразу после загрузки метаданных
-      video.addEventListener('loadedmetadata', attemptPlay, { once: true });
-      video.addEventListener('loadeddata', attemptPlay, { once: true });
-      video.addEventListener('canplay', attemptPlay, { once: true });
-      video.addEventListener('canplaythrough', attemptPlay, { once: true });
-    }
-
-    // Гарантия запуска после первого взаимодействия
-    const resumeOnInteract = () => {
-      attemptPlay();
-    };
-    video.addEventListener('pointerdown', resumeOnInteract, { once: true });
-    video.addEventListener('touchstart', resumeOnInteract, { once: true });
-
-    // Повторные попытки для капризных браузеров (например, Яндекс)
-    setTimeout(attemptPlay, 100);
-    setTimeout(attemptPlay, 500);
-    setTimeout(attemptPlay, 1000);
-    setTimeout(attemptPlay, 2000);
-    
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') attemptPlay();
+  setupManagedVideoEvents(video) {
+    video.addEventListener('play', () => {
+      const state = this.states.get(video);
+      if (state) state.userPaused = false;
+      this.hideLoadingIndicator(video);
     });
-    
-    video.addEventListener('mouseenter', attemptPlay, { once: true });
-    video.addEventListener('stalled', attemptPlay);
-    video.addEventListener('suspend', attemptPlay);
 
-    // Брутфорс-фоллбек: несколько попыток с интервалом
-    let retries = 0;
-    const retryInterval = setInterval(() => {
-      if (played || (!video.paused && !video.ended && video.currentTime > 0)) {
-        clearInterval(retryInterval);
-        return;
+    video.addEventListener('pause', () => {
+      const state = this.states.get(video);
+      if (!state) return;
+      if (state.suppressPauseUntil && performance.now() < state.suppressPauseUntil) return;
+      if (
+        !state.pausedByVisibility &&
+        state.visible &&
+        document.visibilityState === 'visible'
+      ) {
+        state.userPaused = true;
       }
-      attemptPlay();
-      retries += 1;
-      if (retries >= 8) {
-        clearInterval(retryInterval);
-        console.warn('⚠️ Превышено количество попыток автозапуска видео');
+    });
+
+    video.addEventListener('waiting', () => this.showLoadingIndicator(video));
+    video.addEventListener('stalled', () => this.showLoadingIndicator(video));
+    video.addEventListener('canplay', () => {
+      this.hideLoadingIndicator(video);
+      const state = this.states.get(video);
+      if (state?.visible && state.shouldAutoplay && !state.userPaused) {
+        this.playVideo(video);
       }
-    }, 800);
+    });
+    video.addEventListener('playing', () => this.hideLoadingIndicator(video));
   }
 
-  init() {
-    // Оптимизация hero видео
-    this.optimizeHeroVideo();
-    this.initHeroControls();
-    
-    // Lazy loading для видео в портфолио
-    this.setupLazyLoading();
-    
-    // Предзагрузка стратегия
-    this.setupPreloadStrategy();
-    
-    // Обработка ошибок загрузки
-    this.setupErrorHandling();
-
-    // Сетевые ограничения
-    this.optimizeForSlowConnection();
-  }
-
-  /**
-   * Оптимизация hero видео с адаптивными источниками
-   */
-  optimizeHeroVideo() {
-    const heroVideo =
-      this.heroVideo || document.getElementById('hero-reel-video');
-    if (!heroVideo) {
-      console.warn('⚠️ Hero видео не найдено на странице');
+  observeVideoVisibility(video) {
+    if (!('IntersectionObserver' in window)) {
+      this.handleVideoVisibility(video, true);
       return;
     }
-    this.heroVideo = heroVideo;
 
-
-    // Проверяем, есть ли уже адаптивные источники
-    if (heroVideo.querySelector('source[media]')) {
-      this.ensureHeroAttributes(heroVideo);
-      this.ensurePlayback(heroVideo);
-      return; // Уже настроено
-    }
-
-    const { desktop, mobile } = this.getHeroSources(heroVideo);
-
-    // Сначала очищаем старые источники
-    heroVideo.removeAttribute('src');
-    const existingSources = heroVideo.querySelectorAll('source');
-    existingSources.forEach((s) => s.remove());
-
-    // Desktop источник (fallback)
-    const desktopSource = document.createElement('source');
-    desktopSource.src = desktop || 'public/works/шоурил.mp4';
-    desktopSource.type = 'video/mp4';
-    desktopSource.setAttribute('data-quality', 'desktop');
-
-    // Мобильный источник (если указан)
-    if (mobile) {
-      const mobileSource = document.createElement('source');
-      mobileSource.src = mobile;
-      mobileSource.type = 'video/mp4';
-      mobileSource.media = '(max-width: 900px)';
-      mobileSource.setAttribute('data-mobile', 'true');
-      heroVideo.appendChild(mobileSource);
-    }
-
-    heroVideo.appendChild(desktopSource);
-
-    // Добавляем poster изображение если его нет (с проверкой существования)
-    const posterUrl =
-      heroVideo.getAttribute('poster') ||
-      heroVideo.dataset.poster ||
-      'public/works/hero-poster.jpg';
-    heroVideo.setAttribute('poster', posterUrl);
-
-    this.ensureHeroAttributes(heroVideo);
-
-    // Запускаем сразу, не ждём requestAnimationFrame
-    const initVideo = () => {
-      heroVideo.load();
-      
-      // Убеждаемся, что видео muted для автозапуска
-      heroVideo.muted = true;
-      heroVideo.setAttribute('muted', '');
-      
-      // Всегда пытаемся запустить видео, даже если autoplay не сработал
-      // Это критичный элемент дизайна, должен запускаться всегда
-      this.ensurePlayback(heroVideo);
-      
-      // Явно запускаем для Яндекса и других браузеров
-      if (this.isYandex) {
-        heroVideo.play().catch(() => {});
-        setTimeout(() => heroVideo.play().catch(() => {}), 300);
-        setTimeout(() => heroVideo.play().catch(() => {}), 800);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          this.handleVideoVisibility(video, entry.isIntersecting);
+        });
+      },
+      {
+        threshold: video.id === 'hero-reel-video' ? 0.25 : 0.15,
+        rootMargin: video.id === 'hero-reel-video' ? '0px' : '200px 0px',
       }
-      
-      // Дополнительные попытки для всех браузеров
-      heroVideo.addEventListener('loadeddata', () => {
-        heroVideo.play().catch(() => {});
-      }, { once: true });
-      
-      heroVideo.addEventListener('canplay', () => {
-        heroVideo.play().catch(() => {});
-      }, { once: true });
-      
-      heroVideo.addEventListener('canplaythrough', () => {
-        heroVideo.play().catch(() => {});
-      }, { once: true });
-    };
+    );
 
-    // Запускаем сразу, если DOM готов
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initVideo, { once: true });
-    } else {
-      // Используем requestAnimationFrame для синхронизации с рендерингом
-      requestAnimationFrame(initVideo);
+    observer.observe(video);
+  }
+
+  handleVideoVisibility(video, isVisible) {
+    const state = this.states.get(video);
+    if (!state) return;
+
+    state.visible = isVisible;
+
+    if (!isVisible) {
+      state.wasPlayingBeforeHidden = !video.paused;
+      if (!video.paused) {
+        state.pausedByVisibility = true;
+        video.pause();
+        state.pausedByVisibility = false;
+      }
+      return;
     }
+
+    if (this.networkAllowsAutoPreload()) {
+      if (video.dataset.sourcesApplied !== '1') {
+        this.applySources(video, { load: false });
+      }
+      video.preload = 'auto';
+      video.setAttribute('preload', 'auto');
+      if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
+        this.suppressInternalPause(video);
+        video.load();
+      }
+    }
+
+    if (
+      state.shouldAutoplay &&
+      !state.userPaused &&
+      !this.prefersReducedMotion &&
+      document.visibilityState === 'visible'
+    ) {
+      this.playVideo(video);
+    }
+  }
+
+  playVideo(video) {
+    if (!video || document.visibilityState === 'hidden') return Promise.resolve();
+
+    if (video.dataset.sourcesApplied !== '1') {
+      this.applySources(video, { load: false });
+    }
+
+    if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
+      this.suppressInternalPause(video);
+      video.load();
+    }
+
+    const playPromise = video.play();
+    if (!playPromise || !playPromise.catch) return Promise.resolve();
+
+    return playPromise.catch((err) => {
+      if (err?.name !== 'AbortError') {
+        console.warn('Video playback was blocked:', err?.name || err);
+      }
+    });
+  }
+
+  refreshVisiblePlayback() {
+    this.refresh();
+    document
+      .querySelectorAll('video[data-video-optimizer-ready="1"]')
+      .forEach((video) => {
+        const state = this.states.get(video);
+        if (!state) return;
+        if (document.visibilityState === 'hidden') {
+          state.wasPlayingBeforeHidden = !video.paused;
+          if (!video.paused) {
+            state.pausedByVisibility = true;
+            video.pause();
+            state.pausedByVisibility = false;
+          }
+          return;
+        }
+        if (state.visible && state.shouldAutoplay && !state.userPaused) {
+          this.playVideo(video);
+        }
+      });
   }
 
   initHeroControls() {
     const video = this.heroVideo || document.getElementById('hero-reel-video');
     const controls = document.getElementById('hero-controls');
     if (!video || !controls) return;
-
-    this.heroVideo = video;
 
     const playBtn = document.getElementById('hero-control-play');
     const restartBtn = document.getElementById('hero-control-restart');
@@ -304,41 +387,38 @@ class VideoOptimizer {
     const progressFill = document.getElementById('hero-progress-fill');
     const progressTime = document.getElementById('hero-progress-time');
     const heroContainer = document.getElementById('hero-reel-container');
-    const isTouch =
-      'ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0;
-    let hideControlsTimeout = null;
     const speedMenu = document.getElementById('hero-speed-menu');
     const qualityMenu = document.getElementById('hero-quality-menu');
-
-    const speedSteps = [1, 1.25, 1.5, 0.75];
-    let speedIndex = 0;
-    let qualityIndex = 0;
+    const isTouch = 'ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0;
     const qualityStates = ['AUTO', 'HD', 'SD'];
+    let qualityIndex = 0;
+    let hideControlsTimeout = null;
 
+    const getState = () => this.states.get(video);
     const formatTime = (time) => {
-      if (!isFinite(time)) return '00:00';
-      const m = Math.floor(time / 60)
-        .toString()
-        .padStart(2, '0');
-      const s = Math.floor(time % 60)
-        .toString()
-        .padStart(2, '0');
-      return `${m}:${s}`;
+      if (!Number.isFinite(time)) return '00:00';
+      const minutes = Math.floor(time / 60).toString().padStart(2, '0');
+      const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+      return `${minutes}:${seconds}`;
     };
-
+    const controlsAreUseful = () => {
+      const state = getState();
+      return (
+        !!document.fullscreenElement ||
+        !!state?.visible ||
+        controls.classList.contains('is-active') ||
+        !!controls.matches(':hover') ||
+        !!heroContainer?.matches(':hover')
+      );
+    };
     const syncPlayState = () => {
-      if (!playBtn) return;
-      const icon = playBtn.querySelector('i');
-      if (video.paused) {
-        icon.className = 'fas fa-play';
-        playBtn.setAttribute('aria-label', 'Воспроизвести');
-      } else {
-        icon.className = 'fas fa-pause';
-        playBtn.setAttribute('aria-label', 'Пауза');
-      }
+      const icon = playBtn?.querySelector('i');
+      if (!icon || !playBtn) return;
+      icon.className = video.paused ? 'fas fa-play' : 'fas fa-pause';
+      playBtn.setAttribute('aria-label', video.paused ? 'Воспроизвести' : 'Пауза');
     };
-
-    const updateProgress = () => {
+    const updateProgress = (force = false) => {
+      if (!force && !controlsAreUseful()) return;
       if (!progressFill || !progressTrack || !progressTime) return;
       const duration = video.duration || 0;
       const current = video.currentTime || 0;
@@ -347,56 +427,36 @@ class VideoOptimizer {
       progressTrack.setAttribute('aria-valuenow', percent.toFixed(1));
       progressTime.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
     };
-
     const updateVolumeIcon = () => {
-      if (!volumeBtn) return;
-      const icon = volumeBtn.querySelector('i');
+      const icon = volumeBtn?.querySelector('i');
       if (!icon) return;
       icon.className = video.muted || video.volume === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+      volumeBtn.setAttribute('aria-pressed', (!video.muted && video.volume > 0).toString());
+      volumeBtn.setAttribute('aria-label', video.muted || video.volume === 0 ? 'Включить звук' : 'Выключить звук');
     };
-
     const updateSpeedLabel = () => {
-      if (speedLabel) speedLabel.textContent = `${video.playbackRate.toFixed(2).replace(/\.00$/, '')}x`.replace('.50', '.5');
+      if (!speedLabel) return;
+      speedLabel.textContent = `${video.playbackRate.toFixed(2).replace(/\.00$/, '')}x`.replace('.50', '.5');
     };
-
     const updateFullscreenIcon = () => {
-      if (fullscreenBtn) {
-        const icon = fullscreenBtn.querySelector('i');
-        if (icon) {
-          const inFs = !!document.fullscreenElement;
-          icon.className = inFs ? 'fas fa-compress' : 'fas fa-expand';
-        }
-      }
-
-      // Прячем надписи и кнопки в герое, когда видео раскрыто на весь экран
-      if (heroContainer) {
-        const inFs = !!document.fullscreenElement;
-        const isHeroFs =
-          document.fullscreenElement === heroContainer ||
-          document.fullscreenElement === video;
-
-        if (inFs && isHeroFs) {
-          heroContainer.classList.add('hero-fullscreen-active');
-        } else {
-          heroContainer.classList.remove('hero-fullscreen-active');
-        }
-      }
+      const icon = fullscreenBtn?.querySelector('i');
+      if (icon) icon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
+      const isHeroFullscreen =
+        document.fullscreenElement === heroContainer || document.fullscreenElement === video;
+      heroContainer?.classList.toggle('hero-fullscreen-active', !!isHeroFullscreen);
     };
-
     const updateQualityLabel = () => {
       if (!qualityBtn) return;
-      const icon = qualityBtn.querySelector('i');
-      if (!icon) return;
-      icon.className = 'fas fa-cog';
       qualityBtn.title = `Качество: ${qualityStates[qualityIndex]}`;
     };
-
+    const hideMenus = () => {
+      speedMenu?.classList.remove('visible');
+      qualityMenu?.classList.remove('visible');
+    };
     const scheduleHideControls = () => {
-      if (!controls) return;
       clearTimeout(hideControlsTimeout);
       hideControlsTimeout = setTimeout(() => {
-        const hovering =
-          controls.matches(':hover') || heroContainer?.matches(':hover');
+        const hovering = controls.matches(':hover') || heroContainer?.matches(':hover');
         if (hovering) {
           scheduleHideControls();
           return;
@@ -404,355 +464,225 @@ class VideoOptimizer {
         controls.classList.remove('is-active');
       }, 2400);
     };
-
     const bumpControls = () => {
-      if (!controls) return;
       controls.classList.add('is-active');
+      updateProgress(true);
       scheduleHideControls();
     };
-
-    const hideMenus = () => {
-      speedMenu?.classList.remove('visible');
-      qualityMenu?.classList.remove('visible');
-    };
-
     const toggleMenu = (menuEl) => {
       if (!menuEl) return;
       const willShow = !menuEl.classList.contains('visible');
       hideMenus();
-      if (willShow) {
-        menuEl.classList.add('visible');
-      }
+      if (willShow) menuEl.classList.add('visible');
     };
-
     const seekTo = (clientX) => {
+      if (!progressTrack || !video.duration) return;
       const rect = progressTrack.getBoundingClientRect();
       const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-      const duration = video.duration || 0;
-      video.currentTime = ratio * duration;
+      video.currentTime = ratio * video.duration;
+    };
+    const toggleSoundFromSurface = (event) => {
+      if (
+        event.target.closest('button') ||
+        event.target.closest('a') ||
+        event.target.closest('#hero-controls') ||
+        event.target.closest('.hero-menu')
+      ) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      video.muted = !video.muted;
+      if (!video.muted) {
+        video.volume = 1;
+        this.playVideo(video);
+      }
+      updateVolumeIcon();
+      bumpControls();
     };
 
     playBtn?.addEventListener('click', () => {
+      const state = getState();
       if (video.paused) {
-        video.play();
+        if (state) state.userPaused = false;
+        this.playVideo(video);
       } else {
+        if (state) state.userPaused = true;
         video.pause();
       }
       bumpControls();
     });
-
     restartBtn?.addEventListener('click', () => {
+      const state = getState();
+      if (state) state.userPaused = false;
       video.currentTime = 0;
-      video.play();
+      this.playVideo(video);
       bumpControls();
     });
-
     volumeBtn?.addEventListener('click', () => {
       video.muted = !video.muted;
+      if (!video.muted) {
+        video.volume = 1;
+        this.playVideo(video);
+      }
       updateVolumeIcon();
       bumpControls();
     });
-
     speedBtn?.addEventListener('click', () => {
       toggleMenu(speedMenu);
       bumpControls();
     });
-
     qualityBtn?.addEventListener('click', () => {
       toggleMenu(qualityMenu);
       bumpControls();
     });
-
-    speedMenu?.addEventListener('click', (e) => {
-      const target = e.target.closest('[data-speed]');
-      if (!target) return;
-      const value = parseFloat(target.dataset.speed || '1');
-      video.playbackRate = value;
-      speedIndex = Math.max(0, speedSteps.indexOf(value));
-      updateSpeedLabel();
-      hideMenus();
-      bumpControls();
-    });
-
-    qualityMenu?.addEventListener('click', (e) => {
-      const target = e.target.closest('[data-quality]');
-      if (!target) return;
-      const quality = target.dataset.quality || 'auto';
-      qualityIndex = Math.max(0, qualityStates.indexOf(quality.toUpperCase()));
-      updateQualityLabel();
-      hideMenus();
-      bumpControls();
-    });
-
     fullscreenBtn?.addEventListener('click', () => {
       const target = heroContainer || video;
-      const inFs = !!document.fullscreenElement;
-      if (!inFs && target?.requestFullscreen) {
+      if (!document.fullscreenElement && target?.requestFullscreen) {
         target.requestFullscreen();
-      } else if (inFs && document.exitFullscreen) {
+      } else if (document.fullscreenElement && document.exitFullscreen) {
         document.exitFullscreen();
       }
       bumpControls();
     });
-
-    document.addEventListener('fullscreenchange', updateFullscreenIcon);
-
-    progressTrack?.addEventListener('click', (e) => {
-      seekTo(e.clientX);
+    progressTrack?.addEventListener('click', (event) => {
+      seekTo(event.clientX);
       bumpControls();
     });
-
-    progressTrack?.addEventListener('keydown', (e) => {
-      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
-      e.preventDefault();
+    progressTrack?.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
       const step = video.duration ? video.duration * 0.02 : 1;
-      if (e.key === 'ArrowLeft') video.currentTime = Math.max(0, video.currentTime - step);
-      if (e.key === 'ArrowRight') video.currentTime = Math.min(video.duration, video.currentTime + step);
-      if (e.key === 'Home') video.currentTime = 0;
-      if (e.key === 'End') video.currentTime = video.duration || video.currentTime;
+      if (event.key === 'ArrowLeft') video.currentTime = Math.max(0, video.currentTime - step);
+      if (event.key === 'ArrowRight') video.currentTime = Math.min(video.duration, video.currentTime + step);
+      if (event.key === 'Home') video.currentTime = 0;
+      if (event.key === 'End') video.currentTime = video.duration || video.currentTime;
       bumpControls();
     });
-
-    video.addEventListener('loadedmetadata', updateProgress);
-    video.addEventListener('timeupdate', updateProgress);
-    video.addEventListener('play', syncPlayState);
-    video.addEventListener('pause', syncPlayState);
-    video.addEventListener('ended', syncPlayState);
-    video.addEventListener('volumechange', updateVolumeIcon);
-
-    // Начальная синхронизация
-    syncPlayState();
-    updateProgress();
-    updateVolumeIcon();
-    updateSpeedLabel();
-    updateFullscreenIcon();
-    updateQualityLabel();
-
-    if (!isTouch) {
-      const moveHandler = () => bumpControls();
-      heroContainer?.addEventListener('mousemove', moveHandler);
-      controls?.addEventListener('mousemove', moveHandler);
-      controls?.addEventListener('focusin', bumpControls);
-      controls?.addEventListener('mouseleave', scheduleHideControls);
-      heroContainer?.addEventListener('mouseleave', scheduleHideControls);
+    speedMenu?.addEventListener('click', (event) => {
+      const target = event.target.closest('[data-speed]');
+      if (!target) return;
+      video.playbackRate = parseFloat(target.dataset.speed || '1');
+      updateSpeedLabel();
+      hideMenus();
       bumpControls();
-    } else {
-      // На тач-устройствах показываем контролы по тапу и автоскрываем их
-      const tapHandler = () => {
-        bumpControls();
-      };
-      heroContainer?.addEventListener('click', tapHandler);
-      video.addEventListener('click', tapHandler);
-    }
-
-    document.addEventListener('click', (e) => {
+    });
+    qualityMenu?.addEventListener('click', (event) => {
+      const target = event.target.closest('[data-quality]');
+      if (!target) return;
+      qualityIndex = Math.max(0, qualityStates.indexOf((target.dataset.quality || 'auto').toUpperCase()));
+      updateQualityLabel();
+      hideMenus();
+      bumpControls();
+    });
+    document.addEventListener('fullscreenchange', updateFullscreenIcon);
+    document.addEventListener('click', (event) => {
       if (
-        e.target.closest('#hero-control-speed') ||
-        e.target.closest('#hero-control-quality') ||
-        e.target.closest('#hero-speed-menu') ||
-        e.target.closest('#hero-quality-menu')
+        event.target.closest('#hero-control-speed') ||
+        event.target.closest('#hero-control-quality') ||
+        event.target.closest('#hero-speed-menu') ||
+        event.target.closest('#hero-quality-menu')
       ) {
         return;
       }
       hideMenus();
     });
-  }
 
-  /**
-   * Lazy loading для видео в портфолио
-   */
-  setupLazyLoading() {
-    const portfolioVideos = document.querySelectorAll('.projects-reel-video');
-    
-    if ('IntersectionObserver' in window) {
-      const videoObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const video = entry.target;
-            this.loadVideo(video);
-            videoObserver.unobserve(video);
-          }
-        });
-      }, {
-        rootMargin: '50px' // Начинаем загрузку за 50px до появления
-      });
+    video.addEventListener('loadedmetadata', () => updateProgress(true));
+    video.addEventListener('durationchange', () => updateProgress(true));
+    video.addEventListener('timeupdate', () => updateProgress(false));
+    video.addEventListener('play', syncPlayState);
+    video.addEventListener('pause', syncPlayState);
+    video.addEventListener('ended', syncPlayState);
+    video.addEventListener('volumechange', updateVolumeIcon);
+    heroContainer?.addEventListener('click', toggleSoundFromSurface);
 
-      portfolioVideos.forEach(video => {
-        // Не устанавливаем poster автоматически - он должен быть указан в HTML
-        // если файл существует. Это предотвращает 404 ошибки для несуществующих файлов.
-        
-        // Обрабатываем ошибки загрузки poster, чтобы они не засоряли консоль
-        if (video.hasAttribute('poster')) {
-          const posterUrl = video.getAttribute('poster');
-          video.addEventListener('error', (e) => {
-            // Если ошибка связана с poster, просто игнорируем её
-            if (e.target === video && video.networkState === video.NETWORK_NO_SOURCE) {
-              // Это может быть ошибка poster, но не критично
-              return;
-            }
-          }, { once: true });
-        }
-        
-        video.setAttribute('preload', 'none'); // Не загружаем до появления
-        videoObserver.observe(video);
-      });
+    if (!isTouch) {
+      const moveHandler = () => bumpControls();
+      heroContainer?.addEventListener('mousemove', moveHandler);
+      controls.addEventListener('mousemove', moveHandler);
+      controls.addEventListener('focusin', bumpControls);
+      controls.addEventListener('mouseleave', scheduleHideControls);
+      heroContainer?.addEventListener('mouseleave', scheduleHideControls);
+      bumpControls();
     } else {
-      // Fallback для старых браузеров
-      portfolioVideos.forEach(video => {
-        this.loadVideo(video);
-      });
+      heroContainer?.addEventListener('pointerdown', () => bumpControls(), { passive: true });
     }
+
+    syncPlayState();
+    updateProgress(true);
+    updateVolumeIcon();
+    updateSpeedLabel();
+    updateFullscreenIcon();
+    updateQualityLabel();
   }
 
-  /**
-   * Загрузка видео
-   */
-  loadVideo(video) {
-    if (video.readyState === 0) {
-      video.load();
-    }
-  }
-
-  /**
-   * Стратегия предзагрузки
-   */
-  setupPreloadStrategy() {
-    // Предзагружаем poster изображение для hero видео
-    const heroVideo =
-      this.heroVideo || document.getElementById('hero-reel-video');
-    if (heroVideo) this.heroVideo = heroVideo;
-    if (heroVideo && heroVideo.hasAttribute('poster')) {
-      const posterUrl = heroVideo.getAttribute('poster');
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = posterUrl;
-      document.head.appendChild(link);
-    }
-
-    // На мобильных предзагружаем только после загрузки страницы
-    if (this.isMobile) {
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          const heroVideo =
-            this.heroVideo || document.getElementById('hero-reel-video');
-          if (!heroVideo) return;
-          if (this.saveData || this.slowNetwork) return;
-          heroVideo.setAttribute('preload', 'auto');
-          heroVideo.preload = 'auto';
-          heroVideo.load();
-        }, 1000); // Задержка 1 секунда
-      });
-    }
-  }
-
-  /**
-   * Обработка ошибок загрузки видео
-   */
-  setupErrorHandling() {
-    const videos = document.querySelectorAll('video');
-    
-    videos.forEach(video => {
-      video.addEventListener('error', (e) => {
-        const desktopSource = video.querySelector('source[data-quality="desktop"]');
-        const mobileSources = video.querySelectorAll('source[data-mobile]');
-        const isHero = video.id === 'hero-reel-video';
-
-        // Для hero сначала пытаемся упасть на desktop, если мобильный не загрузился
-        if (isHero && desktopSource && !video.dataset.heroFallbackTried) {
-          video.dataset.heroFallbackTried = 'true';
-          mobileSources.forEach((s) => s.remove());
-          video.load();
-          const playPromise = video.play();
-          if (playPromise && playPromise.catch) {
-            playPromise.catch(() => {});
-          }
-          console.warn('Hero video: mobile источник недоступен, переключаемся на desktop');
-          return;
-        }
-
-        console.warn('Ошибка загрузки видео:', video.src || video.currentSrc);
-        
-        // Показываем poster изображение при ошибке
-        if (video.hasAttribute('poster')) {
-          const poster = video.getAttribute('poster');
-          const img = document.createElement('img');
-          img.src = poster;
-          img.alt = 'Видео недоступно';
-          img.style.width = '100%';
-          img.style.height = '100%';
-          img.style.objectFit = 'cover';
-          
-          video.parentNode.insertBefore(img, video);
-          video.style.display = 'none';
-        }
-      });
-
-      // Показываем индикатор загрузки
-      video.addEventListener('loadstart', () => {
-        this.showLoadingIndicator(video);
-      });
-
-      video.addEventListener('canplay', () => {
-        this.hideLoadingIndicator(video);
-      });
+  setupPortfolioLazyLoading() {
+    const videos = document.querySelectorAll('.projects-reel-video');
+    videos.forEach((video) => {
+      this.prepareLazyVideoSource(video);
+      video.preload = 'none';
+      video.setAttribute('preload', 'none');
     });
+
+    if (!('IntersectionObserver' in window)) {
+      videos.forEach((video) => {
+        this.ensureLazyVideoSource(video);
+        video.preload = 'metadata';
+        video.setAttribute('preload', 'metadata');
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const video = entry.target;
+          this.ensureLazyVideoSource(video);
+          video.preload = 'metadata';
+          video.setAttribute('preload', 'metadata');
+          if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
+            video.load();
+          }
+          observer.unobserve(video);
+        });
+      },
+      { rootMargin: '250px 0px' }
+    );
+
+    videos.forEach((video) => observer.observe(video));
   }
 
-  /**
-   * Показать индикатор загрузки
-   */
   showLoadingIndicator(video) {
-    if (video.parentNode.querySelector('.video-loading')) return;
-    
+    if (!video.parentNode || video.parentNode.querySelector('.video-loading')) return;
     const indicator = document.createElement('div');
     indicator.className = 'video-loading';
     indicator.innerHTML = '<div class="video-loading-spinner"></div>';
     video.parentNode.appendChild(indicator);
   }
 
-  /**
-   * Скрыть индикатор загрузки
-   */
   hideLoadingIndicator(video) {
-    const indicator = video.parentNode.querySelector('.video-loading');
-    if (indicator) {
-      indicator.remove();
-    }
-  }
-
-  /**
-   * Оптимизация для медленных соединений
-   */
-  optimizeForSlowConnection() {
-    // Автовоспроизведение сохраняем даже на медленных сетях (требование заказчика).
-    // Ограничиваемся только лёгким preload на слабых соединениях (выставляется в ensureHeroAttributes).
+    const indicator = video.parentNode?.querySelector('.video-loading');
+    if (indicator) indicator.remove();
   }
 }
 
-// Инициализация при загрузке DOM (защита от дублирования)
 if (!window.videoOptimizerInitialized) {
   window.videoOptimizerInitialized = true;
-  
   const initVideoOptimizer = () => {
-    if (window.videoOptimizer) {
-      console.warn('⚠️ VideoOptimizer уже инициализирован, пропускаем повторную инициализацию');
-      return;
+    if (!window.videoOptimizer) {
+      window.videoOptimizer = new VideoOptimizer();
+    } else {
+      window.videoOptimizer.refresh();
     }
-
-    window.videoOptimizer = new VideoOptimizer();
-
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initVideoOptimizer);
+    document.addEventListener('DOMContentLoaded', initVideoOptimizer, { once: true });
   } else {
-    // Если DOM уже готов, запускаем сразу
     initVideoOptimizer();
   }
-} else {
-  console.warn('⚠️ Попытка повторной инициализации VideoOptimizer заблокирована');
 }
 
-// Экспорт для использования в других модулях
 window.VideoOptimizer = VideoOptimizer;

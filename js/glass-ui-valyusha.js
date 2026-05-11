@@ -13,11 +13,11 @@ class GlassUIValyusha {
             "Люблю помогать ребятам вникать в программу лагеря и находить своё призвание. Хочешь рассказать, что тебя вдохновляет? 💜",
             "В Реальном Лагере мы учим быть вожатыми, создавать проекты и вести сообщества. Погнали в команду мечты! 🎯",
             "Я могу поддержать, подсказать упражнения или помочь с нейропроектом. Просто спроси! 📚✨",
-            "Наша миссия — чтобы каждый ребёнок почувствовал себя лидером и создателем будущего. Ты уже готов shine'ить? 🌟",
+            "Наша миссия — чтобы каждый ребёнок почувствовал себя лидером и создателем будущего. Уже хочется shine'ить? 🌟",
             "Я продвигаю ценности лагеря в соцсетях и в жизни: уважение, творчество и заботу. Давай делиться теплом! 🤗",
             "Хочешь узнать, как мы внедряем AI в детские программы и медиа? Расскажу все фишки! 🤖💬",
             "Люблю писать тёплые комментарии в ВК и Telegram сообществах лагеря. Присоединяйся к нашему доброму движению! 💌",
-            "Вожатый — это тот, кто помогает раскрыть талант. В Реальном Лагере этому можно научиться. Готов попробовать? 🏕️",
+            "Вожатый — это человек, который помогает раскрыть талант. В Реальном Лагере этому можно научиться. Хочешь попробовать? 🏕️",
             "Если тебе нужно вдохновение для поста или проекта лагеря — давай brainstorm вместе! 💜🧠"
         ];
 
@@ -146,6 +146,8 @@ class GlassUIValyusha {
             botAvatar: this.avatar,
             theme: this.themePrimary,
             accent: this.themeSecondary,
+            welcomeMessage: "Привет! Я НейроВалюша, дружелюбная AI-вожатая Реального Лагеря. Помогаю говорить о развитии, 4К навыках и живых персона-ботах. 💜",
+            placeholder: "Спроси НейроВалюшу про лагерь или AI...",
             position: { bottom: '280px', right: '20px' },
             onSendMessage: this.handleMessage.bind(this),
             onClose: this.hideChat.bind(this)
@@ -289,14 +291,8 @@ class GlassUIValyusha {
                 userId: 'user-' + Date.now()
             };
 
-            // Use local proxy by default to bypass pages.dev blocking
-            // Прокси api-proxy.php обходит блокировку pages.dev из браузера
-            // Only use direct API if explicitly set to non-default value (for testing)
-            const customApiBase = window.__AI_API_BASE__;
-            const isDefaultApiBase = !customApiBase || customApiBase === 'https://real-vibe-ai-studio.pages.dev';
-            const endpoint = isDefaultApiBase
-                ? '/api-proxy.php' 
-                : `${customApiBase.replace(/\/$/, '')}/api/valyusha/chat`;
+            const apiBase = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
+            const endpoint = apiBase ? `${apiBase}/api/valyusha/chat` : '/api/valyusha/chat';
 
             console.log('💜 НейроВалюша: отправляю запрос к', endpoint, requestBody);
             
@@ -307,9 +303,7 @@ class GlassUIValyusha {
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: window.RealVibeChat?.getHeaders?.() || { 'Content-Type': 'application/json' },
                     body: JSON.stringify(requestBody),
                     signal: controller.signal
                 });
@@ -317,6 +311,10 @@ class GlassUIValyusha {
                 clearTimeout(timeoutId);
 
                 console.log('💜 НейроВалюша: получен ответ, статус:', response.status, response.statusText);
+
+                if (response.status === 429 && window.RealVibeChat?.parseResponse) {
+                    return await window.RealVibeChat.parseResponse(response);
+                }
 
                 if (!response.ok) {
                     const errorText = await response.text();
@@ -353,8 +351,8 @@ class GlassUIValyusha {
     }
 
     getFallbackResponse(message) {
-        const apiBase = (window.__AI_API_BASE__ || 'https://real-vibe-ai-studio.pages.dev').replace(/\/$/, '');
-        const host = apiBase ? apiBase.replace(/^https?:\/\//, '') : 'AI API';
+        const apiBase = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
+        const host = apiBase ? apiBase.replace(/^https?:\/\//, '') : window.location.host || 'AI API';
         return `Сейчас я не могу подключиться к AI‑сервису (${host}). Похоже, ошибка соединения — поэтому я не буду выдумывать ответ.\n\nПопробуй обновить страницу (Ctrl+F5) или зайти позже. Если проблема повторяется — напиши @Stivanovv.`;
     }
 

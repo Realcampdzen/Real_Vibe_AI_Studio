@@ -30,6 +30,7 @@ export function createHelmetMiddleware() {
         ],
         styleSrcAttr: ["'unsafe-inline'"],
         styleSrcElem: ["'self'", "'unsafe-inline'", "https:"],
+        upgradeInsecureRequests: null,
       },
     },
     crossOriginEmbedderPolicy: false,

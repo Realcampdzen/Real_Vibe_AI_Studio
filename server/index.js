@@ -23,6 +23,7 @@ import { isConnected } from './services/openai-client.js';
 
 const __dirname = import.meta.dirname;
 const app = express();
+app.set('trust proxy', config.trustProxy);
 
 // ────── Security ──────
 app.use(createHelmetMiddleware());
@@ -98,6 +99,15 @@ app.use(express.static(path.join(__dirname, '..'), {
   etag: !config.isDevelopment,
   lastModified: !config.isDevelopment,
   setHeaders: (res, filePath) => {
+    if (path.basename(filePath) === 'sw.js') {
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Service-Worker-Allowed': '/',
+      });
+      return;
+    }
     if (config.isDevelopment && filePath.match(/\.(html|css|js)$/)) {
       res.set({
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -137,8 +147,10 @@ app.use((err, req, res, next) => {
 });
 
 // ────── Start ──────
-app.listen(config.port, () => {
+const listenArgs = config.host ? [config.port, config.host] : [config.port];
+app.listen(...listenArgs, () => {
   logger.info(`🚀 Сервер работает на http://localhost:${config.port}`, {
+    host: config.host || '0.0.0.0',
     port: config.port,
     openai: isConnected() ? 'connected' : 'unavailable',
     security: 'enhanced',

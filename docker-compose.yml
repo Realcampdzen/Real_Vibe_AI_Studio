@@ -1,0 +1,19 @@
+services:
+  real-vibe-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: real-vibe-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: "4300"
+      BIND_HOST: "127.0.0.1"
+      TRUST_PROXY: loopback
+      ALLOWED_ORIGINS: "https://vps.real-vibe.studio,https://real-vibe.studio,https://www.real-vibe.studio"
+      CHAT_QUOTA_STORE_PATH: "/app/data/chat-quotas.json"
+    volumes:
+      - ./data:/app/data
+    network_mode: host

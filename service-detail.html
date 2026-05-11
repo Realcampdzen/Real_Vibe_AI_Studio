@@ -7,6 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title id="page-title">Детали услуги | Реальный Vайб AI Studio</title>
+  <link rel="icon" type="image/svg+xml" href="public/logo-mark.svg">
   <meta name="description" content="Подробная информация об услуге AI Studio">
   <meta name="keywords" content="AI, нейросети, боты, автоматизация, OpenAI, ChatGPT, Telegram боты">
 
@@ -20,16 +21,13 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css?v=20251221-navbar-black-snow-v2">
+  <link rel="stylesheet" href="css/style.css?v=20260511-performance">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css">
   
   <!-- Mobile optimizations -->
   <link rel="stylesheet" href="css/mobile-improvements.css">
-  
-  <!-- Snow Effect -->
-  <link rel="stylesheet" href="css/snow-effect.css?v=20251223-snow-dots-header-v8">
   
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -226,9 +224,15 @@
       <!-- Large Hero Container at the Bottom (like at the top) -->
       <div class="service-detail-hero service-detail-hero-bottom">
         <div class="hero-reel">
-          <video class="hero-reel-video" autoplay loop muted playsinline preload="auto">
-            <source src="public/works/%D0%B2%D0%B5%D1%87%D0%B5%D1%80%D0%BD%D0%B8%D0%B9%20%D0%B4%D0%BE%D0%B6%D0%B4%D1%8C%20%D0%BA%D0%BB%D0%B8%D0%BF.mp4" type="video/mp4">
-          </video>
+          <video
+            class="hero-reel-video"
+            data-managed-video
+            data-desktop-src="public/works/вечерний дождь клип.mp4"
+            loop
+            muted
+            playsinline
+            preload="metadata"
+          ></video>
           <div class="hero-reel-overlay"></div>
           <div class="hero-reel-content"></div>
         </div>
@@ -291,15 +295,12 @@
   </button>
 
   <!-- Scripts -->
-  <!-- Bootstrap 4 JS Dependencies -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
-  
   <!-- Service Data -->
   <script src="js/service-data.js"></script>
   
   <!-- Custom Scripts -->
+  <script src="js/scroll-manager.js?v=20251216-reveal-force"></script>
+  <script src="js/video-optimizer.js?v=20260511-managed-video"></script>
   <script src="js/script.js?v=20251216-reveal-force"></script> 
   <script src="js/chat.js?v=20251216-reveal-force"></script> 
   <script src="js/services-carousel.js?v=20251223-services-carousel-no-nav-v1"></script>
@@ -310,11 +311,14 @@
   <script src="js/glass-ui-bro-cat.js?v=20251127-emoji4"></script>
   <script src="js/glass-ui-valyusha.js?v=20251228-valyusha-api-fail-closed"></script>
 
-  <!-- Mobile enhancements -->
-  <script src="js/mobile-enhancements.js?v=20251216-reveal-force"></script>
-  
-  <!-- Snow Effect -->
-  <script src="js/snow-effect.js?v=20251223-snow-dots-header-v8"></script>
+  <script>
+    if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) {
+      const mobileEnhancements = document.createElement('script');
+      mobileEnhancements.src = 'js/mobile-enhancements.js?v=20251216-reveal-force';
+      mobileEnhancements.defer = true;
+      document.body.appendChild(mobileEnhancements);
+    }
+  </script>
   
   <!-- Service Detail Script -->
   <script>
@@ -366,9 +370,16 @@
         
         if (hasVideo) {
           heroContent = `
-            <video class="hero-reel-video" autoplay loop muted playsinline preload="auto">
-              <source src="${bgImage}" type="video/mp4">
-            </video>
+            <video
+              class="hero-reel-video"
+              data-managed-video
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="metadata"
+              data-desktop-src="${bgImage}"
+            ></video>
             ${heroContent}
           `;
         } else if (hasImage) {
@@ -377,16 +388,30 @@
             ${heroContent}
           `;
         } else {
-          // Default video from main page
+          // Default optimized hero reel.
           heroContent = `
-            <video class="hero-reel-video" autoplay loop muted playsinline preload="auto">
-              <source src="public/works/%D0%B2%D0%B5%D1%87%D0%B5%D1%80%D0%BD%D0%B8%D0%B9%20%D0%B4%D0%BE%D0%B6%D0%B4%D1%8C%20%D0%BA%D0%BB%D0%B8%D0%BF.mp4" type="video/mp4">
+            <video
+              class="hero-reel-video"
+              data-managed-video
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="metadata"
+              data-desktop-webm-src="public/works/hero-reel-desktop.webm"
+              data-desktop-src="public/works/hero-reel-desktop.mp4"
+              data-mobile-src="public/works/hero-reel-mobile.mp4"
+            >
+              <source src="public/works/hero-reel-mobile.mp4" type="video/mp4" media="(max-width: 900px)">
+              <source src="public/works/hero-reel-desktop.webm" type="video/webm">
+              <source src="public/works/hero-reel-desktop.mp4" type="video/mp4">
             </video>
             ${heroContent}
           `;
         }
         
         heroReel.innerHTML = heroContent;
+        window.videoOptimizer?.refresh?.();
       }
       
       // Set background color only (no background image)
@@ -546,13 +571,18 @@
     // Initialize back to top button
     const backToTopBtn = document.getElementById('back-to-top');
     if (backToTopBtn) {
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
+      const updateBackToTop = (scrollY = window.scrollY) => {
+        if (scrollY > 300) {
           backToTopBtn.classList.add('show');
         } else {
           backToTopBtn.classList.remove('show');
         }
-      });
+      };
+      if (window.scrollManager) {
+        window.scrollManager.subscribe(updateBackToTop);
+      } else {
+        window.addEventListener('scroll', () => updateBackToTop(), { passive: true });
+      }
       
       backToTopBtn.addEventListener('click', () => {
         window.scrollTo({
@@ -599,11 +629,16 @@
     // Scroll progress
     const scrollProgress = document.getElementById('scroll-progress');
     if (scrollProgress) {
-      window.addEventListener('scroll', () => {
+      const updateScrollProgress = (scrollY = window.scrollY) => {
         const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (window.scrollY / windowHeight) * 100;
+        const scrolled = windowHeight > 0 ? (scrollY / windowHeight) * 100 : 0;
         scrollProgress.style.width = scrolled + '%';
-      });
+      };
+      if (window.scrollManager) {
+        window.scrollManager.subscribe(updateScrollProgress);
+      } else {
+        window.addEventListener('scroll', () => updateScrollProgress(), { passive: true });
+      }
     }
     
     // Handle service card clicks

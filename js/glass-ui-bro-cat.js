@@ -7,7 +7,7 @@ class GlassUIBroCat {
         this.isVisible = false;
         
         this.responses = [
-            "🐱 Мяу! Я Кот Бро - захватчик этого сайта! *потягивается*",
+            "🐱 Мяу! Я Кот Бро - рыжий персона-бот этого сайта!",
             "😸 Видишь, как я общаюсь? Хочешь себе такого же мемного помощника?",
             "🎪 Я живое доказательство того, что AI-боты могут быть крутыми!",
             "💰 От 18,000₽ - и у тебя будет свой харизматичный помощник!",
@@ -15,7 +15,7 @@ class GlassUIBroCat {
             "😺 Мой секрет - характер! Клиенты не уходят, а остаются поболтать!",
             "🎯 Хочешь +200% к конверсии? Заказывай своего 'Кота Бро'!",
             "🤖 Я не просто болтаю - я РАБОТАЮ! Продажи через эмоции!",
-            "⭐ Окупаюсь за месяц! Мой хозяин уже в плюсе! *мурчит*",
+            "⭐ Окупаюсь за месяц! Мой хозяин уже в плюсе! Мурр.",
             "🎭 Заказать клона: @Stivanovv - и твой бизнес оживет!"
         ];
         this.init();
@@ -153,6 +153,8 @@ class GlassUIBroCat {
             botName: "Кот Бро",
             botAvatar: "images/bro-avatar.jpg",
             theme: "#f97316",
+            welcomeMessage: "Мяу! Я Кот Бро, рыжий персона-бот Real Vibe. Показываю, как AI-персонаж может оживить сайт и соцсети. 🐱",
+            placeholder: "Спроси Кота Бро про персона-ботов...",
             position: { bottom: '200px', right: '20px' },
             onSendMessage: this.handleMessage.bind(this),
             onClose: this.handleClose.bind(this)
@@ -284,21 +286,17 @@ class GlassUIBroCat {
 
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: window.RealVibeChat?.getHeaders?.() || { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: message,
                     userId: 'user-' + Date.now()
                 })
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.reply || data.response || this.getFallbackResponse(message);
+            const reply = window.RealVibeChat?.parseResponse
+                ? await window.RealVibeChat.parseResponse(response)
+                : (await response.json()).reply;
+            return reply || this.getFallbackResponse(message);
         } catch (error) {
             console.error('🐱 Ошибка при запросе к Коту Бро:', error);
             // Fallback на статичные ответы
@@ -311,7 +309,7 @@ class GlassUIBroCat {
         
         // Проверяем ключевые слова для более релевантных ответов
         if (lowerMessage.includes('привет') || lowerMessage.includes('здравствуй')) {
-            return "Мяу! 🐱 *потягивается* Я Бро, рыжий и пушистый! Что хочешь, двуногий?";
+            return "Мяу! 🐱 Я Бро, рыжий и пушистый персона-бот! Что хочешь узнать?";
         }
         if (lowerMessage.includes('кот') || lowerMessage.includes('бро')) {
             return this.responses[1];

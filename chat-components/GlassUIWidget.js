@@ -1,10 +1,13 @@
 // Glass UI чат-виджет с современными эффектами
 class GlassUIWidget {
     constructor(options = {}) {
+        this.widgetId = `glass-ui-widget-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         this.botName = options.botName || "AI Assistant";
         this.botAvatar = options.botAvatar || "";
         this.theme = options.theme || "#6ea9d7";
         this.position = options.position || { bottom: '20px', right: '20px' };
+        this.welcomeMessage = options.welcomeMessage || `Привет! Я ${this.botName}. На связи. ✨`;
+        this.placeholder = options.placeholder || `Напишите сообщение ${this.botName}...`;
         this.onSendMessage = options.onSendMessage || null;
         this.onClose = options.onClose || null;
         this.isVisible = options.isVisible || false;
@@ -18,7 +21,7 @@ class GlassUIWidget {
         this.messages = [
             {
                 id: '1',
-                text: `Привет! Я ${this.botName}. Готов помочь! ✨`,
+                text: this.welcomeMessage,
                 isBot: true,
                 timestamp: new Date()
             }
@@ -30,28 +33,63 @@ class GlassUIWidget {
         this.init();
     }
 
+    getViewportMargin() {
+        const viewportWidth = this.getViewportWidth();
+        if (viewportWidth <= 480) return 10;
+        if (viewportWidth <= 768) return 20;
+        return 40;
+    }
+
+    getViewportWidth() {
+        const widths = [window.innerWidth, document.documentElement.clientWidth]
+            .filter((value) => Number.isFinite(value) && value > 0);
+        return widths.length ? Math.min(...widths) : 0;
+    }
+
+    getViewportHeight() {
+        const heights = [window.innerHeight, document.documentElement.clientHeight]
+            .filter((value) => Number.isFinite(value) && value > 0);
+        return heights.length ? Math.min(...heights) : 0;
+    }
+
+    computeWidgetWidth() {
+        const viewportWidth = this.getViewportWidth();
+        const margin = this.getViewportMargin();
+        return Math.min(380, Math.max(280, viewportWidth - margin * 2));
+    }
+
     computeTopOffset() {
-        const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-        const desiredHeight = parseInt((this.container && this.container.style.height) || '', 10) || 600;
-        const maxAllowedHeight = Math.max(220, viewportHeight - 80); // оставляем зазор сверху/снизу
+        const viewportHeight = this.getViewportHeight();
+        const viewportWidth = this.getViewportWidth();
+        const margin = this.getViewportMargin();
+        const desiredHeight = 600;
+        const maxAllowedHeight = Math.max(320, viewportHeight - margin * 2);
         const effectiveHeight = Math.min(desiredHeight, maxAllowedHeight);
-        const centeredTop = Math.max(40, Math.floor((viewportHeight - effectiveHeight) / 2));
-        const offsetTop = centeredTop + (typeof this.verticalOffset === 'number' ? this.verticalOffset : 0);
-        const maxTop = Math.max(40, viewportHeight - effectiveHeight - 40);
-        const finalTop = Math.min(Math.max(40, offsetTop), maxTop);
+        const centeredTop = Math.max(margin, Math.floor((viewportHeight - effectiveHeight) / 2));
+        const offsetTop = viewportWidth <= 768
+            ? centeredTop
+            : centeredTop + (typeof this.verticalOffset === 'number' ? this.verticalOffset : 0);
+        const maxTop = Math.max(margin, viewportHeight - effectiveHeight - margin);
+        const finalTop = Math.min(Math.max(margin, offsetTop), maxTop);
         return { top: finalTop, height: effectiveHeight };
     }
 
     computeRightOffset() {
+        const viewportWidth = this.getViewportWidth();
+        const margin = this.getViewportMargin();
+        const widgetWidth = this.computeWidgetWidth();
+
+        if (viewportWidth <= 768) {
+            return Math.max(margin, viewportWidth - widgetWidth - margin);
+        }
+
         const baseRight = typeof this.position.right === 'string'
             ? parseInt(this.position.right, 10) || 0
             : (Number(this.position.right) || 0);
         const offset = typeof this.horizontalOffset === 'number' ? this.horizontalOffset : 0;
         const desiredRight = baseRight + offset;
-        const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-        const widgetWidth = parseInt((this.container && this.container.style.width) || '', 10) || 380;
-        const maxRight = Math.max(8, viewportWidth - widgetWidth - 8); // оставляем запас слева
-        const finalRight = Math.min(Math.max(8, desiredRight), maxRight);
+        const maxRight = Math.max(margin, viewportWidth - widgetWidth - margin);
+        const finalRight = Math.min(Math.max(margin, desiredRight), maxRight);
         return finalRight;
     }
 
@@ -67,13 +105,14 @@ class GlassUIWidget {
         // Создаем основной контейнер с Glass UI эффектами
         this.container = document.createElement('div');
         this.container.className = 'glass-ui-widget';
-        this.container.id = `glass-ui-widget-${Date.now()}`;
+        this.container.id = this.widgetId;
         const computedRight = this.computeRightOffset();
+        const computedWidth = this.computeWidgetWidth();
         this.container.style.cssText = `
             position: fixed;
             bottom: auto;
             right: ${computedRight}px;
-            width: 380px;
+            width: ${computedWidth}px;
             height: 600px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(25px);
@@ -176,8 +215,8 @@ class GlassUIWidget {
         const headerText = document.createElement('div');
         headerText.innerHTML = `
             <div style="font-weight: 700; font-size: 16px;">${this.botName}</div>
-            <div style="font-size: 12px; opacity: 0.9;" id="glass-status-text">
-                <span id="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 6px; animation: statusPulse 2s infinite;"></span>
+            <div class="glass-status-text" style="font-size: 12px; opacity: 0.9;">
+                <span class="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 6px; animation: statusPulse 2s infinite;"></span>
                 онлайн
             </div>
         `;
@@ -250,7 +289,6 @@ class GlassUIWidget {
         // Создаем контейнер для сообщений
         const messagesList = document.createElement('div');
         messagesList.className = 'glass-messages-list';
-        messagesList.id = 'glass-messages-list';
         messagesList.style.cssText = `
             position: relative;
             z-index: 1;
@@ -260,7 +298,6 @@ class GlassUIWidget {
         // Создаем улучшенный индикатор печатания
         const typingIndicator = document.createElement('div');
         typingIndicator.className = 'glass-typing-indicator';
-        typingIndicator.id = 'glass-typing-indicator';
         typingIndicator.style.cssText = `
             padding: 15px 20px;
             font-size: 14px;
@@ -294,82 +331,6 @@ class GlassUIWidget {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         `;
 
-        // Добавляем быстрые кнопки
-        const quickButtons = document.createElement('div');
-        quickButtons.className = 'glass-quick-buttons';
-        quickButtons.id = 'glass-quick-buttons';
-        quickButtons.style.cssText = `
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        `;
-
-        // Создаем быстрые кнопки в зависимости от бота
-        const quickButtonsData = this.botName === 'Кот Бро' ? [
-            { text: '🎪 Как работаешь?', question: 'Покажи как ты работаешь' },
-            { text: '💰 Сколько стоишь?', question: 'Сколько стоит такой бот?' },
-            { text: '🚀 Хочу такого!', question: 'Хочу заказать такого же бота' }
-        ] : this.botName === 'Хипыч' ? [
-            { text: '🎥 Настройка стрима', question: 'Помоги настроить стрим' },
-            { text: '🔧 Техподдержка', question: 'Нужна техническая помощь' },
-            { text: '📈 Раскрутка канала', question: 'Как набрать больше зрителей?' }
-        ] : this.botName === 'НейроVалюша' ? [
-            { text: '🏕️ О лагере', question: 'Расскажи про Реальный Лагерь' },
-            { text: '📚 Программа', question: 'Чему учат в лагере и 4К навыкам?' },
-            { text: '🎯 Развитие', question: 'Как стать вожатым и развиваться?' }
-        ] : [
-            { text: '🧠 Возможности', question: 'Что ты умеешь?' },
-            { text: '💡 Идеи', question: 'Дай совет для бизнеса' },
-            { text: '🚀 Проекты', question: 'Расскажи о проектах' }
-        ];
-
-        quickButtonsData.forEach(buttonData => {
-            const quickBtn = document.createElement('button');
-            quickBtn.textContent = buttonData.text;
-            quickBtn.className = 'glass-quick-btn';
-            quickBtn.style.cssText = `
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                color: white;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                padding: 8px 12px;
-                border-radius: 15px;
-                cursor: pointer;
-                font-size: 12px;
-                transition: all 0.3s ease;
-                white-space: nowrap;
-            `;
-            
-            quickBtn.addEventListener('mouseenter', () => {
-                quickBtn.style.background = `linear-gradient(135deg, ${this.theme}40, ${this.theme}60)`;
-                quickBtn.style.transform = 'translateY(-2px)';
-                quickBtn.style.boxShadow = `0 4px 15px ${this.theme}30`;
-            });
-            
-            quickBtn.addEventListener('mouseleave', () => {
-                quickBtn.style.background = 'rgba(255, 255, 255, 0.1)';
-                quickBtn.style.transform = 'translateY(0)';
-                quickBtn.style.boxShadow = 'none';
-            });
-            
-            quickBtn.addEventListener('click', () => {
-                const input = this.container.querySelector(`#glass-message-input-${this.botName.replace(/\s+/g, '-').toLowerCase()}`);
-                if (input) {
-                    input.value = buttonData.question;
-                    // Скрываем быстрые кнопки после первого использования
-                    quickButtons.style.display = 'none';
-                    // Отправляем сообщение
-                    this.handleSendMessage(buttonData.question);
-                }
-            });
-            
-            quickButtons.appendChild(quickBtn);
-        });
-
-        inputArea.appendChild(quickButtons);
-
         const inputContainer = document.createElement('div');
         inputContainer.style.cssText = `
             display: flex;
@@ -385,10 +346,9 @@ class GlassUIWidget {
 
         const messageInput = document.createElement('input');
         messageInput.type = 'text';
-        messageInput.placeholder = `Напишите сообщение ${this.botName}...`;
+        messageInput.placeholder = this.placeholder;
         messageInput.className = 'glass-message-input';
-        // Уникальный ID для каждого виджета
-        messageInput.id = `glass-message-input-${this.botName.replace(/\s+/g, '-').toLowerCase()}`;
+        messageInput.id = `${this.widgetId}-input`;
         messageInput.style.cssText = `
             flex: 1;
             padding: 12px 16px;
@@ -579,20 +539,23 @@ class GlassUIWidget {
     }
 
     setupEventListeners() {
-        // Используем уникальный ID для каждого виджета
-        const inputId = `glass-message-input-${this.botName.replace(/\s+/g, '-').toLowerCase()}`;
-        const messageInput = this.container.querySelector(`#${inputId}`);
+        const messageInput = this.container.querySelector('.glass-message-input');
         const sendButton = this.container.querySelector('.glass-send-button');
 
         if (!messageInput || !sendButton) {
             console.error(`❌ GlassUIWidget: Не найдены элементы для ${this.botName}`, {
                 messageInput: !!messageInput,
                 sendButton: !!sendButton,
-                inputId: inputId,
                 container: this.container
             });
             return;
         }
+
+        this.boundResetPosition = () => {
+            if (this.isVisible) this.resetPosition();
+        };
+        window.addEventListener('resize', this.boundResetPosition);
+        window.addEventListener('orientationchange', this.boundResetPosition);
 
         const sendMessage = () => {
             const message = messageInput.value.trim();
@@ -655,7 +618,7 @@ class GlassUIWidget {
     }
 
     renderMessages() {
-        const messagesList = this.container.querySelector('#glass-messages-list');
+        const messagesList = this.container.querySelector('.glass-messages-list');
         messagesList.innerHTML = '';
 
         this.messages.forEach((message, index) => {
@@ -756,19 +719,19 @@ class GlassUIWidget {
 
     setTyping(isTyping) {
         this.isTyping = isTyping;
-        const typingIndicator = this.container.querySelector('#glass-typing-indicator');
-        const statusText = this.container.querySelector('#glass-status-text');
+        const typingIndicator = this.container.querySelector('.glass-typing-indicator');
+        const statusText = this.container.querySelector('.glass-status-text');
         
         if (isTyping) {
             typingIndicator.style.display = 'block';
             statusText.innerHTML = `
-                <span id="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #fbbf24; border-radius: 50%; margin-right: 6px; animation: statusPulse 1s infinite;"></span>
+                <span class="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #fbbf24; border-radius: 50%; margin-right: 6px; animation: statusPulse 1s infinite;"></span>
                 печатает...
             `;
         } else {
             typingIndicator.style.display = 'none';
             statusText.innerHTML = `
-                <span id="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 6px; animation: statusPulse 2s infinite;"></span>
+                <span class="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 6px; animation: statusPulse 2s infinite;"></span>
                 онлайн
             `;
         }
@@ -791,8 +754,7 @@ class GlassUIWidget {
         
         // Фокус на поле ввода с задержкой
         setTimeout(() => {
-            const inputId = `glass-message-input-${this.botName.replace(/\s+/g, '-').toLowerCase()}`;
-            const input = this.container.querySelector(`#${inputId}`);
+            const input = this.container.querySelector('.glass-message-input');
             if (input) input.focus();
         }, 400);
     }
@@ -807,6 +769,7 @@ class GlassUIWidget {
     resetPosition() {
         console.log(`%c🔄 Сброс позиционирования для ${this.botName}`, 'color: #f97316; font-weight: bold;');
         const computedRight = this.computeRightOffset();
+        const computedWidth = this.computeWidgetWidth();
         console.log(`%c📍 Центрируем чат: right: ${computedRight}px, z-index: ${this.zIndex}`, 'color: #fbbf24;');
 
         const { top, height } = this.computeTopOffset();
@@ -818,10 +781,10 @@ class GlassUIWidget {
         this.container.style.setProperty('bottom', 'auto', 'important');
         this.container.style.setProperty('right', `${computedRight}px`, 'important');
         this.container.style.setProperty('left', 'auto', 'important');
-        this.container.style.setProperty('width', '380px', 'important');
+        this.container.style.setProperty('width', `${computedWidth}px`, 'important');
         this.container.style.setProperty('height', `${height}px`, 'important');
-        this.container.style.setProperty('max-width', 'calc(100vw - 40px)', 'important');
-        this.container.style.setProperty('max-height', 'calc(100vh - 80px)', 'important');
+        this.container.style.setProperty('max-width', `calc(100vw - ${this.getViewportMargin() * 2}px)`, 'important');
+        this.container.style.setProperty('max-height', `calc(100vh - ${this.getViewportMargin() * 2}px)`, 'important');
         this.container.style.setProperty('z-index', this.zIndex.toString(), 'important');
         this.container.style.setProperty('transform', 'none', 'important');
         
@@ -835,6 +798,10 @@ class GlassUIWidget {
     }
 
     destroy() {
+        if (this.boundResetPosition) {
+            window.removeEventListener('resize', this.boundResetPosition);
+            window.removeEventListener('orientationchange', this.boundResetPosition);
+        }
         if (this.container && this.container.parentNode) {
             this.container.parentNode.removeChild(this.container);
         }
