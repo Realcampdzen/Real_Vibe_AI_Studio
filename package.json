@@ -7,7 +7,9 @@
     "start": "node server/index.js",
     "dev": "node server/index.js",
     "dev:simple": "npx http-server . -p 3001 -c-1 --cors",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "node scripts/check-js.mjs",
+    "audit:prod": "npm audit --omit=dev --json",
+    "test": "npm run check"
   },
   "repository": {
     "type": "git",

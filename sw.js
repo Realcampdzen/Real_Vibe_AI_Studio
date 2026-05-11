@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.16-20260511-video-performance';
+const CACHE_VERSION = 'v1.17-20260511-perf-media';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -110,15 +110,6 @@ self.addEventListener('fetch', (event) => {
   if (isHTML) {
     event.respondWith(
       fetch(request)
-        .then((networkResponse) => {
-          if (sameOrigin && networkResponse && networkResponse.ok) {
-            const copy = networkResponse.clone();
-            caches.open(DYNAMIC_CACHE).then((cache) => {
-              cache.put(request, copy).catch(() => {});
-            });
-          }
-          return networkResponse;
-        })
         .catch(() => {
           return (
             caches.match(request) ||
@@ -202,63 +193,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Стратегия для API запросов
+  // API responses are stateful and must not be stored in Cache Storage.
   if (url.pathname.includes('/api/')) {
-    event.respondWith(
-      fetch(request)
-        .then((networkResponse) => {
-          // Кэшируем только GET запросы
-          if (request.method === 'GET' && networkResponse.status === 200) {
-            return caches.open(DYNAMIC_CACHE)
-              .then((cache) => {
-                cache.put(request, networkResponse.clone()).catch(err => {
-                  console.warn('⚠️ Service Worker: Не удалось кэшировать API ответ', request.url, err.message);
-                });
-                return networkResponse;
-              });
-          }
-          return networkResponse;
-        })
-        .catch((error) => {
-          // Игнорируем ошибки CSP
-          if (error.message.includes('CSP') || error.message.includes('Content Security Policy')) {
-            console.warn('⚠️ Service Worker: API запрос заблокирован CSP', request.url);
-            return fetch(request);
-          }
-          // Возвращаем кэшированную версию для GET запросов
-          if (request.method === 'GET') {
-            return caches.match(request);
-          }
-          
-          // Для других методов возвращаем ошибку
-          return new Response(
-            JSON.stringify({ error: 'Нет подключения к интернету' }),
-            { 
-              status: 503,
-              headers: { 'Content-Type': 'application/json' }
-            }
-          );
-        })
-    );
+    event.respondWith(fetch(request));
     return;
   }
 
-  // Стратегия по умолчанию - сеть с fallback на кэш
+  // Default: network first, no dynamic caching for arbitrary responses.
   event.respondWith(
     fetch(request)
-      .then((networkResponse) => {
-        // Кэшируем только успешные ответы
-        if (networkResponse.status === 200) {
-          return caches.open(DYNAMIC_CACHE)
-            .then((cache) => {
-              cache.put(request, networkResponse.clone()).catch(err => {
-                console.warn('⚠️ Service Worker: Не удалось кэшировать ресурс', request.url, err.message);
-              });
-              return networkResponse;
-            });
-        }
-        return networkResponse;
-      })
       .catch((error) => {
         // Игнорируем ошибки CSP для внешних ресурсов
         if (error.message && (error.message.includes('CSP') || error.message.includes('Content Security Policy'))) {
