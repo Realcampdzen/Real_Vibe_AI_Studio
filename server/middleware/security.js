@@ -66,7 +66,7 @@ export function createHelmetMiddleware() {
           "'self'",
           "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:",
         ],
-        styleSrcAttr: ["'unsafe-inline'"],
+        styleSrcAttr: ["'none'"],
         styleSrcElem: [
           "'self'", "'unsafe-inline'",
           "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com",

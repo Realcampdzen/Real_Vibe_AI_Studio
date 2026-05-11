@@ -1,0 +1,90 @@
+name: Site Quality Gate
+
+on:
+  push:
+    branches:
+      - codex/vps-migration
+      - main
+  pull_request:
+    branches:
+      - codex/vps-migration
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      NODE_ENV: production
+      PORT: 4313
+      BIND_HOST: 127.0.0.1
+      TRUST_PROXY: loopback
+      ALLOWED_ORIGINS: https://vps.real-vibe.studio,https://real-vibe.studio,https://www.real-vibe.studio
+      RV_WEBHOOK_TOKEN: ci-webhook-token
+      PROXY_AUTH_TOKEN: ci-proxy-token
+      CHAT_QUOTA_STORE_PATH: data/ci-chat-quotas.json
+      API_SMOKE_BASE_URL: http://127.0.0.1:4313
+      API_SMOKE_EXPECT_PROD_CORS: "true"
+      API_SMOKE_WEBHOOK_TOKEN: ci-webhook-token
+      BROWSER_SMOKE_BASE_URL: http://127.0.0.1:4313
+      BROWSER_SMOKE_CHANNEL: chromium
+      BROWSER_SMOKE_HERO_WAIT_MS: "10000"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Static quality gate
+        run: npm run quality:release
+
+      - name: Start local production server
+        run: |
+          mkdir -p data
+          node server/index.js > server.log 2>&1 &
+          echo $! > server.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4313/health >/tmp/rv-health.json; then
+              cat /tmp/rv-health.json
+              exit 0
+            fi
+            sleep 2
+          done
+          cat server.log
+          exit 1
+
+      - name: API smoke
+        run: npm run smoke:api
+
+      - name: Browser smoke
+        run: npm run smoke:browser
+
+      - name: Server log tail
+        if: always()
+        run: |
+          test -f server.log && tail -n 150 server.log || true
+
+      - name: Stop local server
+        if: always()
+        run: |
+          if test -f server.pid; then
+            kill "$(cat server.pid)" || true
+          fi

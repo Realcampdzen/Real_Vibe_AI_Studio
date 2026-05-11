@@ -21,6 +21,12 @@ const criticalDomFiles = [
   'js/video-optimizer.js',
   'chat-components/GlassUIWidget.js',
 ];
+const strictStyleRuntimeFiles = [
+  'js/glass-ui-bro-cat.js',
+  'js/glass-ui-hipych.js',
+  'js/glass-ui-valyusha.js',
+  'chat-components/GlassUIWidget.js',
+];
 const mediaBudgetBytes = 80 * 1024 * 1024;
 
 function toPosix(path) {
@@ -63,6 +69,21 @@ function checkCriticalDomSinks() {
   }
 }
 
+function checkStaticWidgetStyles() {
+  for (const file of strictStyleRuntimeFiles) {
+    const text = readText(file);
+    if (/\.style\.cssText\b/.test(text)) {
+      fail(`${file}: static style cssText found; use CSS classes and keep only computed .style values`);
+    }
+    if (/createElement\(\s*['"]style['"]\s*\)/.test(text)) {
+      fail(`${file}: runtime <style> injection found; move static widget CSS to stylesheet`);
+    }
+    if (/setAttribute\(\s*['"]style['"]/.test(text)) {
+      fail(`${file}: dynamic style attribute found; use classes or computed CSSOM properties`);
+    }
+  }
+}
+
 function checkCspPolicy() {
   const text = readText('server/middleware/security.js');
   const unsafeScriptPatterns = [
@@ -80,6 +101,10 @@ function checkCspPolicy() {
 
   if (!/['"]style-src-attr['"]\s*:\s*\[[^\]]*['"]none['"]/s.test(text)) {
     fail("server/middleware/security.js: report-only CSP must include style-src-attr 'none'");
+  }
+
+  if (!/styleSrcAttr\s*:\s*\[[^\]]*['"]none['"]/s.test(text)) {
+    fail("server/middleware/security.js: enforced CSP must include styleSrcAttr 'none'");
   }
 }
 
@@ -121,6 +146,7 @@ function checkMediaBudget() {
 
 checkHtmlEntrypoints();
 checkCriticalDomSinks();
+checkStaticWidgetStyles();
 checkCspPolicy();
 checkMediaBudget();
 

@@ -246,8 +246,8 @@ function initMobileMenu() {
     document.body.classList.add('no-scroll');
     document.documentElement.classList.add('mobile-nav-open');
     document.body.classList.add('mobile-nav-open');
-    // Hide bot widgets so they don't overlap the menu
-    document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.style.setProperty('display', 'none', 'important'));
+    // Hide bot widgets so they don't overlap the menu.
+    document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.classList.add('is-suppressed'));
   };
 
   const closeMenu = () => {
@@ -257,8 +257,8 @@ function initMobileMenu() {
     document.body.classList.remove('no-scroll');
     document.documentElement.classList.remove('mobile-nav-open');
     document.body.classList.remove('mobile-nav-open');
-    // Restore bot widgets
-    document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.style.removeProperty('display'));
+    // Restore bot widgets.
+    document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.classList.remove('is-suppressed'));
   };
 
   mobileMenuBtn.addEventListener('click', () => {
@@ -601,10 +601,13 @@ function preloadImagesForUpcomingElements() {
 
 // Main DOMContentLoaded Event
 document.addEventListener('DOMContentLoaded', () => {
+  const isDetailPage = document.body.classList.contains('detail-page');
   // New Year seasonal code removed (no matching HTML elements)
   
   // Предзагружаем изображения для элементов, которые скоро появятся
-  preloadImagesForUpcomingElements();
+  if (!isDetailPage) {
+    preloadImagesForUpcomingElements();
+  }
   
   // Инициализировать прелоадер с реальным отслеживанием загрузки
   initPreloader();
@@ -616,14 +619,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize mobile menu
   initMobileMenu();
   
-  // Initialize testimonials slider
-  initTestimonialsSlider();
+  // Initialize homepage-only interactive sections
+  if (!isDetailPage) {
+    initTestimonialsSlider();
+  }
   
   // Initialize back to top button
   initBackToTop();
   
   // Initialize tilt effect
-  initTiltEffect();
+  if (!isDetailPage) {
+    initTiltEffect();
+  }
   
   // Navbar scroll effect - используем ScrollManager для оптимизации
   const navbar = document.querySelector('.navbar');
@@ -687,76 +694,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Add CSS for ripple effect
-  const rippleStyle = document.createElement('style');
-  rippleStyle.textContent = `
-    button, .btn-primary, .btn-secondary {
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(0);
-      animation: ripple-animation 0.6s linear;
-      pointer-events: none;
-    }
-    
-    @keyframes ripple-animation {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
-  `;
-  document.head.appendChild(rippleStyle);
-
   // Projects reel video play on click
-  document.querySelectorAll('.projects-reel-card').forEach(card => {
-    const video = card.querySelector('.projects-reel-video');
-    const playBtn = card.querySelector('.projects-reel-play');
+  if (!isDetailPage) {
+    document.querySelectorAll('.projects-reel-card').forEach(card => {
+      const video = card.querySelector('.projects-reel-video');
+      const playBtn = card.querySelector('.projects-reel-play');
 
-    if (!video || !playBtn) return;
+      if (!video || !playBtn) return;
 
-    function togglePlay() {
-      if (video.paused) {
-        video.muted = false;
-        if (window.videoOptimizer?.ensureLazyVideoSource) {
-          window.videoOptimizer.ensureLazyVideoSource(video);
-        } else if (video.dataset.src && video.dataset.sourceAttached !== '1') {
-          const source = document.createElement('source');
-          source.src = video.dataset.src;
-          source.type = video.dataset.type || 'video/mp4';
-          video.appendChild(source);
-          video.dataset.sourceAttached = '1';
+      function togglePlay() {
+        if (video.paused) {
+          video.muted = false;
+          if (window.videoOptimizer?.ensureLazyVideoSource) {
+            window.videoOptimizer.ensureLazyVideoSource(video);
+          } else if (video.dataset.src && video.dataset.sourceAttached !== '1') {
+            const source = document.createElement('source');
+            source.src = video.dataset.src;
+            source.type = video.dataset.type || 'video/mp4';
+            video.appendChild(source);
+            video.dataset.sourceAttached = '1';
+          }
+          video.preload = 'auto';
+          if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
+            video.load();
+          }
+          video.play().catch(() => {});
+        } else {
+          video.pause();
         }
-        video.preload = 'auto';
-        if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
-          video.load();
-        }
-        video.play().catch(() => {});
-      } else {
-        video.pause();
       }
-    }
 
-    playBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      togglePlay();
+      playBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePlay();
+      });
+
+      card.addEventListener('click', togglePlay);
     });
-
-    card.addEventListener('click', togglePlay);
-  });
+  }
 
   initCookieBanner();
-  
-  // Hero enter animation
-  initHeroEnterAnimation();
-  
-  // Process scroll animation
-  initProcessScrollAnimation();
+
+  if (!isDetailPage) {
+    // Hero enter animation
+    initHeroEnterAnimation();
+
+    // Process scroll animation
+    initProcessScrollAnimation();
+  }
 
   // Scroll reveal animations (single system)
   initScrollRevealV2();

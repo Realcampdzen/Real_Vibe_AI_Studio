@@ -27,6 +27,7 @@ const cspReportOnly = homepage.headers.get('content-security-policy-report-only'
 await check('homepage', homepage.ok, `status ${homepage.status}`);
 await check('enforced script CSP', /script-src 'self'/.test(csp), csp);
 await check('enforced object/base/frame CSP', /object-src 'none'/.test(csp) && /base-uri 'self'/.test(csp) && /frame-ancestors 'self'/.test(csp), csp);
+await check('enforced style attr CSP', /style-src-attr 'none'/.test(csp), csp);
 await check('report-only style-src-attr', /style-src-attr 'none'/.test(cspReportOnly), cspReportOnly);
 
 const cors = await request('/api/bots/status', {

@@ -135,12 +135,12 @@
         : loadScript('js/chat.js?v=20260511-security');
 
       chatReady
-        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260511-perfux'))
+        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260511-stylecsp'))
         .then(() =>
           Promise.all([
-            loadScript('js/glass-ui-hipych.js?v=20260511-perfux'),
-            loadScript('js/glass-ui-bro-cat.js?v=20260511-perfux'),
-            loadScript('js/glass-ui-valyusha.js?v=20260511-perfux'),
+            loadScript('js/glass-ui-hipych.js?v=20260511-stylecsp'),
+            loadScript('js/glass-ui-bro-cat.js?v=20260511-stylecsp'),
+            loadScript('js/glass-ui-valyusha.js?v=20260511-stylecsp'),
           ])
         )
         .catch((err) => {

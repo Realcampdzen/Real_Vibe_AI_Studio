@@ -11,6 +11,9 @@ npm audit --omit=dev --json
 git diff --check
 ```
 
+GitHub Actions now runs the same quality gate on pushes and PRs through `.github/workflows/ci.yml`.
+The workflow is intentionally CI-only; it does not deploy production or GitHub Pages.
+
 Before a security release, confirm production `.env` has any required secrets without printing them:
 
 ```bash
@@ -35,6 +38,15 @@ Run these against a local production-mode server:
 API_SMOKE_BASE_URL=http://127.0.0.1:4313 API_SMOKE_EXPECT_PROD_CORS=true npm run smoke:api
 BROWSER_SMOKE_BASE_URL=http://127.0.0.1:4313 npm run smoke:browser
 PERF_PROBE_BASE_URL=http://127.0.0.1:4313 npm run perf:desktop
+```
+
+For CI-like local runs, set dummy production secrets before starting the server:
+
+```bash
+NODE_ENV=production PORT=4313 BIND_HOST=127.0.0.1 \
+ALLOWED_ORIGINS=https://vps.real-vibe.studio,https://real-vibe.studio,https://www.real-vibe.studio \
+RV_WEBHOOK_TOKEN=local-webhook-token PROXY_AUTH_TOKEN=local-proxy-token \
+CHAT_QUOTA_STORE_PATH=data/local-chat-quotas.json node server/index.js
 ```
 
 ## VPS Deploy
@@ -67,6 +79,7 @@ ssh root@89.223.126.190 "docker logs --tail=150 real-vibe-web"
 
 Expected results: `/health` 200, localhost CORS rejected in production, invalid chat rejected without OpenAI call, webhook forbidden without token, CSP headers present, hero WebM served with range support, old hero master unavailable, no secrets/request bodies in logs.
 The Docker image should stay under the current budget of `1.5GB`; public media larger than `80MB` must be excluded from the runtime image by `.dockerignore`.
+Enforced CSP must include `script-src 'self'` and `style-src-attr 'none'`; `style-src 'unsafe-inline'` may remain until third-party/style-element cleanup is handled separately.
 
 ## Browser Smoke
 
@@ -76,6 +89,18 @@ The Docker image should stay under the current budget of `1.5GB`; public media l
 - `service-detail.html?id=0..7` and `ai-photo-detail.html` render without console errors.
 - Chat widgets open, send invalid/limited requests gracefully, and stay visually usable.
 - CSP report-only violations can be sampled in logs, but they must not include raw request bodies, cookies, tokens, full URLs with query strings, or user messages.
+
+## CI Gate
+
+The `Site Quality Gate` workflow runs:
+
+- `npm ci`
+- `npx playwright install --with-deps chromium`
+- `npm run quality:release`
+- local production server smoke through `npm run smoke:api`
+- `npm run smoke:browser` with a mocked chat response, so CI does not call OpenAI
+
+Keep VPS deployment manual until the release symlink flow and secret handling are explicitly automated.
 
 ## Rollback
 

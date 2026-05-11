@@ -109,6 +109,29 @@ body {
   position: relative;
 }
 
+button,
+.btn-primary,
+.btn-secondary {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
 .no-scroll {
   overflow: hidden;
 }
@@ -9448,6 +9471,589 @@ body.new-year-page {
 
   .hero-reel-video {
     border-radius: 10px;
+  }
+}
+
+/* Glass chat widgets */
+.glass-ui-floating-button {
+  position: fixed;
+  right: 20px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  transition: transform 0.2s ease, filter 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  background: var(--glass-button-bg);
+  box-shadow: var(--glass-button-shadow);
+  z-index: var(--glass-button-z, 1002);
+}
+
+.glass-ui-floating-button:hover,
+.glass-ui-floating-button.is-active {
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.08);
+  box-shadow: var(--glass-button-shadow-hover);
+}
+
+.glass-ui-floating-button.is-suppressed,
+.glass-ui-widget.is-suppressed {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.glass-ui-floating-button::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: var(--glass-button-ring);
+  opacity: 0.55;
+  z-index: -1;
+}
+
+.glass-ui-floating-button::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 82px;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 220px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(10, 10, 10, 0.9);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-ui-floating-button:hover::after {
+  opacity: 1;
+  transform: translate(-4px, -50%);
+}
+
+.glass-ui-floating-button-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  opacity: 0;
+}
+
+.glass-ui-floating-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-ui-floating-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.glass-ui-notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 700;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 6px var(--glass-badge-shadow);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  background: var(--glass-badge-bg);
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.glass-ui-notification-badge.is-hidden {
+  display: none;
+}
+
+.glass-ui-hipych-button {
+  bottom: 20px;
+  --glass-button-z: 1002;
+  --glass-button-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.87), #3b82f6);
+  --glass-button-ring: linear-gradient(45deg, #3b82f6, transparent, #3b82f6);
+  --glass-button-shadow: 0 10px 24px rgba(59, 130, 246, 0.32), inset 0 2px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  --glass-button-shadow-hover: 0 14px 30px rgba(59, 130, 246, 0.42), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  --glass-badge-bg: linear-gradient(135deg, #3b82f6, #60a5fa);
+  --glass-badge-shadow: rgba(59, 130, 246, 0.45);
+}
+
+.glass-ui-bro-cat-button {
+  bottom: 100px;
+  --glass-button-z: 1003;
+  --glass-button-bg: linear-gradient(135deg, rgba(249, 115, 22, 0.87), #f97316);
+  --glass-button-ring: linear-gradient(45deg, #f97316, transparent, #f97316);
+  --glass-button-shadow: 0 10px 24px rgba(249, 115, 22, 0.32), inset 0 2px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  --glass-button-shadow-hover: 0 14px 30px rgba(249, 115, 22, 0.42), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  --glass-badge-bg: linear-gradient(135deg, #fbbf24, #f59e0b);
+  --glass-badge-shadow: rgba(249, 115, 22, 0.45);
+}
+
+.glass-ui-valyusha-button {
+  bottom: 180px;
+  --glass-button-z: 1004;
+  --glass-button-bg: linear-gradient(135deg, rgba(168, 85, 247, 0.87), #ec4899);
+  --glass-button-ring: linear-gradient(45deg, #a855f7, transparent, #ec4899);
+  --glass-button-shadow: 0 10px 24px rgba(168, 85, 247, 0.34), inset 0 2px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  --glass-button-shadow-hover: 0 14px 30px rgba(168, 85, 247, 0.44), 0 0 18px rgba(236, 72, 153, 0.22), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  --glass-badge-bg: linear-gradient(135deg, #f472b6, #d946ef);
+  --glass-badge-shadow: rgba(236, 72, 153, 0.45);
+}
+
+.cat-click-effect,
+.valyusha-sparkle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10005;
+  animation: glassEffectPop 1s ease-out forwards;
+}
+
+.cat-click-effect {
+  font-size: 20px;
+  color: #f97316;
+}
+
+.valyusha-sparkle {
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(236, 72, 153, 0.8);
+}
+
+@keyframes glassEffectPop {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.4) rotate(180deg); opacity: 0.8; }
+  100% { transform: scale(2) rotate(360deg); opacity: 0; }
+}
+
+.glass-ui-widget {
+  position: fixed;
+  bottom: auto;
+  left: auto;
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  height: 600px;
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 80px);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(30px) scale(0.9);
+  transition: opacity 0.24s ease, transform 0.24s ease, visibility 0.24s ease;
+  background: rgba(18, 20, 26, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: normal;
+  text-align: left;
+  z-index: 10010;
+}
+
+.glass-ui-widget,
+.glass-ui-widget * {
+  box-sizing: border-box;
+}
+
+.glass-ui-widget.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.glass-ui-widget.is-busy .glass-message-input,
+.glass-ui-widget.is-busy .glass-send-button {
+  opacity: 0.68;
+}
+
+.glass-theme-hipych {
+  --glass-theme: #3b82f6;
+  --glass-theme-soft: rgba(59, 130, 246, 0.67);
+  --glass-theme-strong: rgba(59, 130, 246, 0.87);
+  --glass-theme-shadow: rgba(59, 130, 246, 0.28);
+}
+
+.glass-theme-bro-cat {
+  --glass-theme: #f97316;
+  --glass-theme-soft: rgba(249, 115, 22, 0.67);
+  --glass-theme-strong: rgba(249, 115, 22, 0.87);
+  --glass-theme-shadow: rgba(249, 115, 22, 0.28);
+}
+
+.glass-theme-valyusha {
+  --glass-theme: #a855f7;
+  --glass-theme-soft: rgba(236, 72, 153, 0.67);
+  --glass-theme-strong: rgba(168, 85, 247, 0.87);
+  --glass-theme-shadow: rgba(168, 85, 247, 0.3);
+}
+
+.glass-theme-default {
+  --glass-theme: #6ea9d7;
+  --glass-theme-soft: rgba(110, 169, 215, 0.67);
+  --glass-theme-strong: rgba(110, 169, 215, 0.87);
+  --glass-theme-shadow: rgba(110, 169, 215, 0.28);
+}
+
+.glass-chat-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 20px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--glass-theme-strong), var(--glass-theme-soft));
+}
+
+.glass-chat-header-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  opacity: 0;
+}
+
+.glass-chat-header-info {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 0;
+}
+
+.glass-chat-avatar-wrap {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+}
+
+.glass-chat-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-chat-avatar-glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, var(--glass-theme), transparent, var(--glass-theme));
+  z-index: -1;
+}
+
+.glass-chat-name {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.glass-status-text {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: statusPulse 2s infinite;
+}
+
+.status-indicator--typing {
+  background: #fbbf24;
+  animation-duration: 1s;
+}
+
+.glass-chat-close {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.glass-chat-close:hover {
+  transform: scale(1.08);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.glass-messages-area {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.glass-messages-bg-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+.glass-messages-list {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-typing-indicator {
+  position: relative;
+  z-index: 1;
+  display: none;
+  margin: 10px 0;
+  padding: 15px 20px;
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.glass-typing-indicator.is-visible {
+  display: block;
+}
+
+.glass-typing-ellipsis {
+  animation: typingDots 1.5s infinite;
+}
+
+.glass-input-area {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-input-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-input-container:focus-within {
+  border-color: var(--glass-theme-soft);
+  box-shadow: 0 0 20px var(--glass-theme-shadow);
+}
+
+.glass-input-container.is-invalid {
+  border-color: rgba(239, 68, 68, 0.8);
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.2);
+}
+
+.glass-message-input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+  color: #fff;
+}
+
+.glass-message-input::placeholder {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.glass-send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--glass-theme), var(--glass-theme-strong));
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 15px var(--glass-theme-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.glass-send-button:hover:not(:disabled) {
+  transform: scale(1.08) rotate(12deg);
+  box-shadow: 0 8px 24px var(--glass-theme-shadow);
+}
+
+.glass-send-button:disabled {
+  cursor: not-allowed;
+}
+
+.glass-message {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  animation: messageSlideIn 0.32s ease-out both;
+}
+
+.glass-message.user-message {
+  justify-content: flex-end;
+}
+
+.glass-message.bot-message {
+  align-items: flex-start;
+}
+
+.glass-message-avatar {
+  width: 28px;
+  height: 28px;
+  margin-top: 4px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-message-bubble {
+  max-width: 75%;
+  padding: 14px 18px;
+  border-radius: 20px 20px 20px 6px;
+  color: #fff;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.user-message .glass-message-bubble {
+  border-radius: 20px 20px 6px 20px;
+  background: linear-gradient(135deg, var(--glass-theme-strong), var(--glass-theme));
+  border: none;
+  box-shadow: 0 4px 15px var(--glass-theme-shadow);
+}
+
+.glass-message-bubble--error {
+  border-color: rgba(239, 68, 68, 0.42);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.glass-message-text {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-ui-widget::-webkit-scrollbar,
+.glass-messages-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.glass-ui-widget::-webkit-scrollbar-track,
+.glass-messages-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.glass-ui-widget::-webkit-scrollbar-thumb,
+.glass-messages-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 3px;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+@keyframes typingDots {
+  0%, 20% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes messageSlideIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 768px) {
+  .glass-ui-floating-button {
+    right: 14px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .glass-ui-floating-avatar {
+    width: 54px;
+    height: 54px;
+  }
+
+  .glass-ui-floating-button::after {
+    display: none;
+  }
+
+  .glass-ui-widget {
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 100px);
+    border-radius: 20px;
+  }
+
+  .glass-chat-header,
+  .glass-messages-area,
+  .glass-input-area {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-ui-widget {
+    max-width: calc(100vw - 10px);
+    max-height: calc(100vh - 80px);
+    border-radius: 16px;
+  }
+
+  .glass-chat-header,
+  .glass-messages-area,
+  .glass-input-area {
+    padding: 12px;
   }
 }
 

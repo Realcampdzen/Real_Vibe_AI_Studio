@@ -48,10 +48,31 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 const consoleIssues = [];
 const cspReportOnlyWarnings = [];
 const oldVideoRequests = [];
+let mockedChatRequests = 0;
+
+await page.route(/\/(?:chat|api\/[^/]+\/chat)(?:\?.*)?$/, async (route) => {
+  if (route.request().method() !== 'POST') {
+    await route.continue();
+    return;
+  }
+
+  mockedChatRequests += 1;
+  await route.fulfill({
+    status: 429,
+    contentType: 'application/json',
+    body: JSON.stringify({
+      code: 'chat_daily_limit',
+      error: 'Smoke test: лимит ответов проверен без вызова AI.'
+    }),
+  });
+});
 
 page.on('console', (message) => {
   if (!['warning', 'error'].includes(message.type())) return;
   const text = `${message.type()}: ${message.text()}`;
+  if (mockedChatRequests > 0 && /429 \(Too Many Requests\)/.test(text)) {
+    return;
+  }
   if (ignoreReportOnlyCsp && isReportOnlyCspMessage(text)) {
     cspReportOnlyWarnings.push(text);
     return;
@@ -68,9 +89,35 @@ page.on('request', (request) => {
 try {
   await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForLoadState('networkidle', { timeout: 30_000 }).catch(() => {});
+  const ctaLinks = await page.evaluate(() => [...document.querySelectorAll('a[data-contact-link]')]
+    .map((link) => ({
+      key: link.getAttribute('data-contact-link'),
+      href: link.getAttribute('href') || '',
+      text: link.textContent.trim(),
+    }))
+    .filter((link) => link.key));
   await page.waitForTimeout(heroWaitMs);
 
   const hero = await collectHeroState(page);
+  const chatButton = page.locator('.glass-ui-hipych-button').first();
+  await chatButton.waitFor({ state: 'visible', timeout: 20_000 });
+  await chatButton.click();
+  const chatWidget = page.locator('.glass-ui-widget.is-visible').first();
+  await chatWidget.waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.glass-ui-widget.is-visible .glass-message-input').fill('Проверка smoke');
+  await page.locator('.glass-ui-widget.is-visible .glass-send-button').click();
+  await page.locator('.glass-ui-widget.is-visible .glass-message-bubble', {
+    hasText: 'Smoke test: лимит ответов проверен без вызова AI.'
+  }).waitFor({ state: 'visible', timeout: 10_000 });
+  const chatUi = await page.evaluate(() => {
+    const widget = document.querySelector('.glass-ui-widget.is-visible');
+    return {
+      visible: Boolean(widget),
+      messageCount: widget ? widget.querySelectorAll('.glass-message').length : 0,
+      inputDisabled: widget ? widget.querySelector('.glass-message-input')?.disabled || false : null,
+      buttonDisabled: widget ? widget.querySelector('.glass-send-button')?.disabled || false : null,
+    };
+  });
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(1500);
   await page.evaluate(() => window.scrollTo(0, 0));
@@ -127,7 +174,9 @@ try {
     consoleIssues,
     cspReportOnlyWarnings: cspReportOnlyWarnings.length,
     oldVideoRequests,
+    ctaLinks,
     hero,
+    chatUi,
     heroAfterScroll,
     serviceCardNavigationUrl,
     detail,
@@ -138,8 +187,14 @@ try {
 
   if (consoleIssues.length) fail('browser smoke console errors/warnings found', consoleIssues);
   if (oldVideoRequests.length) fail('browser smoke requested old hero master video', oldVideoRequests);
+  if (!ctaLinks.length || ctaLinks.some((link) => !link.href || link.href === '#')) {
+    fail('browser smoke CTA/contact links are not wired', ctaLinks);
+  }
   if (!hero || !String(hero.src).includes('hero-reel-desktop.webm') || hero.paused) {
     fail('browser smoke hero did not stay playing on optimized WebM', hero);
+  }
+  if (!chatUi.visible || chatUi.messageCount < 3 || chatUi.inputDisabled || chatUi.buttonDisabled) {
+    fail('browser smoke chat widget interaction failed', chatUi);
   }
   if (!heroAfterScroll || heroAfterScroll.paused) {
     fail('browser smoke hero did not resume after scroll back', heroAfterScroll);
