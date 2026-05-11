@@ -13,7 +13,7 @@ import config from './config/env.js';
 import { createHelmetMiddleware } from './middleware/security.js';
 import { createRateLimiters } from './middleware/rate-limit.js';
 import { createCooldownMiddleware } from './middleware/cooldown.js';
-import { logger, createRequestLogger, createErrorLogger } from './middleware/logging.js';
+import { logger, createRequestLogger, createErrorLogger, safePath } from './middleware/logging.js';
 
 // Routes
 import chatRoutes from './routes/chat.js';
@@ -35,7 +35,7 @@ app.use(cors({
     if (config.cors.allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      logger.warn(`CORS blocked origin: ${origin}`);
+      logger.warn('CORS blocked origin', { origin });
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -53,6 +53,7 @@ const { botMinuteLimiter, botHourLimiter, botDayLimiter, apiLimiter } = createRa
 const cooldownMiddleware = createCooldownMiddleware(logger);
 
 app.use('/api', apiLimiter);
+app.use('/chat', apiLimiter);
 
 // Apply bot-specific rate limits to chat endpoints
 const botLimitStack = [cooldownMiddleware, botMinuteLimiter, botHourLimiter, botDayLimiter];
@@ -130,14 +131,18 @@ app.use(express.static(path.join(__dirname, '..'), {
 app.use(createErrorLogger());
 
 app.use((req, res) => {
-  logger.warn(`404 Not Found: ${req.method} ${req.url}`, { ip: req.ip });
-  res.status(404).json({ error: 'Страница не найдена', status: 404, path: req.url });
+  const pathOnly = safePath(req.originalUrl || req.url);
+  logger.warn('404 Not Found', { method: req.method, path: pathOnly, ip: req.ip });
+  res.status(404).json({ error: 'Страница не найдена', status: 404, path: pathOnly });
 });
 
 app.use((err, req, res, next) => {
   logger.error('Unhandled error:', {
-    error: err.message, stack: err.stack,
-    url: req.url, method: req.method, ip: req.ip,
+    error: err.message,
+    stack: config.isDevelopment ? err.stack : undefined,
+    path: safePath(req.originalUrl || req.url),
+    method: req.method,
+    ip: req.ip,
   });
 
   if (err.message === 'Not allowed by CORS') {

@@ -2,25 +2,24 @@ const API_BASE = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
 const OPENAI_API_URL = API_BASE ? `${API_BASE}/chat` : '/chat';
 const OWNER_TOKEN_STORAGE_KEY = 'rv_owner_token';
 
-function syncOwnerTokenFromUrl() {
+function discardBrowserOwnerToken() {
   const url = new URL(window.location.href);
-  const ownerToken = url.searchParams.get(OWNER_TOKEN_STORAGE_KEY);
-  if (!ownerToken) return;
+  const hadOwnerToken = url.searchParams.has(OWNER_TOKEN_STORAGE_KEY);
 
-  window.localStorage.setItem(OWNER_TOKEN_STORAGE_KEY, ownerToken);
-  url.searchParams.delete(OWNER_TOKEN_STORAGE_KEY);
-  window.history.replaceState({}, document.title, `${url.pathname}${url.search}${url.hash}`);
+  try {
+    window.localStorage.removeItem(OWNER_TOKEN_STORAGE_KEY);
+  } catch (error) {
+    // Ignore storage access errors in private/restricted contexts.
+  }
+
+  if (hadOwnerToken) {
+    url.searchParams.delete(OWNER_TOKEN_STORAGE_KEY);
+    window.history.replaceState({}, document.title, `${url.pathname}${url.search}${url.hash}`);
+  }
 }
 
 function getChatHeaders() {
-  const headers = { 'Content-Type': 'application/json' };
-  const ownerToken = window.localStorage.getItem(OWNER_TOKEN_STORAGE_KEY);
-
-  if (ownerToken) {
-    headers['X-RV-Owner-Token'] = ownerToken;
-  }
-
-  return headers;
+  return { 'Content-Type': 'application/json' };
 }
 
 async function parseChatResponse(response) {
@@ -37,7 +36,7 @@ async function parseChatResponse(response) {
   return (data.reply || data.response || '').trim();
 }
 
-syncOwnerTokenFromUrl();
+discardBrowserOwnerToken();
 
 window.RealVibeChat = {
   getHeaders: getChatHeaders,

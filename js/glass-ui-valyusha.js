@@ -284,7 +284,6 @@ class GlassUIValyusha {
     }
 
     async handleMessage(message) {
-        console.log('💜 НейроВалюша: начинаю обработку сообщения:', message);
         try {
             const requestBody = {
                 message: message,
@@ -294,8 +293,6 @@ class GlassUIValyusha {
             const apiBase = (window.__AI_API_BASE__ || '').replace(/\/$/, '');
             const endpoint = apiBase ? `${apiBase}/api/valyusha/chat` : '/api/valyusha/chat';
 
-            console.log('💜 НейроВалюша: отправляю запрос к', endpoint, requestBody);
-            
             // Добавляем таймаут 60 секунд для запроса
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 секунд
@@ -310,27 +307,23 @@ class GlassUIValyusha {
 
                 clearTimeout(timeoutId);
 
-                console.log('💜 НейроВалюша: получен ответ, статус:', response.status, response.statusText);
-
                 if (response.status === 429 && window.RealVibeChat?.parseResponse) {
                     return await window.RealVibeChat.parseResponse(response);
                 }
 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('💜 НейроВалюша: ошибка HTTP:', response.status, errorText);
+                    await response.text().catch(() => '');
+                    console.error('💜 НейроВалюша: ошибка HTTP:', response.status);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                console.log('💜 НейроВалюша: получены данные:', data);
                 
                 const reply = data.reply || data.response;
                 if (reply && typeof reply === 'string' && reply.trim().length > 0) {
-                    console.log('💜 НейроВалюша: возвращаю ответ от AI:', reply.substring(0, 100));
                     return reply;
                 } else {
-                    console.warn('💜 НейроВалюша: ответ пустой или некорректный, используем fallback. Data:', data);
+                    console.warn('💜 НейроВалюша: ответ пустой или некорректный, используем fallback.');
                     return this.getFallbackResponse(message);
                 }
             } catch (fetchError) {
@@ -342,9 +335,7 @@ class GlassUIValyusha {
                 throw fetchError;
             }
         } catch (error) {
-            console.error('💜 Ошибка при запросе к НейроВалюше:', error);
-            console.error('💜 Детали ошибки:', error.message);
-            console.error('💜 Stack:', error.stack);
+            console.error('💜 Ошибка при запросе к НейроВалюше:', error.message);
             // Fail-closed: без "выдуманных" ответов. Показываем явную проблему с API.
             return this.getFallbackResponse(message);
         }

@@ -11,22 +11,16 @@ import config from '../config/env.js';
  * @returns {boolean}
  */
 export function shouldSkipRateLimit(req) {
-  const ip = req.ip || req.connection?.remoteAddress || '';
-  const origin = req.get('origin') || '';
+  if (!config.isDevelopment) return false;
 
-  const isLocalhostIP = ip === '127.0.0.1' ||
+  const ip = req.ip || req.connection?.remoteAddress || '';
+
+  return ip === '127.0.0.1' ||
     ip === '::1' ||
     ip === '::ffff:127.0.0.1' ||
     ip.includes('localhost') ||
     ip.startsWith('127.') ||
     ip.startsWith('::ffff:127.');
-
-  const isLocalhostOrigin = origin && (
-    origin.startsWith('http://localhost:') ||
-    origin.startsWith('http://127.0.0.1:')
-  );
-
-  return isLocalhostIP || isLocalhostOrigin;
 }
 
 function createRateLimitHandler(logger, message, retryAfter) {

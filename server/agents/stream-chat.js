@@ -54,7 +54,7 @@ export async function streamAgentChat(res, systemPrompt, userMessage, opts = {})
           try {
             const args = JSON.parse(toolCall.function.arguments || '{}');
             const result = handler(args);
-            logger.info(`🔧 Stream tool ${toolCall.function.name} → OK`);
+            logger.info('Stream tool call completed', { tool: toolCall.function.name });
 
             // Notify client about tool usage
             res.write(`data: ${JSON.stringify({ type: 'tool', name: toolCall.function.name, args })}\n\n`);

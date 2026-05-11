@@ -157,8 +157,7 @@ export function getPricing({ serviceId }) {
  */
 export function submitLead({ name, task, contact }) {
   // В будущем: отправка в TG через Bot API
-  // Сейчас: логируем и подтверждаем
-  console.log(`📋 НОВАЯ ЗАЯВКА: ${name} | ${task} | ${contact}`);
+  // Сейчас только подтверждаем: контактные данные не пишем в runtime-логи.
   return {
     status: 'success',
     message: `Заявка принята! Степан (@Stivanovv) свяжется с вами в ближайшее время.`,

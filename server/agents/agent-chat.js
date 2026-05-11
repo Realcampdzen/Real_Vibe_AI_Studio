@@ -63,7 +63,7 @@ export async function agentChat(systemPrompt, userMessage, opts = {}) {
       try {
         const args = JSON.parse(fn.arguments || '{}');
         const result = handler(args);
-        logger.info(`🔧 Tool ${fn.name}(${JSON.stringify(args)}) → OK`);
+        logger.info('Tool call completed', { tool: fn.name });
 
         messages.push({
           role: 'tool',

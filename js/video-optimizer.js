@@ -16,6 +16,9 @@ class VideoOptimizer {
       : null;
     this.states = new WeakMap();
     this.heroVideo = document.getElementById('hero-reel-video');
+    this.heroOffscreenPauseDelayMs = 1200;
+    this.resumeAttemptMinGapMs = 700;
+    this.viewportRefreshQueued = false;
     this.init();
   }
 
@@ -28,6 +31,9 @@ class VideoOptimizer {
     document.addEventListener('visibilitychange', () => {
       this.refreshVisiblePlayback();
     });
+    window.addEventListener('pageshow', () => this.refreshVisiblePlayback());
+    window.addEventListener('focus', () => this.refreshVisiblePlayback());
+    this.setupViewportPlaybackRefresh();
   }
 
   normalizeSrc(src) {
@@ -59,6 +65,98 @@ class VideoOptimizer {
     if (!state) return;
     const until = performance.now() + duration;
     state.suppressPauseUntil = Math.max(state.suppressPauseUntil || 0, until);
+  }
+
+  clearVisibilityPause(state) {
+    if (state?.visibilityPauseTimer) {
+      clearTimeout(state.visibilityPauseTimer);
+      state.visibilityPauseTimer = null;
+    }
+  }
+
+  pauseVideoInternally(video) {
+    const state = this.states.get(video);
+    if (!state || video.paused) return;
+
+    state.controllerPaused = true;
+    state.pausedByVisibility = true;
+    this.suppressInternalPause(video);
+    video.pause();
+    state.pausedByVisibility = false;
+  }
+
+  canAutoplayVisible(video, state) {
+    if (!video || !state) return false;
+    if (!state.shouldAutoplay || state.userPaused) return false;
+    if (document.visibilityState !== 'visible' || video.error) return false;
+
+    const threshold = this.isPrimaryHero(video) ? 0.1 : 0.15;
+    if (!state.visible && !this.isElementVisible(video, threshold)) return false;
+    return true;
+  }
+
+  scheduleGuardedResume(video, reason = 'resume', delay = 0) {
+    const state = this.states.get(video);
+    if (!state) return;
+
+    if (state.resumeTimer) {
+      clearTimeout(state.resumeTimer);
+    }
+
+    state.resumeTimer = setTimeout(() => {
+      state.resumeTimer = null;
+      this.guardedResume(video, reason);
+    }, delay);
+  }
+
+  guardedResume(video, reason = 'resume') {
+    const state = this.states.get(video);
+    if (!this.canAutoplayVisible(video, state) || !video.paused) return;
+
+    const now = performance.now();
+    if (state.lastResumeAttempt && now - state.lastResumeAttempt < this.resumeAttemptMinGapMs) {
+      return;
+    }
+
+    state.lastResumeAttempt = now;
+    this.playVideo(video);
+  }
+
+  scheduleVisibilityPause(video) {
+    const state = this.states.get(video);
+    if (!state) return;
+
+    this.clearVisibilityPause(state);
+    const delay = this.isPrimaryHero(video) ? this.heroOffscreenPauseDelayMs : 0;
+
+    state.visibilityPauseTimer = setTimeout(() => {
+      state.visibilityPauseTimer = null;
+
+      const threshold = this.isPrimaryHero(video) ? 0.1 : 0.01;
+      if (this.isElementVisible(video, threshold)) {
+        state.visible = true;
+        this.scheduleGuardedResume(video, 'visibility-recheck');
+        return;
+      }
+
+      state.visible = false;
+      state.wasPlayingBeforeHidden = !video.paused;
+      this.pauseVideoInternally(video);
+    }, delay);
+  }
+
+  setupViewportPlaybackRefresh() {
+    const schedule = () => {
+      if (this.viewportRefreshQueued) return;
+      this.viewportRefreshQueued = true;
+      requestAnimationFrame(() => {
+        this.viewportRefreshQueued = false;
+        this.refreshVisiblePlayback({ refreshDom: false });
+      });
+    };
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
   }
 
   prepareLazyVideoSource(video) {
@@ -208,6 +306,10 @@ class VideoOptimizer {
       pausedByVisibility: false,
       wasPlayingBeforeHidden: false,
       suppressPauseUntil: 0,
+      visibilityPauseTimer: null,
+      resumeTimer: null,
+      lastResumeAttempt: 0,
+      controllerPaused: false,
     };
     this.states.set(video, state);
 
@@ -239,19 +341,27 @@ class VideoOptimizer {
   setupManagedVideoEvents(video) {
     video.addEventListener('play', () => {
       const state = this.states.get(video);
-      if (state) state.userPaused = false;
+      if (state) {
+        state.userPaused = false;
+        state.controllerPaused = false;
+      }
       this.hideLoadingIndicator(video);
     });
 
     video.addEventListener('pause', () => {
       const state = this.states.get(video);
       if (!state) return;
+      if (state.controllerPaused) return;
       if (state.suppressPauseUntil && performance.now() < state.suppressPauseUntil) return;
       if (
         !state.pausedByVisibility &&
         state.visible &&
         document.visibilityState === 'visible'
       ) {
+        if (this.isPrimaryHero(video) && state.shouldAutoplay && !state.userPaused && !video.error) {
+          this.scheduleGuardedResume(video, 'unexpected-pause', 250);
+          return;
+        }
         state.userPaused = true;
       }
     });
@@ -262,7 +372,7 @@ class VideoOptimizer {
       this.hideLoadingIndicator(video);
       const state = this.states.get(video);
       if (state?.visible && state.shouldAutoplay && !state.userPaused) {
-        this.playVideo(video);
+        this.scheduleGuardedResume(video, 'canplay');
       }
     });
     video.addEventListener('playing', () => this.hideLoadingIndicator(video));
@@ -293,17 +403,14 @@ class VideoOptimizer {
     const state = this.states.get(video);
     if (!state) return;
 
-    state.visible = isVisible;
-
     if (!isVisible) {
-      state.wasPlayingBeforeHidden = !video.paused;
-      if (!video.paused) {
-        state.pausedByVisibility = true;
-        video.pause();
-        state.pausedByVisibility = false;
-      }
+      this.scheduleVisibilityPause(video);
       return;
     }
+
+    this.clearVisibilityPause(state);
+    state.visible = true;
+    state.wasPlayingBeforeHidden = false;
 
     if (this.networkAllowsAutoPreload()) {
       if (video.dataset.sourcesApplied !== '1') {
@@ -323,7 +430,7 @@ class VideoOptimizer {
       !this.prefersReducedMotion &&
       document.visibilityState === 'visible'
     ) {
-      this.playVideo(video);
+      this.scheduleGuardedResume(video, 'visible');
     }
   }
 
@@ -349,24 +456,28 @@ class VideoOptimizer {
     });
   }
 
-  refreshVisiblePlayback() {
-    this.refresh();
+  refreshVisiblePlayback({ refreshDom = true } = {}) {
+    if (refreshDom) this.refresh();
     document
       .querySelectorAll('video[data-video-optimizer-ready="1"]')
       .forEach((video) => {
         const state = this.states.get(video);
         if (!state) return;
         if (document.visibilityState === 'hidden') {
+          this.clearVisibilityPause(state);
           state.wasPlayingBeforeHidden = !video.paused;
-          if (!video.paused) {
-            state.pausedByVisibility = true;
-            video.pause();
-            state.pausedByVisibility = false;
-          }
+          this.pauseVideoInternally(video);
           return;
         }
+        const isVisible = this.isElementVisible(video, this.isPrimaryHero(video) ? 0.1 : 0.15);
+        if (isVisible) {
+          this.clearVisibilityPause(state);
+          state.visible = true;
+        } else if (state.visible) {
+          this.scheduleVisibilityPause(video);
+        }
         if (state.visible && state.shouldAutoplay && !state.userPaused) {
-          this.playVideo(video);
+          this.scheduleGuardedResume(video, 'refresh');
         }
       });
   }

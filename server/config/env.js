@@ -13,23 +13,48 @@ function parseList(value) {
     .filter(Boolean);
 }
 
-const defaultAllowedOrigins = [
+const developmentAllowedOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'http://localhost:4300',
   'http://127.0.0.1:4300',
-  'https://realcampdzen.github.io',
+];
+
+const productionAllowedOrigins = [
   'https://real-vibe.studio',
   'https://www.real-vibe.studio',
   'https://vps.real-vibe.studio',
+];
+
+const stagingAllowedOrigins = [
+  'https://realcampdzen.github.io',
   'https://real-vibe-ai-studio.pages.dev',
 ];
+
+const nodeEnv = process.env.NODE_ENV || 'development';
+const isDevelopment = nodeEnv !== 'production';
+const envAllowedOrigins = parseList(process.env.ALLOWED_ORIGINS);
+
+function resolveAllowedOrigins() {
+  if (!isDevelopment) {
+    return envAllowedOrigins.length
+      ? envAllowedOrigins
+      : productionAllowedOrigins;
+  }
+
+  return [
+    ...developmentAllowedOrigins,
+    ...productionAllowedOrigins,
+    ...stagingAllowedOrigins,
+    ...envAllowedOrigins,
+  ];
+}
 
 const config = {
   port: Number(process.env.PORT) || 3000,
   host: process.env.BIND_HOST || '',
-  nodeEnv: process.env.NODE_ENV || 'development',
-  isDevelopment: process.env.NODE_ENV !== 'production',
+  nodeEnv,
+  isDevelopment,
   trustProxy: process.env.TRUST_PROXY || 'loopback',
 
   openai: {
@@ -42,7 +67,7 @@ const config = {
   },
 
   cors: {
-    allowedOrigins: [...new Set([...defaultAllowedOrigins, ...parseList(process.env.ALLOWED_ORIGINS)])],
+    allowedOrigins: [...new Set(resolveAllowedOrigins())],
   },
 
   rateLimits: {

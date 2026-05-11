@@ -43,7 +43,7 @@ async function handleChat(req, res, botId) {
     }
 
     const { message } = value;
-    logger.info(`🤖 Запрос к ${bot.name}:`, { message: message.substring(0, 100), ip: req.ip });
+    logger.info('Chat request accepted', { botId, botName: bot.name, ip: req.ip });
 
     const quota = await consumeChatQuota(req, res, botId);
     if (!quota.allowed) {
@@ -72,10 +72,10 @@ async function handleChat(req, res, botId) {
       reply = getFallbackResponse(botId, message);
     }
 
-    logger.info(`✅ Ответ от ${bot.name}:`, { reply: reply.substring(0, 100) });
+    logger.info('Chat response generated', { botId, botName: bot.name });
     res.json({ reply });
   } catch (error) {
-    logger.error(`❌ Ошибка ${botId}:`, { error: error.message, stack: error.stack, ip: req.ip });
+    logger.error('Chat request failed', { botId, error: error.message, ip: req.ip });
 
     const bot = getBot(botId);
     const emergencyReply = bot?.emergencyReply || 'Извините, временные неполадки. Обращайтесь к @Stivanovv!';
@@ -110,7 +110,7 @@ router.post('/api/chat/:botId/stream', async (req, res) => {
     'X-Accel-Buffering': 'no',
   });
 
-  logger.info(`📡 SSE stream для ${bot.name}`, { message: value.message.substring(0, 80) });
+  logger.info('SSE chat stream started', { botId: req.params.botId, botName: bot.name });
   await streamAgentChat(res, bot.prompt, value.message);
 });
 
@@ -211,7 +211,7 @@ router.post('/api/webhook/:botId', async (req, res) => {
       processed: true,
     });
   } catch (error) {
-    logger.error('❌ Ошибка webhook:', { error: error.message, stack: error.stack, ip: req.ip });
+    logger.error('Webhook error', { error: error.message, ip: req.ip });
     res.status(500).json({ error: 'Webhook error' });
   }
 });

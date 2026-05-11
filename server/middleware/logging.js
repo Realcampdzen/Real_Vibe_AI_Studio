@@ -2,9 +2,9 @@
  * Winston logging configuration.
  */
 import winston from 'winston';
-import expressWinston from 'express-winston';
 import fs from 'fs';
 import path from 'path';
+import config from '../config/env.js';
 
 // Создаём директорию для логов если её нет
 const logsDir = path.join(process.cwd(), 'logs');
@@ -27,18 +27,46 @@ export const logger = winston.createLogger({
   ],
 });
 
+function safePath(rawUrl = '') {
+  try {
+    const url = new URL(rawUrl, 'http://local');
+    return url.pathname;
+  } catch {
+    return String(rawUrl).split('?')[0] || '/';
+  }
+}
+
+function requestMeta(req) {
+  return {
+    method: req.method,
+    path: safePath(req.originalUrl || req.url),
+    ip: req.ip,
+  };
+}
+
 export function createRequestLogger() {
-  return expressWinston.logger({
-    winstonInstance: logger,
-    meta: true,
-    msg: 'HTTP {{req.method}} {{req.url}}',
-    colorize: false,
-    ignoreRoute: () => false,
-  });
+  return function requestLogger(req, res, next) {
+    const startedAt = Date.now();
+    res.on('finish', () => {
+      logger.info('HTTP request', {
+        ...requestMeta(req),
+        statusCode: res.statusCode,
+        responseTimeMs: Date.now() - startedAt,
+      });
+    });
+    next();
+  };
 }
 
 export function createErrorLogger() {
-  return expressWinston.errorLogger({
-    winstonInstance: logger,
-  });
+  return function errorLogger(err, req, res, next) {
+    logger.error('HTTP request error', {
+      ...requestMeta(req),
+      error: err.message,
+      stack: config.isDevelopment ? err.stack : undefined,
+    });
+    next(err);
+  };
 }
+
+export { safePath };
