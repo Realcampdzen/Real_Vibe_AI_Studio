@@ -152,10 +152,7 @@ class TouchGestureHandler {
   
   closeActiveChats() {
     const chats = [
-      '.chat-overlay',
-      '.hipych-widget',
-      '.bro-cat-widget',
-      '.ai-assistant-widget'
+      '.glass-ui-widget.is-visible'
     ];
     
     chats.forEach(selector => {
@@ -760,13 +757,13 @@ class AdvancedTouchGestures {
   }
 
   handleSwipeRight(e) {
-    // Свайп вправо - закрытие мобильного меню или чата
+    // Свайп вправо - закрытие мобильного меню или активного чата
     const mobileNav = document.getElementById('mobile-nav');
-    const chatOverlay = document.getElementById('chat-overlay');
+    const activeChat = document.querySelector('.glass-ui-widget.is-visible');
     
     if (mobileNav && mobileNav.classList.contains('active')) {
       this.closeMobileMenu();
-    } else if (chatOverlay && !chatOverlay.classList.contains('hidden')) {
+    } else if (activeChat) {
       this.closeChat();
     }
   }
@@ -925,8 +922,9 @@ class AdvancedTouchGestures {
   }
 
   closeChat() {
-    const chatOverlay = document.getElementById('chat-overlay');
-    if (chatOverlay) chatOverlay.classList.add('hidden');
+    document.querySelectorAll('.glass-ui-widget.is-visible .glass-chat-close').forEach((button) => {
+      button.click();
+    });
   }
 }
 

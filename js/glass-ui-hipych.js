@@ -107,7 +107,10 @@ class GlassUIHipych {
                 : (await response.json()).reply;
             return reply || this.getFallbackResponse(message);
         } catch (error) {
-            console.error('Ошибка при запросе к Хипычу:', error && error.message ? error.message : error);
+            if (error?.isUserVisible) {
+                throw error;
+            }
+
             return this.getFallbackResponse(message);
         }
     }
@@ -125,11 +128,6 @@ class GlassUIHipych {
     closeOtherChats() {
         if (window.glassUIBroCat?.isVisible) window.glassUIBroCat.hideChat();
         if (window.glassUIValyusha?.isVisible) window.glassUIValyusha.hideChat();
-
-        const oldChatOverlay = document.getElementById('chat-overlay');
-        if (oldChatOverlay && !oldChatOverlay.classList.contains('hidden')) {
-            oldChatOverlay.classList.add('hidden');
-        }
     }
 
     showChat() {

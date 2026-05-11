@@ -14,6 +14,7 @@
     "smoke:browser": "node scripts/browser-smoke.mjs",
     "smoke:prod": "node scripts/prod-smoke.mjs",
     "perf:desktop": "node scripts/perf-probe.mjs",
+    "deploy:vps:patch": "node scripts/deploy-vps-patch.mjs",
     "quality:release": "npm run check && npm run check:security && npm run audit:prod",
     "test": "npm run check"
   },

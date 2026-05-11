@@ -51,7 +51,24 @@ CHAT_QUOTA_STORE_PATH=data/local-chat-quotas.json node server/index.js
 
 ## VPS Deploy
 
-The current VPS uses `/srv/real-vibe-studio/current` as a release symlink. For a full checkout-based deploy, use the commands below only if `/srv/real-vibe-studio` is a Git worktree:
+The current VPS uses `/srv/real-vibe-studio/current` as a release symlink. Patch releases should use the scripted tar/symlink flow:
+
+```bash
+DRY_RUN=true npm run deploy:vps:patch
+npm run deploy:vps:patch
+```
+
+Defaults:
+
+- `VPS_HOST=root@89.223.126.190`
+- `VPS_BASE=/srv/real-vibe-studio`
+- `VPS_KEY=%USERPROFILE%/.ssh/realcampguide_timeweb_ed25519` on Windows or `$HOME/.ssh/realcampguide_timeweb_ed25519`
+- `VPS_HEALTH_URL=http://127.0.0.1:4300/health`
+- `RELEASE_LABEL=patch`
+
+The script builds a patch archive from the current commit, creates a new release from the current symlink target, applies changed/deleted files, links production `.env` and `data`, builds the Docker image, switches `/srv/real-vibe-studio/current`, and runs the health check. If health fails, it switches the symlink back and restarts the previous release.
+
+For a full checkout-based deploy, use the commands below only if `/srv/real-vibe-studio` is a Git worktree:
 
 ```bash
 ssh root@89.223.126.190
@@ -72,6 +89,7 @@ The app must bind to `127.0.0.1:4300`; Nginx owns public TLS/host routing.
 npm run smoke:prod
 BROWSER_SMOKE_BASE_URL=https://vps.real-vibe.studio npm run smoke:browser
 PERF_PROBE_BASE_URL=https://vps.real-vibe.studio npm run perf:desktop
+ssh root@89.223.126.190 "readlink -f /srv/real-vibe-studio/current"
 ssh root@89.223.126.190 "docker ps --filter name=real-vibe-web --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
 ssh root@89.223.126.190 "docker image ls current-real-vibe-web --format 'table {{.Repository}}\t{{.Tag}}\t{{.Size}}'"
 ssh root@89.223.126.190 "docker logs --tail=150 real-vibe-web"
@@ -101,7 +119,7 @@ The `Site Quality Gate` workflow runs:
 - local production server smoke through `npm run smoke:api`
 - `npm run smoke:browser` with a mocked chat response, so CI does not call OpenAI
 
-Keep VPS deployment manual until the release symlink flow and secret handling are explicitly automated.
+Keep VPS deployment manually triggered; GitHub Actions must not auto-deploy production without a separate approval flow and secret review.
 
 ## Rollback
 

@@ -122,7 +122,10 @@ class GlassUIBroCat {
                 : (await response.json()).reply;
             return reply || this.getFallbackResponse(message);
         } catch (error) {
-            console.error('Ошибка при запросе к Коту Бро:', error && error.message ? error.message : error);
+            if (error?.isUserVisible) {
+                throw error;
+            }
+
             return this.getFallbackResponse(message);
         }
     }
@@ -149,11 +152,6 @@ class GlassUIBroCat {
     closeOtherChats() {
         if (window.glassUIHipych?.isVisible) window.glassUIHipych.hideChat();
         if (window.glassUIValyusha?.isVisible) window.glassUIValyusha.hideChat();
-
-        const oldChatOverlay = document.getElementById('chat-overlay');
-        if (oldChatOverlay && !oldChatOverlay.classList.contains('hidden')) {
-            oldChatOverlay.classList.add('hidden');
-        }
     }
 
     showChat() {

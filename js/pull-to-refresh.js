@@ -55,7 +55,7 @@ class PullToRefresh {
         document.body.classList.contains('mobile-nav-open') ||
         document.documentElement.classList.contains('mobile-nav-open') ||
         document.getElementById('mobile-nav')?.classList.contains('active') ||
-        target?.closest?.('.mobile-nav, .chat-overlay, .hipych-widget, .bro-cat-widget')
+        target?.closest?.('.mobile-nav, .glass-ui-widget')
       );
     };
 

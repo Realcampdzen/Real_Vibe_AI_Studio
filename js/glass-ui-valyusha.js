@@ -132,7 +132,10 @@ class GlassUIValyusha {
                 throw fetchError;
             }
         } catch (error) {
-            console.error('Ошибка при запросе к НейроВалюше:', error && error.message ? error.message : error);
+            if (error?.isUserVisible) {
+                throw error;
+            }
+
             return this.getFallbackResponse();
         }
     }
@@ -146,11 +149,6 @@ class GlassUIValyusha {
     closeOtherChats() {
         if (window.glassUIBroCat?.isVisible) window.glassUIBroCat.hideChat();
         if (window.glassUIHipych?.isVisible) window.glassUIHipych.hideChat();
-
-        const oldChatOverlay = document.getElementById('chat-overlay');
-        if (oldChatOverlay && !oldChatOverlay.classList.contains('hidden')) {
-            oldChatOverlay.classList.add('hidden');
-        }
     }
 
     showChat() {

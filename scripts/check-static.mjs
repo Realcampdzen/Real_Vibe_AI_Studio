@@ -7,6 +7,7 @@ const criticalDomFiles = [
   'index.html',
   'service-detail.html',
   'ai-photo-detail.html',
+  'js/chat-client.js',
   'js/chat.js',
   'js/glass-ui-bro-cat.js',
   'js/glass-ui-hipych.js',
@@ -23,6 +24,7 @@ const criticalDomFiles = [
   'chat-components/GlassUIWidget.js',
 ];
 const strictStyleRuntimeFiles = [
+  'js/chat-client.js',
   'js/chat.js',
   'js/glass-ui-bro-cat.js',
   'js/glass-ui-hipych.js',

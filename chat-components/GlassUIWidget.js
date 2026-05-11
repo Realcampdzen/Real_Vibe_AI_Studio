@@ -267,10 +267,11 @@ class GlassUIWidget {
                 timestamp: new Date()
             });
         } catch (error) {
-            console.error('Ошибка отправки сообщения:', error && error.message ? error.message : error);
             this.messages.push({
                 id: (Date.now() + 1).toString(),
-                text: 'Сейчас не получилось отправить сообщение. Проверьте соединение или попробуйте позже.',
+                text: error?.isUserVisible
+                    ? error.message
+                    : 'Сейчас не получилось отправить сообщение. Проверьте соединение или напишите в Telegram @Stivanovv.',
                 isBot: true,
                 isError: true,
                 timestamp: new Date()

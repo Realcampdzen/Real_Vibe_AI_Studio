@@ -21,7 +21,8 @@
     window.matchMedia &&
     window.matchMedia('(max-width: 900px)').matches;
   const isDetailPage = document.body && document.body.classList.contains('detail-page');
-  const chatIdleDelay = isDetailPage ? 2600 : 900;
+  const shouldAutoStartChat = !isDetailPage;
+  const chatIdleDelay = shouldAutoStartChat ? 900 : 0;
 
   const loadedScripts = new Set();
   const loadedStyles = new Set();
@@ -123,8 +124,8 @@
 
     // Mobile helpers
     if (isMobile) {
-    schedule(() => loadScript('js/mobile-enhancements.js?v=20260512-observeux'), 220);
-    schedule(() => loadScript('js/pull-to-refresh.js?v=20260506-mobile-hero-nav'), 260);
+      schedule(() => loadScript('js/mobile-enhancements.js?v=20260512-chatcleanup'), 220);
+      schedule(() => loadScript('js/pull-to-refresh.js?v=20260512-chatcleanup'), 260);
       schedule(() => loadScript('js/haptic-feedback.js'), 300);
     }
 
@@ -132,15 +133,15 @@
     schedule(() => {
       const chatReady = window.RealVibeChat
         ? Promise.resolve()
-        : loadScript('js/chat.js?v=20260512-observeux');
+        : loadScript('js/chat-client.js?v=20260512-chatcleanup');
 
       chatReady
-        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260511-stylecsp'))
+        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260512-chatcleanup'))
         .then(() =>
           Promise.all([
-            loadScript('js/glass-ui-hipych.js?v=20260511-stylecsp'),
-            loadScript('js/glass-ui-bro-cat.js?v=20260511-stylecsp'),
-            loadScript('js/glass-ui-valyusha.js?v=20260511-stylecsp'),
+            loadScript('js/glass-ui-hipych.js?v=20260512-chatcleanup'),
+            loadScript('js/glass-ui-bro-cat.js?v=20260512-chatcleanup'),
+            loadScript('js/glass-ui-valyusha.js?v=20260512-chatcleanup'),
           ])
         )
         .catch((err) => {
@@ -172,16 +173,22 @@
     document.addEventListener('DOMContentLoaded', () => {
       runCoreOptimizers();
       bindChatWakeEvents();
-      scheduleDeferredStart(isDetailPage ? 2600 : 500);
+      if (shouldAutoStartChat) {
+        scheduleDeferredStart(500);
+      }
     });
   } else {
     runCoreOptimizers();
     bindChatWakeEvents();
-    scheduleDeferredStart(isDetailPage ? 2600 : 500);
+    if (shouldAutoStartChat) {
+      scheduleDeferredStart(500);
+    }
   }
 
   window.addEventListener('load', () => {
     bindChatWakeEvents();
-    scheduleDeferredStart(isDetailPage ? 2600 : 600);
+    if (shouldAutoStartChat) {
+      scheduleDeferredStart(600);
+    }
   }, { once: true });
 })();

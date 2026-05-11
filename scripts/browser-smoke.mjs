@@ -49,6 +49,7 @@ const consoleIssues = [];
 const cspReportOnlyWarnings = [];
 const oldVideoRequests = [];
 let mockedChatRequests = 0;
+let chatRouteMode = 'rate-limit';
 
 await page.route(/\/(?:chat|api\/[^/]+\/chat)(?:\?.*)?$/, async (route) => {
   if (route.request().method() !== 'POST') {
@@ -57,6 +58,11 @@ await page.route(/\/(?:chat|api\/[^/]+\/chat)(?:\?.*)?$/, async (route) => {
   }
 
   mockedChatRequests += 1;
+  if (chatRouteMode === 'network-error') {
+    await route.abort('failed');
+    return;
+  }
+
   await route.fulfill({
     status: 429,
     contentType: 'application/json',
@@ -71,6 +77,9 @@ page.on('console', (message) => {
   if (!['warning', 'error'].includes(message.type())) return;
   const text = `${message.type()}: ${message.text()}`;
   if (mockedChatRequests > 0 && /429 \(Too Many Requests\)/.test(text)) {
+    return;
+  }
+  if (mockedChatRequests > 0 && /net::ERR_FAILED/.test(text)) {
     return;
   }
   if (ignoreReportOnlyCsp && isReportOnlyCspMessage(text)) {
@@ -96,6 +105,7 @@ try {
       text: link.textContent.trim(),
     }))
     .filter((link) => link.key));
+  const legacyChatOverlayPresent = await page.evaluate(() => Boolean(document.getElementById('chat-overlay')));
   await page.waitForTimeout(heroWaitMs);
 
   const hero = await collectHeroState(page);
@@ -107,7 +117,7 @@ try {
   await page.locator('.glass-ui-widget.is-visible .glass-message-input').fill('Проверка smoke');
   await page.locator('.glass-ui-widget.is-visible .glass-send-button').click();
   await page.locator('.glass-ui-widget.is-visible .glass-message-bubble', {
-    hasText: 'Smoke test: лимит ответов проверен без вызова AI.'
+    hasText: 'На сегодня лимит сообщений исчерпан'
   }).waitFor({ state: 'visible', timeout: 10_000 });
   const chatUi = await page.evaluate(() => {
     const widget = document.querySelector('.glass-ui-widget.is-visible');
@@ -120,6 +130,26 @@ try {
   });
   await page.locator('.glass-ui-widget.is-visible .glass-chat-close').click({ timeout: 10_000 });
   await page.locator('.glass-ui-widget.is-visible').waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
+
+  chatRouteMode = 'network-error';
+  await page.locator('.glass-ui-valyusha-button').first().click();
+  await page.locator('.glass-ui-widget.is-visible .glass-message-input').fill('Проверка сети');
+  await page.locator('.glass-ui-widget.is-visible .glass-send-button').click();
+  await page.locator('.glass-ui-widget.is-visible .glass-message-bubble', {
+    hasText: 'не могу подключиться'
+  }).waitFor({ state: 'visible', timeout: 10_000 });
+  const chatNetworkUi = await page.evaluate(() => {
+    const widget = document.querySelector('.glass-ui-widget.is-visible');
+    return {
+      visible: Boolean(widget),
+      messageCount: widget ? widget.querySelectorAll('.glass-message').length : 0,
+      inputDisabled: widget ? widget.querySelector('.glass-message-input')?.disabled || false : null,
+      buttonDisabled: widget ? widget.querySelector('.glass-send-button')?.disabled || false : null,
+    };
+  });
+  await page.locator('.glass-ui-widget.is-visible .glass-chat-close').click({ timeout: 10_000 });
+  await page.locator('.glass-ui-widget.is-visible').waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
+  chatRouteMode = 'rate-limit';
 
   const widgetOpenClose = [];
   for (const selector of ['.glass-ui-hipych-button', '.glass-ui-bro-cat-button', '.glass-ui-valyusha-button']) {
@@ -171,13 +201,54 @@ try {
       .map((link) => link.getAttribute('href') || '')),
   };
 
+  const mobileDetailPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true });
+  await mobileDetailPage.goto(`${baseUrl}/service-detail.html?id=0`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await mobileDetailPage.waitForTimeout(700);
+  const mobileDetail = await mobileDetailPage.evaluate(() => {
+    const links = [...document.querySelectorAll('.service-detail-cta-section a[href]')]
+      .map((link) => {
+        const rect = link.getBoundingClientRect();
+        return {
+          href: link.getAttribute('href') || '',
+          text: link.textContent.trim(),
+          visible: rect.width > 0 && rect.height > 0,
+          rect: {
+            left: rect.left,
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom,
+          },
+        };
+      })
+      .filter((link) => link.visible);
+
+    const overlaps = [];
+    for (let i = 0; i < links.length; i += 1) {
+      for (let j = i + 1; j < links.length; j += 1) {
+        const a = links[i].rect;
+        const b = links[j].rect;
+        const x = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+        const y = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+        if (x * y > 64) {
+          overlaps.push([links[i].text, links[j].text]);
+        }
+      }
+    }
+
+    return {
+      ctaHrefs: links.map((link) => link.href),
+      overlaps,
+    };
+  });
+  await mobileDetailPage.close();
+
   const freshDetailPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await freshDetailPage.goto(`${baseUrl}/service-detail.html?id=0`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await freshDetailPage.waitForTimeout(900);
   const freshDetailRuntime = await freshDetailPage.evaluate(() => {
     const chatScripts = [...document.scripts]
       .map((script) => script.getAttribute('src') || '')
-      .filter((src) => /GlassUIWidget|glass-ui-(?:hipych|bro-cat|valyusha)|chat\.js/.test(src));
+      .filter((src) => /GlassUIWidget|glass-ui-(?:hipych|bro-cat|valyusha)|chat(?:-client)?\.js/.test(src));
     const eagerOffscreenVideos = [...document.querySelectorAll('video')]
       .filter((video) => video.getBoundingClientRect().top > window.innerHeight * 1.25)
       .filter((video) => video.currentSrc || video.readyState > 0)
@@ -197,13 +268,16 @@ try {
     cspReportOnlyWarnings: cspReportOnlyWarnings.length,
     oldVideoRequests,
     ctaLinks,
+    legacyChatOverlayPresent,
     hero,
     chatUi,
+    chatNetworkUi,
     widgetOpenClose,
     heroAfterScroll,
     serviceCardNavigationUrl,
     detail,
     aiPhoto,
+    mobileDetail,
     freshDetailRuntime,
   };
   console.log(JSON.stringify(result, null, 2));
@@ -213,11 +287,17 @@ try {
   if (!ctaLinks.length || ctaLinks.some((link) => !link.href || link.href === '#')) {
     fail('browser smoke CTA/contact links are not wired', ctaLinks);
   }
+  if (legacyChatOverlayPresent) {
+    fail('browser smoke legacy chat overlay is still present');
+  }
   if (!hero || !String(hero.src).includes('hero-reel-desktop.webm') || hero.paused) {
     fail('browser smoke hero did not stay playing on optimized WebM', hero);
   }
   if (!chatUi.visible || chatUi.messageCount < 3 || chatUi.inputDisabled || chatUi.buttonDisabled) {
     fail('browser smoke chat widget interaction failed', chatUi);
+  }
+  if (!chatNetworkUi.visible || chatNetworkUi.messageCount < 3 || chatNetworkUi.inputDisabled || chatNetworkUi.buttonDisabled) {
+    fail('browser smoke chat network fallback failed', chatNetworkUi);
   }
   if (widgetOpenClose.length !== 3 || widgetOpenClose.some((entry) => !entry.visible)) {
     fail('browser smoke chat widgets did not open/close cleanly', widgetOpenClose);
@@ -242,6 +322,13 @@ try {
       .every((href) => aiPhoto.ctaHrefs.includes(href))
   ) {
     fail('browser smoke AI photo detail failed', aiPhoto);
+  }
+  if (
+    mobileDetail.overlaps.length ||
+    !['https://t.me/Stivanovv', 'tel:+79319671483', 'mailto:polstan1986@gmail.com']
+      .every((href) => mobileDetail.ctaHrefs.includes(href))
+  ) {
+    fail('browser smoke mobile detail CTA layout failed', mobileDetail);
   }
   if (
     freshDetailRuntime.chatScripts.length ||

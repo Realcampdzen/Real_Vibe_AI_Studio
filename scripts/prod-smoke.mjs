@@ -24,6 +24,7 @@ await check('/health', health.ok, `status ${health.status}`);
 const homepage = await request('/');
 const csp = homepage.headers.get('content-security-policy') || '';
 const cspReportOnly = homepage.headers.get('content-security-policy-report-only') || '';
+const homepageText = await homepage.text();
 await check('homepage', homepage.ok, `status ${homepage.status}`);
 await check('enforced script CSP', /script-src 'self'/.test(csp), csp);
 await check('enforced object/base/frame CSP', /object-src 'none'/.test(csp) && /base-uri 'self'/.test(csp) && /frame-ancestors 'self'/.test(csp), csp);
@@ -31,6 +32,8 @@ await check('enforced style attr CSP', /style-src-attr 'none'/.test(csp), csp);
 await check('enforced style CSP has no unsafe-inline', !/style-src[^;]*'unsafe-inline'/.test(csp), csp);
 await check('report-only style-src-attr', /style-src-attr 'none'/.test(cspReportOnly), cspReportOnly);
 await check('report-only style CSP has no unsafe-inline', !/style-src[^;]*'unsafe-inline'/.test(cspReportOnly), cspReportOnly);
+await check('legacy chat overlay removed', !homepageText.includes('id="chat-overlay"'), 'legacy #chat-overlay found');
+await check('chat client script present', homepageText.includes('js/chat-client.js'), 'chat-client script not found');
 
 const cors = await request('/api/bots/status', {
   headers: { Origin: 'http://localhost:3000' },
