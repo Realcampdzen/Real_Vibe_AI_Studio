@@ -118,6 +118,8 @@ try {
       buttonDisabled: widget ? widget.querySelector('.glass-send-button')?.disabled || false : null,
     };
   });
+  await page.locator('.glass-ui-widget.is-visible .glass-chat-close').click({ timeout: 10_000 });
+  await page.locator('.glass-ui-widget.is-visible').waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(1500);
   await page.evaluate(() => window.scrollTo(0, 0));
