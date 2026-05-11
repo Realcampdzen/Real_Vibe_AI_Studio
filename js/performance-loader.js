@@ -20,6 +20,8 @@
   const isMobile =
     window.matchMedia &&
     window.matchMedia('(max-width: 900px)').matches;
+  const isDetailPage = document.body && document.body.classList.contains('detail-page');
+  const chatIdleDelay = isDetailPage ? 2600 : 900;
 
   const loadedScripts = new Set();
   const loadedStyles = new Set();
@@ -113,6 +115,7 @@
   // Snow effect removed (seasonal)
 
   let deferredStarted = false;
+  let chatWakeBound = false;
 
   function startDeferredExtras() {
     if (deferredStarted) return;
@@ -132,29 +135,53 @@
         : loadScript('js/chat.js?v=20260511-security');
 
       chatReady
-        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260511-security'))
+        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260511-perfux'))
         .then(() =>
           Promise.all([
-            loadScript('js/glass-ui-hipych.js?v=20260511-security'),
-            loadScript('js/glass-ui-bro-cat.js?v=20260511-security'),
-            loadScript('js/glass-ui-valyusha.js?v=20260511-security'),
+            loadScript('js/glass-ui-hipych.js?v=20260511-perfux'),
+            loadScript('js/glass-ui-bro-cat.js?v=20260511-perfux'),
+            loadScript('js/glass-ui-valyusha.js?v=20260511-perfux'),
           ])
         )
         .catch((err) => {
           console.warn('[perf-loader] Glass UI skipped', err);
         });
-    }, 240);
+    }, chatIdleDelay);
+  }
+
+  function bindChatWakeEvents() {
+    if (chatWakeBound || deferredStarted) return;
+    chatWakeBound = true;
+
+    const start = () => startDeferredExtras();
+    const events = ['pointerdown', 'keydown', 'touchstart'];
+    events.forEach((eventName) => {
+      window.addEventListener(eventName, start, { once: true, passive: true });
+    });
+  }
+
+  function scheduleDeferredStart(delayMs) {
+    if (delayMs > 0) {
+      setTimeout(() => schedule(() => startDeferredExtras(), 250), delayMs);
+      return;
+    }
+    schedule(() => startDeferredExtras(), 250);
   }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       runCoreOptimizers();
-      schedule(() => startDeferredExtras(), 120);
+      bindChatWakeEvents();
+      scheduleDeferredStart(isDetailPage ? 2600 : 500);
     });
   } else {
     runCoreOptimizers();
-    schedule(() => startDeferredExtras(), 120);
+    bindChatWakeEvents();
+    scheduleDeferredStart(isDetailPage ? 2600 : 500);
   }
 
-  window.addEventListener('load', startDeferredExtras);
+  window.addEventListener('load', () => {
+    bindChatWakeEvents();
+    scheduleDeferredStart(isDetailPage ? 2600 : 600);
+  }, { once: true });
 })();

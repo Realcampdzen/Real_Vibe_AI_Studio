@@ -39,7 +39,9 @@ app.use(cors({
       callback(null, true);
     } else {
       logger.warn('CORS blocked origin', { origin });
-      callback(new Error('Not allowed by CORS'));
+      const error = new Error('Not allowed by CORS');
+      error.status = 403;
+      callback(error);
     }
   },
   credentials: true,
@@ -140,18 +142,22 @@ app.use(createErrorLogger());
 
 app.use((req, res) => {
   const pathOnly = safePath(req.originalUrl || req.url);
-  logger.warn('404 Not Found', { method: req.method, path: pathOnly, ip: req.ip });
   res.status(404).json({ error: 'Страница не найдена', status: 404, path: pathOnly });
 });
 
 app.use((err, req, res, next) => {
-  logger.error('Unhandled error:', {
-    error: err.message,
-    stack: config.isDevelopment ? err.stack : undefined,
-    path: safePath(req.originalUrl || req.url),
-    method: req.method,
-    ip: req.ip,
-  });
+  const status = err.status || err.statusCode || 500;
+  if (status >= 500 || config.isDevelopment) {
+    const log = status >= 500 ? logger.error.bind(logger) : logger.warn.bind(logger);
+    log('Request error handled', {
+      error: err.message,
+      stack: config.isDevelopment ? err.stack : undefined,
+      path: safePath(req.originalUrl || req.url),
+      method: req.method,
+      ip: req.ip,
+      statusCode: status,
+    });
+  }
 
   if (err.message === 'Not allowed by CORS') {
     return res.status(403).json({
@@ -160,7 +166,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  const status = err.status || err.statusCode || 500;
   const error = status === 413 ? 'Слишком большой запрос' : 'Внутренняя ошибка сервера';
   res.status(status >= 400 && status < 600 ? status : 500).json({ error, timestamp: new Date().toISOString() });
 });

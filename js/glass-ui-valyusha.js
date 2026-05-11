@@ -40,22 +40,22 @@ class GlassUIValyusha {
             width: 70px;
             height: 70px;
             background: ${this.themeGradient};
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
             border-radius: 50%;
             border: 2px solid rgba(255, 255, 255, 0.3);
             box-shadow:
-                0 15px 35px rgba(168, 85, 247, 0.45),
+                0 10px 24px rgba(168, 85, 247, 0.34),
                 inset 0 2px 0 rgba(255, 255, 255, 0.3),
                 inset 0 -2px 0 rgba(0, 0, 0, 0.1);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.2s ease, filter 0.2s ease, background 0.2s ease;
             z-index: 1004;
             overflow: hidden;
-            animation: valyushaFloat 3.2s ease-in-out infinite;
+            animation: none;
         `;
         this.floatingButton.dataset.tooltip = 'НейроVалюша • вожатая Реального Лагеря';
 
@@ -67,7 +67,8 @@ class GlassUIValyusha {
             right: 0;
             bottom: 0;
             background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: valyushaShine 2.8s ease-in-out infinite;
+            animation: none;
+            opacity: 0;
             border-radius: 50%;
         `;
         this.floatingButton.appendChild(buttonBg);
@@ -116,8 +117,8 @@ class GlassUIValyusha {
             font-weight: bold;
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.8);
-            animation: valyushaBadgePulse 1.8s infinite;
-            box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+            animation: none;
+            box-shadow: 0 0 6px rgba(236, 72, 153, 0.45);
         `;
         notificationBadge.textContent = '✨';
         this.floatingButton.appendChild(notificationBadge);
@@ -211,7 +212,8 @@ class GlassUIValyusha {
                 background: linear-gradient(45deg, ${this.themePrimary}, transparent, ${this.themeSecondary});
                 border-radius: 50%;
                 z-index: -1;
-                animation: valyushaBorderRotate 3s linear infinite;
+                animation: none;
+                opacity: 0.55;
             }
 
             @keyframes valyushaBorderRotate {
@@ -222,12 +224,11 @@ class GlassUIValyusha {
 
             .glass-ui-valyusha-button.glass-ui-valyusha-hover {
                 box-shadow:
-                    0 25px 50px rgba(168, 85, 247, 0.8),
-                    0 0 50px rgba(236, 72, 153, 0.6),
-                    0 0 80px rgba(168, 85, 247, 0.4),
+                    0 14px 32px rgba(168, 85, 247, 0.48),
+                    0 0 18px rgba(236, 72, 153, 0.28),
                     inset 0 2px 0 rgba(255, 255, 255, 0.5),
                     inset 0 -2px 0 rgba(0, 0, 0, 0.2) !important;
-                filter: brightness(1.2) saturate(1.1) !important;
+                filter: brightness(1.08) !important;
             }
 
             .glass-ui-valyusha-button.glass-ui-valyusha-hover::after {
@@ -239,7 +240,8 @@ class GlassUIValyusha {
                 bottom: -20px;
                 border-radius: 50%;
                 background: radial-gradient(circle, rgba(236, 72, 153, 0.7) 0%, rgba(236, 72, 153, 0.3) 40%, transparent 70%) !important;
-                filter: blur(12px) !important;
+                filter: none !important;
+                opacity: 0.35;
                 z-index: -2;
             }
             .valyusha-sparkle {

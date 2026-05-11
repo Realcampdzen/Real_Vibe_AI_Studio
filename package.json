@@ -13,6 +13,8 @@
     "smoke:api": "node scripts/api-smoke.mjs",
     "smoke:browser": "node scripts/browser-smoke.mjs",
     "smoke:prod": "node scripts/prod-smoke.mjs",
+    "perf:desktop": "node scripts/perf-probe.mjs",
+    "quality:release": "npm run check && npm run check:security && npm run audit:prod",
     "test": "npm run check"
   },
   "repository": {

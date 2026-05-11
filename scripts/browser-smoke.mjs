@@ -102,6 +102,26 @@ try {
     hasInlineScript: await hasInlineScript(page),
   };
 
+  const freshDetailPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await freshDetailPage.goto(`${baseUrl}/service-detail.html?id=0`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await freshDetailPage.waitForTimeout(900);
+  const freshDetailRuntime = await freshDetailPage.evaluate(() => {
+    const chatScripts = [...document.scripts]
+      .map((script) => script.getAttribute('src') || '')
+      .filter((src) => /GlassUIWidget|glass-ui-(?:hipych|bro-cat|valyusha)|chat\.js/.test(src));
+    const eagerOffscreenVideos = [...document.querySelectorAll('video')]
+      .filter((video) => video.getBoundingClientRect().top > window.innerHeight * 1.25)
+      .filter((video) => video.currentSrc || video.readyState > 0)
+      .length;
+
+    return {
+      chatScripts,
+      glassWidgetLoaded: Boolean(window.GlassUIWidget),
+      eagerOffscreenVideos,
+    };
+  });
+  await freshDetailPage.close();
+
   const result = {
     baseUrl,
     consoleIssues,
@@ -112,6 +132,7 @@ try {
     serviceCardNavigationUrl,
     detail,
     aiPhoto,
+    freshDetailRuntime,
   };
   console.log(JSON.stringify(result, null, 2));
 
@@ -133,6 +154,13 @@ try {
   }
   if (aiPhoto.hasInlineScript || aiPhoto.bodyTextLength < 100) {
     fail('browser smoke AI photo detail failed', aiPhoto);
+  }
+  if (
+    freshDetailRuntime.chatScripts.length ||
+    freshDetailRuntime.glassWidgetLoaded ||
+    freshDetailRuntime.eagerOffscreenVideos
+  ) {
+    fail('browser smoke detail page eagerly loaded chat/media runtime', freshDetailRuntime);
   }
 } finally {
   await browser.close();

@@ -40,22 +40,22 @@ class GlassUIHipych {
             width: 70px;
             height: 70px;
             background: linear-gradient(135deg, ${this.theme}dd, ${this.theme});
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
             border-radius: 50%;
             border: 2px solid rgba(255, 255, 255, 0.3);
             box-shadow: 
-                0 15px 35px rgba(59, 130, 246, 0.4),
+                0 10px 24px rgba(59, 130, 246, 0.32),
                 inset 0 2px 0 rgba(255, 255, 255, 0.3),
                 inset 0 -2px 0 rgba(0, 0, 0, 0.1);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.2s ease, filter 0.2s ease, background 0.2s ease;
             z-index: 1002;
             overflow: hidden;
-            animation: glassFloat 4s ease-in-out infinite;
+            animation: none;
         `;
         this.floatingButton.dataset.tooltip = 'Хипыч • техподдержка 24/7';
 
@@ -68,7 +68,8 @@ class GlassUIHipych {
             right: 0;
             bottom: 0;
             background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: buttonShine 3s ease-in-out infinite;
+            animation: none;
+            opacity: 0;
             border-radius: 50%;
         `;
         this.floatingButton.appendChild(buttonBg);
@@ -119,8 +120,8 @@ class GlassUIHipych {
             color: white;
             font-family: "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji", sans-serif;
             border: 2px solid rgba(255, 255, 255, 0.8);
-            animation: badgePulse 2s infinite;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.65);
+            animation: none;
+            box-shadow: 0 0 6px rgba(59, 130, 246, 0.45);
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
         `;
         notificationBadge.textContent = '👍';
@@ -213,7 +214,8 @@ class GlassUIHipych {
                 background: linear-gradient(45deg, ${this.theme}, transparent, ${this.theme});
                 border-radius: 50%;
                 z-index: -1;
-                animation: borderRotate 4s linear infinite;
+                animation: none;
+                opacity: 0.55;
             }
 
             @keyframes borderRotate {

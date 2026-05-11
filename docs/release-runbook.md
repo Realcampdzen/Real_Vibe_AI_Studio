@@ -4,6 +4,7 @@
 
 ```bash
 git status --short
+npm run quality:release
 npm run check
 npm run check:security
 npm audit --omit=dev --json
@@ -33,6 +34,7 @@ Run these against a local production-mode server:
 ```bash
 API_SMOKE_BASE_URL=http://127.0.0.1:4313 API_SMOKE_EXPECT_PROD_CORS=true npm run smoke:api
 BROWSER_SMOKE_BASE_URL=http://127.0.0.1:4313 npm run smoke:browser
+PERF_PROBE_BASE_URL=http://127.0.0.1:4313 npm run perf:desktop
 ```
 
 ## VPS Deploy
@@ -57,12 +59,14 @@ The app must bind to `127.0.0.1:4300`; Nginx owns public TLS/host routing.
 ```bash
 npm run smoke:prod
 BROWSER_SMOKE_BASE_URL=https://vps.real-vibe.studio npm run smoke:browser
+PERF_PROBE_BASE_URL=https://vps.real-vibe.studio npm run perf:desktop
 ssh root@89.223.126.190 "docker ps --filter name=real-vibe-web --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
 ssh root@89.223.126.190 "docker image ls current-real-vibe-web --format 'table {{.Repository}}\t{{.Tag}}\t{{.Size}}'"
 ssh root@89.223.126.190 "docker logs --tail=150 real-vibe-web"
 ```
 
 Expected results: `/health` 200, localhost CORS rejected in production, invalid chat rejected without OpenAI call, webhook forbidden without token, CSP headers present, hero WebM served with range support, old hero master unavailable, no secrets/request bodies in logs.
+The Docker image should stay under the current budget of `1.5GB`; public media larger than `80MB` must be excluded from the runtime image by `.dockerignore`.
 
 ## Browser Smoke
 

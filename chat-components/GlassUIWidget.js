@@ -129,13 +129,13 @@ class GlassUIWidget {
             right: ${computedRight}px;
             width: ${computedWidth}px;
             height: 600px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(18, 20, 26, 0.94);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 18px 42px rgba(0, 0, 0, 0.36),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3),
                 inset 0 -1px 0 rgba(255, 255, 255, 0.1);
             overflow: hidden;
@@ -144,7 +144,7 @@ class GlassUIWidget {
             opacity: 0;
             visibility: hidden;
             transform: translateY(30px) scale(0.9);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.24s ease, transform 0.24s ease, visibility 0.24s ease;
             z-index: ${this.zIndex};
             max-width: calc(100vw - 40px);
             max-height: calc(100vh - 80px);
@@ -158,7 +158,7 @@ class GlassUIWidget {
         header.className = 'glass-chat-header';
         header.style.cssText = `
             background: linear-gradient(135deg, ${this.theme}dd, ${this.theme}aa);
-            backdrop-filter: blur(15px);
+            backdrop-filter: none;
             color: white;
             padding: 20px;
             display: flex;
@@ -177,7 +177,8 @@ class GlassUIWidget {
             right: 0;
             bottom: 0;
             background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: headerShine 3s ease-in-out infinite;
+            animation: none;
+            opacity: 0;
         `;
         header.appendChild(headerBg);
 
