@@ -26,6 +26,10 @@
 
   function loadScript(src) {
     if (loadedScripts.has(src)) return Promise.resolve();
+    if (document.querySelector(`script[src="${src}"]`)) {
+      loadedScripts.add(src);
+      return Promise.resolve();
+    }
 
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
@@ -123,7 +127,12 @@
 
     // Glass UI widgets
     schedule(() => {
-      loadScript('chat-components/GlassUIWidget.js?v=20260510-bots-v1')
+      const chatReady = window.RealVibeChat
+        ? Promise.resolve()
+        : loadScript('js/chat.js?v=20260511-chat-hardening');
+
+      chatReady
+        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260510-bots-v1'))
         .then(() =>
           Promise.all([
             loadScript('js/glass-ui-hipych.js?v=20260510-bots-v1'),

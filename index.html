@@ -292,7 +292,7 @@
         <!-- Ряд 1: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
           <!-- Card 1: AI-видео (БОЛЬШОЙ) -->
-          <article class="service-simple-card" data-service-id="3" onclick="handleServiceCardClick(event, 3)">
+          <article class="service-simple-card" data-service-id="3">
             <img class="service-simple-bg-image" src="public/works/AI‑видео картинка.jpg" alt="ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -334,7 +334,7 @@
         <!-- Ряд 3: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
           <!-- Card 5: Музыка (БОЛЬШОЙ) -->
-          <article class="service-simple-card" data-service-id="0" onclick="handleServiceCardClick(event, 0)">
+          <article class="service-simple-card" data-service-id="0">
             <img class="service-simple-bg-image" src="public/works/image (7).jpg" alt="СОЗДАНИЕ МУЗЫКИ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -343,7 +343,7 @@
           </article>
 
           <!-- Card 6: Озвучка (малый) -->
-          <article class="service-simple-card" data-service-id="5" onclick="handleServiceCardClick(event, 5)">
+          <article class="service-simple-card" data-service-id="5">
             <img class="service-simple-bg-image" src="public/works/озвучка и саунддизайн 1.jpg" alt="ОЗВУЧКА И САУНДДИЗАЙН" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -355,7 +355,7 @@
         <!-- Ряд 4: малый слева, БОЛЬШОЙ справа -->
         <div class="service-row service-row-small-left">
           <!-- Card 7: Приложения (малый, идёт первым) -->
-          <article class="service-simple-card" data-service-id="2" onclick="handleServiceCardClick(event, 2)">
+          <article class="service-simple-card" data-service-id="2">
             <img class="service-simple-bg-image" src="public/works/ии аватары.jpg" alt="AI-АВАТАРЫ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -364,7 +364,7 @@
           </article>
 
           <!-- Card 8: Сайты (БОЛЬШОЙ, идёт вторым) -->
-          <article class="service-simple-card" data-service-id="4" onclick="handleServiceCardClick(event, 4)">
+          <article class="service-simple-card" data-service-id="4">
             <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_8hvbgl8hvbgl8hvb.jpg" alt="СОЗДАНИЕ AI-БОТОВ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -376,7 +376,7 @@
         <!-- Ряд 5: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
           <!-- Card 9: СОЗДАНИЕ САЙТОВ С AI ФУНКЦИЯМИ (БОЛЬШОЙ) -->
-          <article class="service-simple-card" data-service-id="7" onclick="handleServiceCardClick(event, 7)">
+          <article class="service-simple-card" data-service-id="7">
             <img class="service-simple-bg-image" src="public/works/создание сайтов.jpg" alt="Создание сайтов с AI функциями" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -385,7 +385,7 @@
           </article>
 
           <!-- Card 10: Кастомные GPTs (малый) -->
-          <article class="service-simple-card" data-service-id="1" onclick="handleServiceCardClick(event, 1)">
+          <article class="service-simple-card" data-service-id="1">
             <img class="service-simple-bg-image" src="public/works/малахит куб.jpg" alt="Кастомные GPTs" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
@@ -786,19 +786,16 @@
 
   <script>
     // Handle service card clicks
-    function handleServiceCardClick(event, serviceId) {
-      // TEMP: страницы услуг ещё не готовы — отключаем переходы по карточкам
-      return;
+    window.handleServiceCardClick = function handleServiceCardClick(event, serviceId) {
       // Don't navigate if clicking on interactive elements
-      if (event.target.closest('.service-simple-footer') ||
-          event.target.closest('a') ||
+      if (event.target.closest('a') ||
           event.target.closest('button') ||
           event.target.closest('[data-contact-link]')) {
         return;
       }
       // Navigate to service detail page
       window.location.href = `service-detail.html?id=${serviceId}`;
-    }
+    };
   </script>
 
 </body>

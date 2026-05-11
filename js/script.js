@@ -62,6 +62,29 @@ function applyContactConfig() {
     });
 }
 
+function initServiceCardNavigation() {
+    if (window.__serviceCardNavigationInitialized) return;
+    window.__serviceCardNavigationInitialized = true;
+
+    window.handleServiceCardClick = function handleServiceCardClick(event, serviceId) {
+        if (
+            event.target.closest('a') ||
+            event.target.closest('button') ||
+            event.target.closest('[data-contact-link]')
+        ) {
+            return;
+        }
+
+        window.location.href = `service-detail.html?id=${encodeURIComponent(serviceId)}`;
+    };
+
+    document.addEventListener('click', (event) => {
+        const card = event.target.closest('.service-simple-card[data-service-id]');
+        if (!card) return;
+        window.handleServiceCardClick(event, card.dataset.serviceId);
+    });
+}
+
 function initCookieBanner() {
     const banner = document.getElementById('cookie-banner');
     const acceptBtn = document.getElementById('cookie-accept');
@@ -552,6 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPreloader();
 
   applyContactConfig();
+  initServiceCardNavigation();
   
   // Initialize mobile menu
   initMobileMenu();
@@ -923,13 +947,11 @@ if ((document.readyState === 'complete' || document.readyState === 'interactive'
 function initHeroEnterAnimation() {
   const hero = document.querySelector('.hero');
   if (!hero) {
-    console.warn('Hero element not found');
     return;
   }
   
   const heroContent = hero.querySelector('.hero-content');
   if (!heroContent) {
-    console.warn('Hero content element not found');
     return;
   }
   
@@ -946,7 +968,6 @@ function initProcessScrollAnimation() {
 
   
   if (!steps.length) {
-    console.warn('No process steps found');
     return;
   }
 
