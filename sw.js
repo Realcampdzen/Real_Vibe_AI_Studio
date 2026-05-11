@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.17-20260511-perf-media';
+const CACHE_VERSION = 'v1.18-20260511-security';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -22,14 +22,15 @@ const STATIC_ASSETS = [
   withBase('/js/scroll-manager.js'),
   withBase('/js/video-optimizer.js'),
   withBase('/js/script.js'),
+  withBase('/js/service-detail-page.js'),
   withBase('/js/chat.js'),
   withBase('/js/services-carousel.js'),
   withBase('/js/performance-loader.js?v=20260510-bots-cache-fix'),
   withBase('/js/mobile-enhancements.js?v=20260510-bots-cache-fix'),
-  withBase('/js/glass-ui-hipych.js?v=20260510-bots-v1'),
-  withBase('/js/glass-ui-bro-cat.js?v=20260510-bots-v1'),
-  withBase('/js/glass-ui-valyusha.js?v=20260510-bots-v1'),
-  withBase('/chat-components/GlassUIWidget.js?v=20260510-bots-v1'),
+  withBase('/js/glass-ui-hipych.js?v=20260511-security'),
+  withBase('/js/glass-ui-bro-cat.js?v=20260511-security'),
+  withBase('/js/glass-ui-valyusha.js?v=20260511-security'),
+  withBase('/chat-components/GlassUIWidget.js?v=20260511-security'),
   withBase('/images/hipych-avatar.jpg'),
   withBase('/images/bro-avatar.jpg'),
   withBase('/images/neon-room.png')

@@ -18,7 +18,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css?v=20260511-perf-media">
+  <link rel="stylesheet" href="css/style.css?v=20260511-security">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css">
@@ -39,7 +39,7 @@
   <meta name="theme-color" content="#6366f1">
 </head>
 
-<body class="home-page">
+<body class="home-page detail-page">
   <a class="skip-link" href="#t-main-content">К основному контенту</a>
   
   <!-- Snow Effect Container -->
@@ -70,17 +70,17 @@
           </div>
 
           <div class="nav-pill-group">
-            <button type="button" class="nav-pill" onclick="window.location.href='index.html#about'">
+            <button type="button" class="nav-pill" data-location-href="index.html#about">
               О нас
             </button>
-            <button type="button" class="nav-pill" onclick="window.location.href='index.html#benefits'">
+            <button type="button" class="nav-pill" data-location-href="index.html#benefits">
               Преимущества
             </button>
           </div>
         </div>
 
         <div class="nav-center">
-          <a href="index.html#services" class="nav-center-title" style="text-decoration: none; color: inherit; cursor: pointer;">
+          <a href="index.html#services" class="nav-center-title nav-center-link">
             РЕАЛЬНЫЙ VАЙБ AI STUDIO
           </a>
         </div>
@@ -172,7 +172,7 @@
 
       <!-- Large Green CTA Button and Text -->
       <div class="service-detail-cta-section">
-        <button class="service-detail-cta-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+        <button class="service-detail-cta-btn" data-location-href="https://t.me/Stivanovv">
           Оставить заявку
         </button>
         <div class="service-detail-cta-text">
@@ -196,7 +196,7 @@
             <img class="service-simple-bg-image" src="public/works/AI‑видео картинка.jpg" alt="ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI" loading="lazy" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
+              <div class="service-simple-footer" data-contact-link="telegram">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
             </div>
           </article>
 
@@ -204,7 +204,7 @@
             <img class="service-simple-bg-image" src="public/works/%D0%B1%D0%B0%D0%B1%D0%B0%20%D0%BA%D1%83%D1%80%D0%B8%D1%86%D0%B0.jpg" alt="Создание AI-ботов">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">СОЗДАНИЕ AI-БОТОВ</div>
+              <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ AI-БОТОВ</div>
             </div>
           </article>
 
@@ -212,7 +212,7 @@
             <img class="service-simple-bg-image" src="public/works/%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F%20%D0%B1%D0%B0%D0%B1%D0%B0.jpg" alt="Создание музыки">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">СОЗДАНИЕ МУЗЫКИ</div>
+              <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ МУЗЫКИ</div>
             </div>
           </article>
         </div>
@@ -237,7 +237,7 @@
 
       <!-- Large Green CTA Button (duplicate) -->
       <div class="service-detail-cta-section">
-        <button class="service-detail-cta-btn" onclick="window.location.href='https://t.me/Stivanovv'">
+        <button class="service-detail-cta-btn" data-location-href="https://t.me/Stivanovv">
           Оставить заявку
         </button>
       </div>
@@ -249,7 +249,7 @@
             <img class="service-simple-bg-image" src="public/works/AI‑видео картинка.jpg" alt="ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI" loading="lazy" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
+              <div class="service-simple-footer" data-contact-link="telegram">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
             </div>
           </article>
 
@@ -257,7 +257,7 @@
             <img class="service-simple-bg-image" src="public/works/%D0%B1%D0%B0%D0%B1%D0%B0%20%D0%BA%D1%83%D1%80%D0%B8%D1%86%D0%B0.jpg" alt="Создание AI-ботов">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">СОЗДАНИЕ AI-БОТОВ</div>
+              <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ AI-БОТОВ</div>
             </div>
           </article>
 
@@ -265,19 +265,19 @@
             <img class="service-simple-bg-image" src="public/works/%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F%20%D0%B1%D0%B0%D0%B1%D0%B0.jpg" alt="Создание музыки">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">СОЗДАНИЕ МУЗЫКИ</div>
+              <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ МУЗЫКИ</div>
             </div>
           </article>
         </div>
       </div>
 
       <!-- Service Detail Card (hidden by default, for backward compatibility) -->
-      <div id="service-detail-card" class="service-detail-card" style="display: none;">
+      <div id="service-detail-card" class="service-detail-card" hidden>
         <!-- Content will be loaded dynamically -->
       </div>
 
       <!-- Error Message (hidden by default) -->
-      <div id="service-error" class="service-error" style="display: none;">
+      <div id="service-error" class="service-error" hidden>
         <h3>Услуга не найдена</h3>
         <p>К сожалению, информация об этой услуге недоступна.</p>
         <a href="index.html#services" class="btn-primary">На главную</a>
@@ -297,344 +297,13 @@
   
   <!-- Custom Scripts -->
   <script src="js/scroll-manager.js?v=20251216-reveal-force" defer></script>
-  <script src="js/video-optimizer.js?v=20260511-managed-video" defer></script>
-  <script src="js/script.js?v=20260511-detail-lazy" defer></script>
+  <script src="js/video-optimizer.js?v=20260511-security" defer></script>
+  <script src="js/script.js?v=20260511-security" defer></script>
   <script src="js/services-carousel.js?v=20260511-perf" defer></script>
-  <script src="js/performance-loader.js?v=20260511-detail-lazy" defer></script>
+  <script src="js/performance-loader.js?v=20260511-security" defer></script>
   
   <!-- Service Detail Script -->
-  <script>
-    // Load service detail on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      // Get service ID from URL parameter
-      const urlParams = new URLSearchParams(window.location.search);
-      const serviceId = urlParams.get('id');
-      
-      if (!serviceId) {
-        showError();
-        return;
-      }
-      
-      // Get service data
-      const service = getServiceById(serviceId);
-      
-      if (!service) {
-        showError();
-        return;
-      }
-      
-      // Render service detail
-      renderServiceDetail(service);
-      
-      // Update page title
-      document.getElementById('page-title').textContent = service.title + ' | Реальный Vайб AI Studio';
-    });
-    
-    function renderServiceDetail(service) {
-      const heroReel = document.getElementById('service-hero-reel');
-      const loading = heroReel ? heroReel.querySelector('.service-detail-loading') : null;
-      const section = document.querySelector('.service-detail-section');
-      
-      // Render hero reel with service video/image
-      if (heroReel) {
-        // Remove loading message
-        if (loading) {
-          loading.remove();
-        }
-        
-        // Check if service has video or image
-        // Try to find video or image from service data or use default
-        const bgImage = service.backgroundImage || '';
-        const hasVideo = bgImage && (bgImage.includes('.mp4') || bgImage.includes('video') || bgImage.includes('.mov'));
-        const hasImage = bgImage && !hasVideo && (bgImage.includes('.jpg') || bgImage.includes('.jpeg') || bgImage.includes('.png') || bgImage.includes('.webp'));
-        
-        let heroContent = '<div class="hero-reel-overlay"></div><div class="hero-reel-content"></div>';
-        
-        if (hasVideo) {
-          heroContent = `
-            <video
-              class="hero-reel-video"
-              data-managed-video
-              autoplay
-              loop
-              muted
-              playsinline
-              preload="metadata"
-              data-desktop-src="${bgImage}"
-            ></video>
-            ${heroContent}
-          `;
-        } else if (hasImage) {
-          heroContent = `
-            <img class="hero-reel-video" src="${bgImage}" alt="${service.title || service.detailTitle || 'Service'}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;">
-            ${heroContent}
-          `;
-        } else {
-          // Default optimized hero reel.
-          heroContent = `
-            <video
-              class="hero-reel-video"
-              data-managed-video
-              autoplay
-              loop
-              muted
-              playsinline
-              preload="metadata"
-              data-desktop-webm-src="public/works/hero-reel-desktop.webm"
-              data-desktop-src="public/works/hero-reel-desktop.mp4"
-              data-mobile-src="public/works/hero-reel-mobile.mp4"
-            >
-              <source src="public/works/hero-reel-mobile.mp4" type="video/mp4" media="(max-width: 900px)">
-              <source src="public/works/hero-reel-desktop.webm" type="video/webm">
-              <source src="public/works/hero-reel-desktop.mp4" type="video/mp4">
-            </video>
-            ${heroContent}
-          `;
-        }
-        
-        heroReel.innerHTML = heroContent;
-        window.videoOptimizer?.refresh?.();
-      }
-      
-      // Set background color only (no background image)
-      const body = document.body;
-      body.style.backgroundImage = 'none';
-      body.style.backgroundColor = '#050505';
-      
-      // Remove section background if it was set
-      if (section) {
-        section.style.backgroundImage = 'none';
-        section.style.backgroundColor = 'transparent';
-      }
-      
-      // Old card rendering (kept for backward compatibility, but hidden)
-      const card = document.getElementById('service-detail-card');
-      
-      // Check if service has detailed content
-      const hasDetailedContent = service.detailTitle || service.lead || service.useCases || service.whatWeDo || service.formats || service.whatYouGet;
-      
-      if (hasDetailedContent) {
-        // Render detailed content
-        card.innerHTML = `
-          <div class="service-detail-content">
-            <div class="service-icon service-icon-image">
-              <img src="${service.avatarImage}" alt="${service.title}" class="service-icon-img">
-            </div>
-            
-            <h1 class="service-detail-title">${service.detailTitle || service.title}</h1>
-            
-            ${service.lead ? `<p class="service-detail-lead">${service.lead}</p>` : ''}
-            
-            ${service.aboutPerson ? `
-              <div class="service-detail-content-section">
-                <h2 class="service-detail-section-title">${service.aboutPersonTitle || 'Кто за это отвечает'}</h2>
-                <div class="service-detail-about-person">
-                  <h3 class="service-detail-person-name">${service.aboutPerson.name}</h3>
-                  <ul class="service-detail-list">
-                    ${service.aboutPerson.points.map(point => `
-                      <li>${point}</li>
-                    `).join('')}
-                  </ul>
-                </div>
-              </div>
-            ` : ''}
-            
-            ${service.useCases && service.useCases.length > 0 ? `
-              <div class="service-detail-content-section">
-                <h2 class="service-detail-section-title">${service.useCasesTitle || 'Для чего подойдут наши боты'}</h2>
-                ${service.useCases.map(useCase => `
-                  <div class="service-detail-item">
-                    <h3 class="service-detail-item-title">${useCase.title}</h3>
-                    <p class="service-detail-item-description">${useCase.description}</p>
-                  </div>
-                `).join('')}
-              </div>
-            ` : ''}
-            
-            ${service.whatWeDo && service.whatWeDo.length > 0 ? `
-              <div class="service-detail-content-section">
-                <h2 class="service-detail-section-title">${service.whatWeDoTitle || 'Что мы делаем в рамках услуги'}</h2>
-                ${service.whatWeDo.map(item => `
-                  <div class="service-detail-item">
-                    <h3 class="service-detail-item-title">${item.title}</h3>
-                    <p class="service-detail-item-description">${item.description}</p>
-                  </div>
-                `).join('')}
-              </div>
-            ` : ''}
-            
-            ${service.formats && service.formats.length > 0 ? `
-              <div class="service-detail-content-section">
-                <h2 class="service-detail-section-title">${service.formatsTitle || 'Какие форматы бот-решений мы делаем'}</h2>
-                <ul class="service-detail-list">
-                  ${service.formats.map(format => `
-                    <li>${format}</li>
-                  `).join('')}
-                </ul>
-              </div>
-            ` : ''}
-            
-            ${service.whatYouGet && service.whatYouGet.length > 0 ? `
-              <div class="service-detail-content-section">
-                <h2 class="service-detail-section-title">Что вы получаете</h2>
-                <ul class="service-detail-list">
-                  ${service.whatYouGet.map(item => `
-                    <li>${item}</li>
-                  `).join('')}
-                </ul>
-              </div>
-            ` : ''}
-            
-            <div class="service-price">
-              <span class="price-label">Стоимость</span>
-              <span class="price-value">${service.price}</span>
-            </div>
-            
-            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
-              <i class="${service.buttonIcon}"></i> ${service.buttonText}
-            </button>
-          </div>
-        `;
-      } else {
-        // Render simple content (backward compatibility)
-        card.innerHTML = `
-          <div class="service-detail-content">
-            <div class="service-icon service-icon-image">
-              <img src="${service.avatarImage}" alt="${service.title}" class="service-icon-img">
-            </div>
-            
-            <h1 class="service-detail-title">${service.title}</h1>
-            
-            <p class="service-detail-description">${service.description}</p>
-            
-            <div class="service-detail-features">
-              <h3>Возможности:</h3>
-              <ul class="service-features">
-                ${service.features.map(feature => `
-                  <li><i class="fas fa-check"></i> ${feature}</li>
-                `).join('')}
-              </ul>
-            </div>
-            
-            <div class="service-price">
-              <span class="price-label">Стоимость</span>
-              <span class="price-value">${service.price}</span>
-            </div>
-            
-            <button class="service-btn" onclick="window.location.href='https://t.me/Stivanovv'">
-              <i class="${service.buttonIcon}"></i> ${service.buttonText}
-            </button>
-          </div>
-        `;
-      }
-    }
-    
-    function showError() {
-      document.getElementById('service-detail-card').style.display = 'none';
-      document.getElementById('service-error').style.display = 'block';
-    }
-    
-    // Hide preloader
-    function hidePreloader() {
-      const preloader = document.getElementById('preloader');
-      if (preloader) {
-        setTimeout(() => {
-          preloader.style.opacity = '0';
-          setTimeout(() => {
-            preloader.style.display = 'none';
-          }, 300);
-        }, 500);
-      }
-    }
-    
-    // Hide preloader when page loads
-    window.addEventListener('load', hidePreloader);
-    
-    // Initialize back to top button
-    const backToTopBtn = document.getElementById('back-to-top');
-    if (backToTopBtn) {
-      const updateBackToTop = (scrollY = window.scrollY) => {
-        if (scrollY > 300) {
-          backToTopBtn.classList.add('show');
-        } else {
-          backToTopBtn.classList.remove('show');
-        }
-      };
-      if (window.scrollManager) {
-        window.scrollManager.subscribe(updateBackToTop);
-      } else {
-        window.addEventListener('scroll', () => updateBackToTop(), { passive: true });
-      }
-      
-      backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      });
-    }
-    
-    // Initialize mobile menu
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileNav = document.getElementById('mobile-nav');
-    
-    if (mobileMenuBtn && mobileNav) {
-      // На страницах товаров гармошка возвращает назад
-      mobileMenuBtn.addEventListener('click', () => {
-        // Проверяем, что мы не на главной странице
-        if (window.location.pathname.includes('service-detail.html') || 
-            window.location.pathname.includes('ai-photo-detail.html')) {
-          // Возвращаемся назад
-          if (window.history.length > 1) {
-            window.history.back();
-          } else {
-            // Если нет истории, переходим на главную
-            window.location.href = 'index.html';
-          }
-        } else {
-          // На главной странице открываем меню как обычно
-          mobileNav.classList.toggle('active');
-          mobileMenuBtn.classList.toggle('active');
-        }
-      });
-      
-      // Close menu when clicking on a link
-      const mobileLinks = mobileNav.querySelectorAll('.mobile-nav-link');
-      mobileLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          mobileNav.classList.remove('active');
-          mobileMenuBtn.classList.remove('active');
-        });
-      });
-    }
-    
-    // Scroll progress
-    const scrollProgress = document.getElementById('scroll-progress');
-    if (scrollProgress) {
-      const updateScrollProgress = (scrollY = window.scrollY) => {
-        const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = windowHeight > 0 ? (scrollY / windowHeight) * 100 : 0;
-        scrollProgress.style.width = scrolled + '%';
-      };
-      if (window.scrollManager) {
-        window.scrollManager.subscribe(updateScrollProgress);
-      } else {
-        window.addEventListener('scroll', () => updateScrollProgress(), { passive: true });
-      }
-    }
-    
-    // Handle service card clicks
-    window.handleServiceCardClick = function handleServiceCardClick(event, serviceId) {
-      // Don't navigate if clicking on interactive elements
-      if (event.target.closest('a') ||
-          event.target.closest('button') ||
-          event.target.closest('[data-contact-link]')) {
-        return;
-      }
-      // Navigate to service detail page
-      window.location.href = `service-detail.html?id=${serviceId}`;
-    };
-  </script>
+  <script src="js/service-detail-page.js?v=20260511-security" defer></script>
 
   <!-- Footer -->
   <footer class="studio-footer-block">

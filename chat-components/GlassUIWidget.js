@@ -93,6 +93,21 @@ class GlassUIWidget {
         return finalRight;
     }
 
+    setStatusText(statusText, text, color, animationDuration) {
+        const indicator = document.createElement('span');
+        indicator.className = 'status-indicator';
+        indicator.style.cssText = `
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: ${color};
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: statusPulse ${animationDuration} infinite;
+        `;
+        statusText.replaceChildren(indicator, document.createTextNode(text));
+    }
+
     init() {
         this.createWidget();
         this.setupEventListeners();
@@ -213,17 +228,19 @@ class GlassUIWidget {
         }
 
         const headerText = document.createElement('div');
-        headerText.innerHTML = `
-            <div style="font-weight: 700; font-size: 16px;">${this.botName}</div>
-            <div class="glass-status-text" style="font-size: 12px; opacity: 0.9;">
-                <span class="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 6px; animation: statusPulse 2s infinite;"></span>
-                онлайн
-            </div>
-        `;
+        const botName = document.createElement('div');
+        botName.textContent = this.botName;
+        botName.style.cssText = 'font-weight: 700; font-size: 16px;';
+        const statusText = document.createElement('div');
+        statusText.className = 'glass-status-text';
+        statusText.style.cssText = 'font-size: 12px; opacity: 0.9;';
+        this.setStatusText(statusText, 'онлайн', '#10b981', '2s');
+        headerText.appendChild(botName);
+        headerText.appendChild(statusText);
         headerInfo.appendChild(headerText);
 
         const closeButton = document.createElement('button');
-        closeButton.innerHTML = '✕';
+        closeButton.textContent = '✕';
         closeButton.style.cssText = `
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -314,10 +331,11 @@ class GlassUIWidget {
         `;
         
         const typingDots = document.createElement('span');
-        typingDots.innerHTML = `
-            ${this.botName} печатает
-            <span style="animation: typingDots 1.5s infinite;">...</span>
-        `;
+        typingDots.appendChild(document.createTextNode(`${this.botName} печатает`));
+        const typingEllipsis = document.createElement('span');
+        typingEllipsis.textContent = '...';
+        typingEllipsis.style.animation = 'typingDots 1.5s infinite';
+        typingDots.appendChild(typingEllipsis);
         typingIndicator.appendChild(typingDots);
         messagesArea.appendChild(typingIndicator);
 
@@ -370,7 +388,7 @@ class GlassUIWidget {
         });
 
         const sendButton = document.createElement('button');
-        sendButton.innerHTML = '🚀';
+        sendButton.textContent = '🚀';
         sendButton.className = 'glass-send-button';
         sendButton.style.cssText = `
             background: linear-gradient(135deg, ${this.theme}, ${this.theme}dd);
@@ -619,7 +637,7 @@ class GlassUIWidget {
 
     renderMessages() {
         const messagesList = this.container.querySelector('.glass-messages-list');
-        messagesList.innerHTML = '';
+        messagesList.replaceChildren();
 
         this.messages.forEach((message, index) => {
             const messageElement = document.createElement('div');
@@ -724,16 +742,10 @@ class GlassUIWidget {
         
         if (isTyping) {
             typingIndicator.style.display = 'block';
-            statusText.innerHTML = `
-                <span class="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #fbbf24; border-radius: 50%; margin-right: 6px; animation: statusPulse 1s infinite;"></span>
-                печатает...
-            `;
+            this.setStatusText(statusText, 'печатает...', '#fbbf24', '1s');
         } else {
             typingIndicator.style.display = 'none';
-            statusText.innerHTML = `
-                <span class="status-indicator" style="display: inline-block; width: 6px; height: 6px; background: #10b981; border-radius: 50%; margin-right: 6px; animation: statusPulse 2s infinite;"></span>
-                онлайн
-            `;
+            this.setStatusText(statusText, 'онлайн', '#10b981', '2s');
         }
     }
 

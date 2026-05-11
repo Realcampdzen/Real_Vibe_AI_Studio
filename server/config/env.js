@@ -85,6 +85,13 @@ const config = {
     ownerToken: process.env.CHAT_OWNER_TOKEN || '',
   },
 
+  security: {
+    requestBodyLimit: process.env.REQUEST_BODY_LIMIT || '256kb',
+    cspReportBodyLimit: process.env.CSP_REPORT_BODY_LIMIT || '16kb',
+    cspReportOnly: process.env.CSP_REPORT_ONLY !== 'false',
+    webhookToken: process.env.RV_WEBHOOK_TOKEN || '',
+  },
+
   imageProvider: process.env.IMAGE_PROVIDER || 'openai',
 };
 

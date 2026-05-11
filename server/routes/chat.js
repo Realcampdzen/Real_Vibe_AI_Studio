@@ -4,7 +4,10 @@
  */
 import express from 'express';
 import Joi from 'joi';
+import { timingSafeEqual } from 'crypto';
+import config from '../config/env.js';
 import { logger } from '../middleware/logging.js';
+import { appVersion } from '../config/version.js';
 import { chatCompletion, isConnected } from '../services/openai-client.js';
 import { stripMarkdown } from '../services/text-cleaner.js';
 import { getBot, getAllBotIds, getBotName, getFallbackResponse } from '../bots/registry.js';
@@ -13,6 +16,19 @@ import { streamAgentChat } from '../agents/stream-chat.js';
 import { consumeChatQuota } from '../services/chat-quota.js';
 
 const router = express.Router();
+
+function safeTokenEquals(left, right) {
+  if (!left || !right) return false;
+  const leftBuffer = Buffer.from(String(left));
+  const rightBuffer = Buffer.from(String(right));
+  if (leftBuffer.length !== rightBuffer.length) return false;
+  return timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function isWebhookAuthorized(req) {
+  if (config.isDevelopment && !config.security.webhookToken) return true;
+  return safeTokenEquals(req.get('x-rv-webhook-token'), config.security.webhookToken);
+}
 
 // Схема валидации
 const messageSchema = Joi.object({
@@ -136,7 +152,7 @@ function statusHandler(botId) {
       api_status: isConnected() ? 'connected' : 'unavailable',
       last_check: new Date().toISOString(),
       response_time: 'fast',
-      version: '3.0',
+      version: appVersion,
     });
   };
 }
@@ -152,7 +168,7 @@ router.get('/api/hipych/info', (req, res) => {
     specialization: ['AI-технологии', 'Автоматизация', 'Разработка ботов', 'Геймерская тематика'],
     avatar: '🎮',
     status: 'active',
-    api_version: '3.0',
+    api_version: appVersion,
     description: 'Хипыч показывает возможности современных AI-ботов и рассказывает о услугах AI Studio',
   });
 });
@@ -178,7 +194,7 @@ router.get('/health', (req, res) => {
     service: 'AI Studio API Gateway',
     timestamp: new Date().toISOString(),
     openai: isConnected() ? 'connected' : 'unavailable',
-    version: '3.0.0',
+    version: appVersion,
     security: 'enhanced',
   });
 });
@@ -192,6 +208,11 @@ const webhookSchema = Joi.object({
 
 router.post('/api/webhook/:botId', async (req, res) => {
   try {
+    if (!isWebhookAuthorized(req)) {
+      logger.warn('Webhook forbidden', { botId: req.params.botId, ip: req.ip });
+      return res.status(403).json({ error: 'Webhook forbidden' });
+    }
+
     const { error, value } = webhookSchema.validate(req.body);
     if (error) {
       logger.warn(`Webhook validation error: ${error.details[0].message}`, { botId: req.params.botId, ip: req.ip });

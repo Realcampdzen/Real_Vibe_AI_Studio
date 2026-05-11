@@ -28,12 +28,16 @@ class PullToRefresh {
     const indicator = document.createElement('div');
     indicator.id = 'pull-to-refresh-indicator';
     indicator.className = 'pull-to-refresh-indicator';
-    indicator.innerHTML = `
-      <div class="pull-to-refresh-icon">
-        <i class="fas fa-arrow-down"></i>
-      </div>
-      <div class="pull-to-refresh-text">Потяните для обновления</div>
-    `;
+    const icon = document.createElement('div');
+    icon.className = 'pull-to-refresh-icon';
+    const iconGlyph = document.createElement('i');
+    iconGlyph.className = 'fas fa-arrow-down';
+    icon.appendChild(iconGlyph);
+    const text = document.createElement('div');
+    text.className = 'pull-to-refresh-text';
+    text.textContent = 'Потяните для обновления';
+    indicator.appendChild(icon);
+    indicator.appendChild(text);
     document.body.appendChild(indicator);
     this.indicator = indicator;
   }
@@ -178,7 +182,9 @@ class PullToRefresh {
     
     const icon = this.indicator.querySelector('.pull-to-refresh-icon');
     if (icon) {
-      icon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      const spinner = document.createElement('i');
+      spinner.className = 'fas fa-spinner fa-spin';
+      icon.replaceChildren(spinner);
     }
     
     const text = this.indicator.querySelector('.pull-to-refresh-text');

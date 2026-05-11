@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Для кота Бро используем изображение, для пользователя - эмодзи
     if (sender === 'assistant') {
       // Аватар устанавливается через CSS background-image
-      avatar.innerHTML = ''; // Оставляем пустым, изображение через CSS
+      avatar.replaceChildren();
     } else {
       avatar.textContent = '👤';
     }
@@ -291,11 +291,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar';
-    avatar.innerHTML = ''; // Аватар устанавливается через CSS
+    avatar.replaceChildren();
     
     const content = document.createElement('div');
     content.className = 'message-content';
-    content.innerHTML = '<span class="typing-dots">●●●</span>';
+    const dots = document.createElement('span');
+    dots.className = 'typing-dots';
+    dots.textContent = '●●●';
+    content.appendChild(dots);
     content.style.opacity = '0.7';
     
     // Add typing animation

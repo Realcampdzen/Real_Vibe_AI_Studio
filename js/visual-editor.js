@@ -196,16 +196,11 @@ class VisualEditor {
         iframe.style.display = 'none';
         if (errorDiv) {
           errorDiv.style.display = 'block';
-          errorDiv.innerHTML = `
-            <p>⚠️ Ошибка доступа к iframe (CORS)</p>
-            <p style="font-size: 12px; margin-top: 10px;">
-              Запустите локальный сервер:<br>
-              <code style="background: #2a2a2a; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 8px;">
-                node server.js
-              </code><br>
-              Затем откройте: <code style="background: #2a2a2a; padding: 4px 8px; border-radius: 4px;">http://localhost:3000/visual-editor.html</code>
-            </p>
-          `;
+          this.showEditorError(errorDiv, '⚠️ Ошибка доступа к iframe (CORS)', [
+            'Запустите локальный сервер:',
+            'node server.js',
+            'Затем откройте: http://localhost:3000/visual-editor.html',
+          ]);
         }
       }
     };
@@ -224,12 +219,35 @@ class VisualEditor {
       iframe.style.display = 'none';
       if (errorDiv) {
         errorDiv.style.display = 'block';
-        errorDiv.innerHTML = `
-          <p>⚠️ Не удалось загрузить сайт</p>
-          <p style="font-size: 12px; margin-top: 10px;">Проверьте путь к index.html или запустите локальный сервер</p>
-        `;
+        this.showEditorError(errorDiv, '⚠️ Не удалось загрузить сайт', [
+          'Проверьте путь к index.html или запустите локальный сервер',
+        ]);
       }
     });
+  }
+
+  showEditorError(container, title, lines) {
+    const titleElement = document.createElement('p');
+    titleElement.textContent = title;
+
+    const detail = document.createElement('p');
+    detail.style.fontSize = '12px';
+    detail.style.marginTop = '10px';
+
+    lines.forEach((line, index) => {
+      if (index > 0) detail.appendChild(document.createElement('br'));
+
+      if (/^(node|https?:)/.test(line)) {
+        const code = document.createElement('code');
+        code.textContent = line;
+        code.style.cssText = 'background: #2a2a2a; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 8px;';
+        detail.appendChild(code);
+      } else {
+        detail.appendChild(document.createTextNode(line));
+      }
+    });
+
+    container.replaceChildren(titleElement, detail);
   }
 
   initializeEditor(iframe, errorDiv) {

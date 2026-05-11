@@ -1325,6 +1325,23 @@ body::before {
   text-transform: uppercase;
 }
 
+.nav-logo-link,
+.nav-center-link {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-logo-link {
+  display: flex;
+  align-items: center;
+}
+
+.cta-offset {
+  display: inline-block;
+  margin-top: 1.5rem;
+}
+
 .hero-badge:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
@@ -8126,6 +8143,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   justify-content: center;
   gap: 0.625rem;
   box-shadow: 0 4px 20px rgba(255, 155, 74, 0.3);
+  text-decoration: none;
 }
 
 .service-detail-card .service-btn:hover {

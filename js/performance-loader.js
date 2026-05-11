@@ -129,15 +129,15 @@
     schedule(() => {
       const chatReady = window.RealVibeChat
         ? Promise.resolve()
-        : loadScript('js/chat.js?v=20260511-chat-hardening');
+        : loadScript('js/chat.js?v=20260511-security');
 
       chatReady
-        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260510-bots-v1'))
+        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260511-security'))
         .then(() =>
           Promise.all([
-            loadScript('js/glass-ui-hipych.js?v=20260510-bots-v1'),
-            loadScript('js/glass-ui-bro-cat.js?v=20260510-bots-v1'),
-            loadScript('js/glass-ui-valyusha.js?v=20260510-bots-v1'),
+            loadScript('js/glass-ui-hipych.js?v=20260511-security'),
+            loadScript('js/glass-ui-bro-cat.js?v=20260511-security'),
+            loadScript('js/glass-ui-valyusha.js?v=20260511-security'),
           ])
         )
         .catch((err) => {

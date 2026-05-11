@@ -91,7 +91,7 @@ class GlassUIBroCat {
             this.floatingButton.appendChild(avatarImg);
         } else {
             const icon = document.createElement('div');
-            icon.innerHTML = '🐱';
+            icon.textContent = '🐱';
             icon.style.cssText = `
                 font-size: 32px;
                 position: relative;

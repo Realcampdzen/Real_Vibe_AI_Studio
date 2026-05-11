@@ -85,6 +85,30 @@ function initServiceCardNavigation() {
     });
 }
 
+function initDataActionButtons() {
+    document.addEventListener('click', (event) => {
+        const action = event.target.closest('[data-scroll-target], [data-location-href], [data-stop-propagation]');
+        if (!action) return;
+
+        if (action.hasAttribute('data-stop-propagation')) {
+            event.stopPropagation();
+        }
+
+        const scrollTarget = action.getAttribute('data-scroll-target');
+        if (scrollTarget) {
+            event.preventDefault();
+            scrollToSection(scrollTarget);
+            return;
+        }
+
+        const locationHref = action.getAttribute('data-location-href');
+        if (locationHref) {
+            event.preventDefault();
+            window.location.href = locationHref;
+        }
+    });
+}
+
 function initCookieBanner() {
     const banner = document.getElementById('cookie-banner');
     const acceptBtn = document.getElementById('cookie-accept');
@@ -203,6 +227,17 @@ function initMobileMenu() {
   const mobileNavClose = document.querySelector('.mobile-nav-close');
   
   if (!mobileMenuBtn || !mobileNav) return;
+
+  if (document.body.classList.contains('detail-page')) {
+    mobileMenuBtn.addEventListener('click', () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
+    return;
+  }
   
   const openMenu = () => {
     mobileMenuBtn.classList.add('active');
@@ -576,6 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   applyContactConfig();
   initServiceCardNavigation();
+  initDataActionButtons();
   
   // Initialize mobile menu
   initMobileMenu();

@@ -769,7 +769,7 @@ class VideoOptimizer {
     if (!video.parentNode || video.parentNode.querySelector('.video-loading')) return;
     const indicator = document.createElement('div');
     indicator.className = 'video-loading';
-    indicator.innerHTML = '<div class="video-loading-spinner"></div>';
+    indicator.appendChild(document.createElement('div')).className = 'video-loading-spinner';
     video.parentNode.appendChild(indicator);
   }
 

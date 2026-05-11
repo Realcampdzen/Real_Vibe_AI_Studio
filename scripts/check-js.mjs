@@ -3,7 +3,7 @@ import { readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const root = process.cwd();
-const includeRoots = ['server', 'js', 'chat-components', 'scripts'];
+const includeRoots = ['server', 'js', 'chat-components', 'scripts', 'openai-proxy'];
 const includeFiles = ['sw.js'];
 const ignoredPathParts = new Set([
   'node_modules',
@@ -11,11 +11,8 @@ const ignoredPathParts = new Set([
   'output',
   'cf-api',
   'vk-autocomment-module',
-  'openai-proxy',
 ]);
-const ignoredFiles = new Set([
-  'chat-components/ModernChatWidget.js',
-]);
+const ignoredFiles = new Set();
 
 function toPosix(path) {
   return path.split('\\').join('/');

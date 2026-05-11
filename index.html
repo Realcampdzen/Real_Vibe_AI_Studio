@@ -19,7 +19,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260511-perf-media" as="style">
+  <link rel="preload" href="css/style.css?v=20260511-security" as="style">
   <link rel="preload" href="css/mobile-improvements.css?v=20260506-mobile-hero-nav" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260511-perf-media">
+  <link rel="stylesheet" href="css/style.css?v=20260511-security">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css">
@@ -94,10 +94,10 @@
           </div>
 
           <div class="nav-pill-group">
-            <button type="button" class="nav-pill" onclick="scrollToSection('about')">
+            <button type="button" class="nav-pill" data-scroll-target="about">
               О нас
             </button>
-            <button type="button" class="nav-pill" onclick="scrollToSection('benefits')">
+            <button type="button" class="nav-pill" data-scroll-target="benefits">
               Преимущества
             </button>
           </div>
@@ -119,7 +119,7 @@
           <a data-contact-link="primary" href="tel:+79319671483" class="nav-cta">
             +7 931 967 14 83
           </a>
-          <button class="nav-lang-toggle" type="button" style="display:none" aria-hidden="true">
+          <button class="nav-lang-toggle" type="button" hidden aria-hidden="true">
             EN
           </button>
 
@@ -168,7 +168,7 @@
               <i class="fas fa-envelope"></i><span>Почта</span>
             </a>
           </div>
-          <button class="nav-lang-toggle mobile-nav-lang" type="button" style="display:none" aria-hidden="true">
+          <button class="nav-lang-toggle mobile-nav-lang" type="button" hidden aria-hidden="true">
             EN
           </button>
         </div>
@@ -220,13 +220,13 @@
           Продюсируем творческие проекты.
         </p>
         <div class="hero-cta-row">
-          <button class="btn-primary" onclick="event.stopPropagation(); scrollToSection('projects-showreel')">
+          <button class="btn-primary" data-scroll-target="projects-showreel" data-stop-propagation>
             Смотреть примеры
           </button>
-          <button class="btn-secondary hero-secondary-btn" onclick="event.stopPropagation(); scrollToSection('services')">
+          <button class="btn-secondary hero-secondary-btn" data-scroll-target="services" data-stop-propagation>
             Услуги AI&nbsp;Studio
           </button>
-          <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" onclick="event.stopPropagation();">
+          <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" data-stop-propagation>
             Оставить заявку
           </button>
         </div>
@@ -262,7 +262,7 @@
         </div>
       </div>
       <div class="hero-mobile-cta">
-        <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" onclick="event.stopPropagation();">
+        <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" data-stop-propagation>
           Оставить заявку
         </button>
       </div>
@@ -296,7 +296,7 @@
             <img class="service-simple-bg-image" src="public/works/AI‑видео картинка.jpg" alt="ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
+              <div class="service-simple-footer" data-contact-link="telegram">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
             </div>
           </article>
 
@@ -305,7 +305,7 @@
             <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_2kwtns2kwtns2kwt.jpg" alt="Кастомные GPTs" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <div class="service-simple-footer" data-contact-link="telegram" onclick="event.stopPropagation();">AI ФОТО</div>
+              <div class="service-simple-footer" data-contact-link="telegram">AI ФОТО</div>
             </div>
           </article>
         </div>
@@ -560,7 +560,7 @@
           <p class="cta-kicker">Реальный Vайб AI Studio</p>
           <h2 class="cta-title">Готовы обсудить ваш проект?</h2>
           <p class="cta-text">Оставьте заявку — вернёмся с идеями и сметой под ваши задачи.</p>
-          <a class="btn-primary" data-contact-link="telegram" href="https://t.me/Stivanovv" style="margin-top: 1.5rem; display: inline-block;">Оставить заявку</a>
+          <a class="btn-primary cta-offset" data-contact-link="telegram" href="https://t.me/Stivanovv">Оставить заявку</a>
         </div>
       </div>
     </div>
@@ -776,27 +776,13 @@
   <script src="js/hero-reveal.js?v=20251216-reveal-force"></script>
   <!-- Core scripts (defer для оптимизации загрузки) -->
   <script src="js/scroll-manager.js?v=20251216-reveal-force" defer></script>
-  <script src="js/video-optimizer.js?v=20260511-managed-video" defer></script>
-  <script src="js/script.js?v=20260511-perf-media" defer></script>
-  <script src="js/chat.js?v=20260510-bots-v1" defer></script> 
+  <script src="js/video-optimizer.js?v=20260511-security" defer></script>
+  <script src="js/script.js?v=20260511-security" defer></script>
+  <script src="js/chat.js?v=20260511-security" defer></script>
   <script src="js/services-carousel.js?v=20260511-perf" defer></script>
-  <script src="js/performance-loader.js?v=20260511-detail-lazy" defer></script>
+  <script src="js/performance-loader.js?v=20260511-security" defer></script>
   
   <!-- Snow Effect JS removed (seasonal) -->
-
-  <script>
-    // Handle service card clicks
-    window.handleServiceCardClick = function handleServiceCardClick(event, serviceId) {
-      // Don't navigate if clicking on interactive elements
-      if (event.target.closest('a') ||
-          event.target.closest('button') ||
-          event.target.closest('[data-contact-link]')) {
-        return;
-      }
-      // Navigate to service detail page
-      window.location.href = `service-detail.html?id=${serviceId}`;
-    };
-  </script>
 
 </body>
 </html>

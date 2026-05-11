@@ -883,21 +883,39 @@ class AdvancedTouchGestures {
     // Создаем модальное окно с деталями
     const modal = document.createElement('div');
     modal.className = 'card-details-modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>${card.querySelector('h3').textContent}</h3>
-          <button class="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">
-          <p>${card.querySelector('.service-description, .assistant-description').textContent}</p>
-          <div class="modal-actions">
-            <button class="btn-primary">Заказать</button>
-            <button class="btn-secondary">Подробнее</button>
-          </div>
-        </div>
-      </div>
-    `;
+
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+    const modalHeader = document.createElement('div');
+    modalHeader.className = 'modal-header';
+    const title = document.createElement('h3');
+    title.textContent = card.querySelector('h3')?.textContent || '';
+    const closeButton = document.createElement('button');
+    closeButton.className = 'modal-close';
+    closeButton.textContent = '×';
+    modalHeader.appendChild(title);
+    modalHeader.appendChild(closeButton);
+
+    const modalBody = document.createElement('div');
+    modalBody.className = 'modal-body';
+    const description = document.createElement('p');
+    description.textContent = card.querySelector('.service-description, .assistant-description')?.textContent || '';
+    const actions = document.createElement('div');
+    actions.className = 'modal-actions';
+    const primaryButton = document.createElement('button');
+    primaryButton.className = 'btn-primary';
+    primaryButton.textContent = 'Заказать';
+    const secondaryButton = document.createElement('button');
+    secondaryButton.className = 'btn-secondary';
+    secondaryButton.textContent = 'Подробнее';
+    actions.appendChild(primaryButton);
+    actions.appendChild(secondaryButton);
+    modalBody.appendChild(description);
+    modalBody.appendChild(actions);
+
+    modalContent.appendChild(modalHeader);
+    modalContent.appendChild(modalBody);
+    modal.appendChild(modalContent);
 
     document.body.appendChild(modal);
     

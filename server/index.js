@@ -10,13 +10,15 @@ import path from 'path';
 import config from './config/env.js';
 
 // Middleware
-import { createHelmetMiddleware } from './middleware/security.js';
+import { createCspReportOnlyMiddleware, createHelmetMiddleware } from './middleware/security.js';
 import { createRateLimiters } from './middleware/rate-limit.js';
 import { createCooldownMiddleware } from './middleware/cooldown.js';
 import { logger, createRequestLogger, createErrorLogger, safePath } from './middleware/logging.js';
+import { appVersion } from './config/version.js';
 
 // Routes
 import chatRoutes from './routes/chat.js';
+import securityReportRoutes from './routes/security-reports.js';
 
 // Services (for health check)
 import { isConnected } from './services/openai-client.js';
@@ -27,6 +29,7 @@ app.set('trust proxy', config.trustProxy);
 
 // ────── Security ──────
 app.use(createHelmetMiddleware());
+app.use(createCspReportOnlyMiddleware());
 
 // ────── CORS ──────
 app.use(cors({
@@ -43,7 +46,11 @@ app.use(cors({
   optionsSuccessStatus: 200,
 }));
 
-app.use(express.json({ limit: '10mb' }));
+app.use('/api/csp-report', express.json({
+  type: ['application/csp-report', 'application/reports+json', 'application/json'],
+  limit: config.security.cspReportBodyLimit,
+}));
+app.use(express.json({ limit: config.security.requestBodyLimit }));
 
 // ────── Logging ──────
 app.use(createRequestLogger());
@@ -88,6 +95,7 @@ if (config.isDevelopment) {
 }
 
 // ────── Routes ──────
+app.use('/api/csp-report', securityReportRoutes);
 app.use(chatRoutes);
 
 // ────── Static pages ──────
@@ -152,7 +160,9 @@ app.use((err, req, res, next) => {
     });
   }
 
-  res.status(500).json({ error: 'Внутренняя ошибка сервера', timestamp: new Date().toISOString() });
+  const status = err.status || err.statusCode || 500;
+  const error = status === 413 ? 'Слишком большой запрос' : 'Внутренняя ошибка сервера';
+  res.status(status >= 400 && status < 600 ? status : 500).json({ error, timestamp: new Date().toISOString() });
 });
 
 // ────── Start ──────
@@ -163,7 +173,7 @@ app.listen(...listenArgs, () => {
     port: config.port,
     openai: isConnected() ? 'connected' : 'unavailable',
     security: 'enhanced',
-    version: '3.1.0',
+    version: appVersion,
   });
   logger.info('🔒 Безопасность: Helmet, CORS, Rate Limiting, Валидация включены');
   logger.info('📊 Логирование: Winston включен, логи сохраняются в /logs');

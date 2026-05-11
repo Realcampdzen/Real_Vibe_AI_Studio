@@ -41,17 +41,27 @@ class SkeletonLoader {
 
     const skeleton = document.createElement('div');
     skeleton.className = 'skeleton skeleton-hero';
-    skeleton.innerHTML = `
-      <div class="skeleton-video"></div>
-      <div class="skeleton-content">
-        <div class="skeleton-title"></div>
-        <div class="skeleton-text"></div>
-        <div class="skeleton-buttons">
-          <div class="skeleton-button"></div>
-          <div class="skeleton-button"></div>
-        </div>
-      </div>
-    `;
+    const video = document.createElement('div');
+    video.className = 'skeleton-video';
+    const content = document.createElement('div');
+    content.className = 'skeleton-content';
+    const title = document.createElement('div');
+    title.className = 'skeleton-title';
+    const text = document.createElement('div');
+    text.className = 'skeleton-text';
+    const buttons = document.createElement('div');
+    buttons.className = 'skeleton-buttons';
+    const primaryButton = document.createElement('div');
+    primaryButton.className = 'skeleton-button';
+    const secondaryButton = document.createElement('div');
+    secondaryButton.className = 'skeleton-button';
+    buttons.appendChild(primaryButton);
+    buttons.appendChild(secondaryButton);
+    content.appendChild(title);
+    content.appendChild(text);
+    content.appendChild(buttons);
+    skeleton.appendChild(video);
+    skeleton.appendChild(content);
 
     heroReel.style.position = 'relative';
     heroReel.appendChild(skeleton);
@@ -83,10 +93,12 @@ class SkeletonLoader {
     for (let i = 0; i < 4; i++) {
       const skeletonCard = document.createElement('div');
       skeletonCard.className = 'skeleton skeleton-service-card';
-      skeletonCard.innerHTML = `
-        <div class="skeleton-image"></div>
-        <div class="skeleton-footer"></div>
-      `;
+      const image = document.createElement('div');
+      image.className = 'skeleton-image';
+      const footer = document.createElement('div');
+      footer.className = 'skeleton-footer';
+      skeletonCard.appendChild(image);
+      skeletonCard.appendChild(footer);
       skeletonRow.appendChild(skeletonCard);
     }
 
@@ -120,10 +132,12 @@ class SkeletonLoader {
     for (let i = 0; i < 6; i++) {
       const skeletonCard = document.createElement('div');
       skeletonCard.className = 'skeleton skeleton-portfolio-card';
-      skeletonCard.innerHTML = `
-        <div class="skeleton-image"></div>
-        <div class="skeleton-text short"></div>
-      `;
+      const image = document.createElement('div');
+      image.className = 'skeleton-image';
+      const text = document.createElement('div');
+      text.className = 'skeleton-text short';
+      skeletonCard.appendChild(image);
+      skeletonCard.appendChild(text);
       skeletonRow.appendChild(skeletonCard);
     }
 
