@@ -18,3 +18,9 @@ openai-proxy/node_modules
 docs/archive
 *.tsbuildinfo
 dist
+
+# Source/master media files are kept in source storage, not in the runtime image.
+public/works/With pain.mp4
+public/works/___202511240019_nx8yb_1.mp4
+public/works/шоурил.mp4
+public/works/опенинг новый.mp4
