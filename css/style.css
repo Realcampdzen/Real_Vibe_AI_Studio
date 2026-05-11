@@ -9048,6 +9048,72 @@ body.new-year-page {
   contain-intrinsic-size: 1px 900px;
 }
 
+/* Desktop performance: keep the visual language, but avoid persistent blur/filter
+   layers that make long scrolls repaint-heavy on Chrome/Edge/Yandex. */
+.nav-cta::after,
+.hero::before {
+  filter: none !important;
+}
+
+.nav-cta::after {
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 51, 255, 0.28), rgba(255, 0, 255, 0) 68%);
+}
+
+.hero::before {
+  background:
+    radial-gradient(circle at 28% 38%, rgba(255, 155, 74, 0.24), transparent 62%),
+    radial-gradient(circle at 82% 20%, rgba(111, 87, 255, 0.22), transparent 66%);
+  opacity: 0.5;
+}
+
+.hero-reel {
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.76),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.hero-sound-toggle,
+.ai-assistant-widget,
+.service-detail-card-matte,
+.service-carousel-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.hero-sound-toggle {
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ai-assistant-widget {
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.32s ease;
+}
+
+.service-detail-card-matte {
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+.service-carousel-card {
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  will-change: auto;
+}
+
+.service-carousel-card.carousel-animating {
+  transition:
+    transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important,
+    opacity 0.55s ease-in-out !important,
+    visibility 0s linear 0.8s !important;
+  will-change: transform, opacity !important;
+}
+
+.service-carousel-card.center-card {
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 24px rgba(255, 155, 74, 0.24) !important;
+}
+
 .glass-ui-widget,
 .glass-ui-widget *,
 .glass-ui-hipych-button,
@@ -9063,6 +9129,18 @@ body.new-year-page {
   animation: none !important;
   will-change: auto !important;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28) !important;
+}
+
+.glass-ui-hipych-button::before,
+.glass-ui-hipych-button::after,
+.glass-ui-bro-cat-button::before,
+.glass-ui-bro-cat-button::after,
+.glass-ui-valyusha-button::before,
+.glass-ui-valyusha-button::after {
+  animation: none !important;
+  filter: none !important;
+  will-change: auto !important;
+  opacity: 0.65 !important;
 }
 
 @media (max-width: 900px) {

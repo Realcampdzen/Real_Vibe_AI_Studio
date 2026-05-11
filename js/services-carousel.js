@@ -62,13 +62,10 @@ class ServicesCarousel {
       if (e.key === 'ArrowRight') this.next();
     });
     
-    console.log('🎠 3D Carousel initialized with', this.totalCards, 'cards');
   }
   
   updateCarousel(animate = true) {
     if (this.isAnimating && animate) return;
-    
-    console.log('🎠 Карусель вращается! Индекс:', this.currentIndex, 'animate:', animate);
     
     if (animate) {
       this.isAnimating = true;
@@ -141,11 +138,6 @@ class ServicesCarousel {
     card.style.opacity = opacity;
     card.style.zIndex = zIndex;
     
-    // Логирование для отладки (только для центральной и ближайших карточек)
-    if (absOffset <= 1) {
-      console.log(`🎴 Card offset=${offset}: transform=${transformValue.substring(0, 50)}...`);
-    }
-    
     // Для карточек дальше 3-й позиции - полностью скрываем и отключаем взаимодействие
     if (absOffset > 3) {
       card.style.visibility = 'hidden';
@@ -156,8 +148,7 @@ class ServicesCarousel {
       card.style.pointerEvents = 'auto';
     }
     
-    const blur = absOffset > 0 ? Math.min(absOffset * 1.5, 4) : 0;
-    card.style.filter = blur > 0 ? `blur(${blur}px)` : 'none';
+    card.style.filter = 'none';
     
     // Добавляем/убираем классы для стилизации
     card.classList.remove('center-card', 'left-card', 'right-card');
@@ -169,12 +160,6 @@ class ServicesCarousel {
       card.classList.add('right-card');
     }
     
-    // Логирование для отладки (только для первых 3 карточек)
-    const cardIndex = this.getCardIndex(card);
-    if (cardIndex < 3 || Math.abs(offset) <= 1) {
-      const cardClass = offset === 0 ? 'center' : (offset < 0 ? 'left' : 'right');
-      console.log(`  ✨ Card ${cardIndex}: offset=${offset}, class=${cardClass}, translateX=${translateX.toFixed(1)}px`);
-    }
   }
   
   getCardIndex(card) {
@@ -373,7 +358,6 @@ class ServicesCarousel {
           
           // Переключаемся на карточку, если она не центральная
           if (index !== this.currentIndex && !this.isAnimating) {
-            console.log(`🖱️ Клик на карточку ${index}, переключаемся с ${this.currentIndex}`);
             this.goTo(index);
           }
         }
@@ -443,7 +427,6 @@ class ServicesCarousel {
           
           // Переключаемся на карточку, если она не центральная
           if (index !== this.currentIndex && !this.isAnimating) {
-            console.log(`📱 Tap на карточку ${index}, переключаемся с ${this.currentIndex}`);
             this.goTo(index);
           }
         }
