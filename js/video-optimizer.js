@@ -600,6 +600,18 @@ class VideoOptimizer {
       this.playVideo(video);
       updateVolumeIcon();
     };
+    const muteWithoutPausing = () => {
+      video.muted = true;
+      updateVolumeIcon();
+    };
+    const toggleSound = () => {
+      if (video.muted || video.volume === 0 || video.paused) {
+        enableSoundAndPlay();
+        return;
+      }
+
+      muteWithoutPausing();
+    };
     const toggleSoundFromSurface = (event) => {
       if (
         event.target.closest('button') ||
@@ -611,10 +623,7 @@ class VideoOptimizer {
       }
       event.preventDefault();
       event.stopPropagation();
-      if (video.muted || video.volume === 0 || video.paused) {
-        enableSoundAndPlay();
-      }
-      updateVolumeIcon();
+      toggleSound();
       bumpControls();
     };
 
@@ -636,11 +645,7 @@ class VideoOptimizer {
       bumpControls();
     });
     volumeBtn?.addEventListener('click', () => {
-      video.muted = !video.muted;
-      if (!video.muted) {
-        enableSoundAndPlay();
-      }
-      updateVolumeIcon();
+      toggleSound();
       bumpControls();
     });
     speedBtn?.addEventListener('click', () => {

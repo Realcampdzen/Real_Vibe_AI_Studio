@@ -2468,6 +2468,9 @@ body::before {
   position: relative;
   overflow: hidden;
   flex: 1;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    #101010;
 }
 
 .projects-reel-video {
@@ -4028,7 +4031,9 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   text-align: center;
   padding: 0;
   position: relative;
-  background: transparent;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    #101010;
   border: var(--panel-border);
   border-radius: var(--panel-radius);
   box-shadow: var(--panel-shadow);
@@ -4619,6 +4624,36 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
+.detail-home-link {
+  position: fixed;
+  left: 30px;
+  top: 92px;
+  z-index: 1002;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.625rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(8, 8, 8, 0.74);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.detail-home-link:hover,
+.detail-home-link:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
+}
+
 /* Tilt Effect */
 [data-tilt] {
   transform-style: preserve-3d;
@@ -5197,7 +5232,9 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 .assistant-card {
-  background: var(--panel-bg);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--panel-radius);
   padding: 0;
@@ -8322,6 +8359,14 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 
 /* Mobile styles for service detail page */
 @media (max-width: 768px) {
+  .detail-home-link {
+    left: 16px;
+    top: 76px;
+    min-height: 40px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+
   .service-detail-section {
     padding: 6.25rem 0 3.75rem;
   }

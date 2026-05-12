@@ -108,7 +108,7 @@
     lazyImages();
     // video-optimizer.js загружается напрямую в index.html, не нужно загружать здесь
     schedule(() => {
-      loadScript('js/image-optimizer.js');
+      loadScript('js/image-optimizer.js?v=20260512-hotfix');
       loadScript('js/skeleton-loader.js');
     }, 120);
   }

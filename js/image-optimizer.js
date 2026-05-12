@@ -165,7 +165,8 @@ class ImageOptimizer {
     const portfolioImages = document.querySelectorAll('.projects-reel-image');
     
     portfolioImages.forEach(img => {
-      img.loading = 'lazy';
+      img.loading = 'eager';
+      img.fetchPriority = 'low';
       img.decoding = 'async';
     });
   }

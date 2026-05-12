@@ -29,7 +29,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260512-conversion" as="style">
+  <link rel="preload" href="css/style.css?v=20260512-hotfix" as="style">
   <link rel="preload" href="css/mobile-improvements.css?v=20260506-mobile-hero-nav" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260512-conversion">
+  <link rel="stylesheet" href="css/style.css?v=20260512-hotfix">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css">
@@ -524,7 +524,7 @@
         <!-- Project 1: AI-видео для бренда (БОЛЬШОЙ) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82.jpg" alt="AI-видео для бренда с атмосферой города" loading="lazy" decoding="async">
+            <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82.jpg" alt="AI-видео для бренда с атмосферой города" loading="eager" fetchpriority="low" decoding="async">
           </div>
           <p class="projects-reel-caption">
             <span class="projects-reel-title">AI-видео для бренда</span>
@@ -536,7 +536,7 @@
         <!-- Project 2: Промо-ролик (малый) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82%20%D0%BE%D0%B1%D0%BB%D0%BE%D0%B6%D0%BA%D0%B0.jpg" alt="Промо-ролик с ИИ-анимацией и графикой" loading="lazy" decoding="async">
+            <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82%20%D0%BE%D0%B1%D0%BB%D0%BE%D0%B6%D0%BA%D0%B0.jpg" alt="Промо-ролик с ИИ-анимацией и графикой" loading="eager" fetchpriority="low" decoding="async">
           </div>
           <p class="projects-reel-caption">
             <span class="projects-reel-title">Промо с AI-анимацией</span>
@@ -551,7 +551,7 @@
         <!-- Project 3: Креативный клип (малый) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <img class="projects-reel-image" src="public/works/%D0%B7%D0%B5%D0%BB%D0%B5%D0%BD%D1%8B%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD.jpg" alt="Креативный клип в стиле будущего" loading="lazy" decoding="async">
+            <img class="projects-reel-image" src="public/works/%D0%B7%D0%B5%D0%BB%D0%B5%D0%BD%D1%8B%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD.jpg" alt="Креативный клип в стиле будущего" loading="eager" fetchpriority="low" decoding="async">
           </div>
           <p class="projects-reel-caption">
             <span class="projects-reel-title">Клип в стиле будущего</span>
@@ -563,7 +563,7 @@
         <!-- Project 4: AI-видео для бренда (БОЛЬШОЙ, дубликат для сетки) -->
         <div class="projects-reel-card">
           <div class="projects-reel-media">
-            <img class="projects-reel-image" src="public/works/%D0%B1%D0%B0%D0%B1%D0%B0%20%D0%B2%20%D1%86%D0%B8%D1%80%D0%BA%D0%B5.jpg" alt="AI-видео для бренда (вариация сетки)" loading="lazy" decoding="async">
+            <img class="projects-reel-image" src="public/works/%D0%B1%D0%B0%D0%B1%D0%B0%20%D0%B2%20%D1%86%D0%B8%D1%80%D0%BA%D0%B5.jpg" alt="AI-видео для бренда (вариация сетки)" loading="eager" fetchpriority="low" decoding="async">
           </div>
           <p class="projects-reel-caption">
             <span class="projects-reel-title">Бренд-визуал с AI</span>
@@ -643,7 +643,7 @@
       
       <div class="process-grid">
         <div class="process-step">
-          <img src="public/согласование.jpg" alt="Общение с клиентом" class="step-image" loading="lazy" decoding="async">
+          <img src="public/согласование.jpg" alt="Общение с клиентом" class="step-image" loading="eager" fetchpriority="low" decoding="async">
           <div class="step-overlay"></div>
           <div class="step-content">
             <div class="step-footer">Общение с клиентом, согласование сроков и цены</div>
@@ -651,7 +651,7 @@
         </div>
         
         <div class="process-step">
-          <img src="public/работа.jpg" alt="Создание контента специалистами" class="step-image" loading="lazy" decoding="async">
+          <img src="public/работа.jpg" alt="Создание контента специалистами" class="step-image" loading="eager" fetchpriority="low" decoding="async">
           <div class="step-overlay"></div>
           <div class="step-content">
             <div class="step-footer">Создание контента специалистами ИИ-студии</div>
@@ -659,7 +659,7 @@
         </div>
         
         <div class="process-step">
-          <img src="public/результат 1.jpg" alt="Согласование результатов с заказчиком" class="step-image" loading="lazy" decoding="async">
+          <img src="public/результат 1.jpg" alt="Согласование результатов с заказчиком" class="step-image" loading="eager" fetchpriority="low" decoding="async">
           <div class="step-overlay"></div>
           <div class="step-content">
             <div class="step-footer">Согласование результатов с довольным заказчиком</div>
@@ -683,7 +683,7 @@
       <div class="assistants-grid">
         <!-- Хипыч AI -->
         <div class="assistant-card" data-bot="hipych-ai">
-          <img src="public/works/Хипыч карточка.jpg" alt="Хипыч AI" class="assistant-bg-image" loading="lazy" decoding="async">
+          <img src="public/works/Хипыч карточка.jpg" alt="Хипыч AI" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
           <div class="assistant-content">
             <div class="assistant-footer">🎮 Хипыч AI</div>
           </div>
@@ -691,7 +691,7 @@
 
         <!-- Кот Бро (в центре) -->
         <div class="assistant-card featured-bot" data-bot="bro-cat">
-          <img src="public/works/Кот Бро карточка.jpg" alt="Кот Бро" class="assistant-bg-image" loading="lazy" decoding="async">
+          <img src="public/works/Кот Бро карточка.jpg" alt="Кот Бро" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
           <div class="assistant-content">
             <div class="assistant-footer">🐱 Кот Бро</div>
           </div>
@@ -699,7 +699,7 @@
 
         <!-- НейроVалюша -->
         <div class="assistant-card" data-bot="valyusha">
-          <img src="public/works/Нейровалюша.jpg" alt="НейроVалюша" class="assistant-bg-image" loading="lazy" decoding="async">
+          <img src="public/works/Нейровалюша.jpg" alt="НейроVалюша" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
           <div class="assistant-content">
             <div class="assistant-footer">💜 НейроVалюша</div>
           </div>
@@ -814,11 +814,11 @@
   <script src="js/hero-reveal.js?v=20251216-reveal-force"></script>
   <!-- Core scripts (defer для оптимизации загрузки) -->
   <script src="js/scroll-manager.js?v=20251216-reveal-force" defer></script>
-  <script src="js/video-optimizer.js?v=20260511-security" defer></script>
+  <script src="js/video-optimizer.js?v=20260512-hotfix" defer></script>
   <script src="js/script.js?v=20260512-conversion" defer></script>
   <script src="js/chat-client.js?v=20260512-productux" defer></script>
   <script src="js/services-carousel.js?v=20260511-stylecsp" defer></script>
-  <script src="js/performance-loader.js?v=20260512-productux" defer></script>
+  <script src="js/performance-loader.js?v=20260512-hotfix" defer></script>
   
   <!-- Snow Effect JS removed (seasonal) -->
 

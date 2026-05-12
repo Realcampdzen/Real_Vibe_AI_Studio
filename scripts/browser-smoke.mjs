@@ -47,10 +47,14 @@ async function hasInlineScript(page) {
 }
 
 const browser = await launchBrowser();
-const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-await page.addInitScript(() => {
+const context = await browser.newContext({
+  viewport: { width: 1440, height: 900 },
+  serviceWorkers: 'block',
+});
+await context.addInitScript(() => {
   window.localStorage?.setItem('rv-cookie-consent', 'true');
 });
+const page = await context.newPage();
 const consoleIssues = [];
 const cspReportOnlyWarnings = [];
 const oldVideoRequests = [];
@@ -146,17 +150,36 @@ try {
       title: card.querySelector('.projects-reel-title')?.textContent?.trim() || '',
       notes: [...card.querySelectorAll('.projects-reel-note')].map((note) => note.textContent.trim()),
     })));
+  const heroTitleStyle = await page.evaluate(() => {
+    const title = document.querySelector('.hero-title-reel') || document.querySelector('.hero-title');
+    if (!title) return null;
+    const style = window.getComputedStyle(title);
+    return {
+      text: title.textContent.trim().replace(/\s+/g, ' '),
+      fontFamily: style.fontFamily,
+      fontSize: style.fontSize,
+      fontWeight: style.fontWeight,
+      lineHeight: style.lineHeight,
+      letterSpacing: style.letterSpacing,
+    };
+  });
   await page.waitForTimeout(heroWaitMs);
 
   const hero = await collectHeroState(page);
+  await page.locator('#hero-reel-container').click({ position: { x: 32, y: 32 }, timeout: 10_000 });
+  await page.waitForTimeout(500);
+  const heroSoundAfterSurfaceOn = await collectHeroState(page);
+  await page.locator('#hero-reel-container').click({ position: { x: 32, y: 32 }, timeout: 10_000 });
+  await page.waitForTimeout(500);
+  const heroSoundAfterSurfaceOff = await collectHeroState(page);
   await page.locator('#hero-reel-container').hover({ timeout: 10_000 });
   await page.waitForTimeout(300);
   await page.locator('#hero-control-volume').click({ timeout: 10_000 });
   await page.waitForTimeout(500);
-  const heroSoundAfterVolume = await collectHeroState(page);
-  await page.locator('#hero-reel-container').click({ position: { x: 32, y: 32 }, timeout: 10_000 });
+  const heroSoundAfterVolumeOn = await collectHeroState(page);
+  await page.locator('#hero-control-volume').click({ timeout: 10_000 });
   await page.waitForTimeout(500);
-  const heroSoundAfterSurface = await collectHeroState(page);
+  const heroSoundAfterVolumeOff = await collectHeroState(page);
   await page.locator('#hero-reel-container').hover({ timeout: 10_000 });
   await page.locator('#hero-control-play').click({ timeout: 10_000 });
   await page.waitForTimeout(500);
@@ -164,6 +187,37 @@ try {
   await page.locator('#hero-control-play').click({ timeout: 10_000 });
   await page.waitForTimeout(800);
   const heroAfterPlayResume = await collectHeroState(page);
+
+  const lowerImageSections = {};
+  for (const [key, selector] of [
+    ['projects', '#projects-showreel'],
+    ['process', '#process'],
+    ['assistants', '#assistants'],
+  ]) {
+    await page.locator(selector).scrollIntoViewIfNeeded({ timeout: 10_000 });
+    await page.waitForTimeout(900);
+    lowerImageSections[key] = await page.evaluate((sectionSelector) => {
+      const images = [...document.querySelectorAll(`${sectionSelector} img`)]
+        .filter((img) => img.matches('.projects-reel-image, .step-image, .assistant-bg-image'))
+        .map((img) => {
+          const rect = img.getBoundingClientRect();
+          const parent = img.parentElement?.getBoundingClientRect();
+          return {
+            src: img.getAttribute('src') || '',
+            loading: img.getAttribute('loading') || '',
+            fetchPriority: img.getAttribute('fetchpriority') || img.fetchPriority || '',
+            complete: img.complete,
+            naturalWidth: img.naturalWidth,
+            naturalHeight: img.naturalHeight,
+            visible: rect.width > 0 && rect.height > 0,
+            parentArea: parent ? Math.round(parent.width * parent.height) : 0,
+          };
+        });
+      return { selector: sectionSelector, images };
+    }, selector);
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(800);
 
   const chatButton = page.locator('.glass-ui-hipych-button').first();
   await chatButton.waitFor({ state: 'visible', timeout: 20_000 });
@@ -248,10 +302,25 @@ try {
       serviceSchema: Boolean(document.querySelector('[itemtype="https://schema.org/Service"]')),
       decisionCards: document.querySelectorAll('.service-decision-card').length,
       conversionCards: document.querySelectorAll('.detail-conversion-card').length,
+      homeLink: (() => {
+        const link = document.querySelector('.detail-home-link');
+        if (!link) return { href: '', text: '', visible: false };
+        const rect = link.getBoundingClientRect();
+        return {
+          href: link.getAttribute('href') || '',
+          text: link.textContent.trim(),
+          visible: rect.width > 0 && rect.height > 0,
+        };
+      })(),
       ctaHrefs: [...document.querySelectorAll('.service-detail-cta-section a[href]')]
         .map((link) => link.getAttribute('href') || ''),
     })));
   }
+
+  await page.goto(`${baseUrl}/service-detail.html?id=0`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.locator('.detail-home-link').click({ timeout: 10_000 });
+  await page.waitForURL(/\/(?:index\.html)?$/, { timeout: 15_000 });
+  const detailHomeClickUrl = page.url();
 
   await page.goto(`${baseUrl}/ai-photo-detail.html`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForTimeout(500);
@@ -266,11 +335,34 @@ try {
     conversionCards: await page.evaluate(() => document.querySelectorAll('.detail-conversion-card').length),
     conversionKickers: await page.evaluate(() => [...document.querySelectorAll('.detail-conversion-kicker')]
       .map((item) => item.textContent.trim())),
+    homeLink: await page.evaluate(() => {
+      const link = document.querySelector('.detail-home-link');
+      if (!link) return { href: '', text: '', visible: false };
+      const rect = link.getBoundingClientRect();
+      return {
+        href: link.getAttribute('href') || '',
+        text: link.textContent.trim(),
+        visible: rect.width > 0 && rect.height > 0,
+      };
+    }),
     ctaHrefs: await page.evaluate(() => [...document.querySelectorAll('.service-detail-cta-section a[href]')]
       .map((link) => link.getAttribute('href') || '')),
   };
 
-  const mobileDetailPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true });
+  await page.locator('.detail-home-link').focus();
+  await page.keyboard.press('Enter');
+  await page.waitForURL(/\/(?:index\.html)?$/, { timeout: 15_000 });
+  const aiPhotoHomeKeyboardUrl = page.url();
+
+  const mobileContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    serviceWorkers: 'block',
+  });
+  await mobileContext.addInitScript(() => {
+    window.localStorage?.setItem('rv-cookie-consent', 'true');
+  });
+  const mobileDetailPage = await mobileContext.newPage();
   await mobileDetailPage.goto(`${baseUrl}/service-detail.html?id=0`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await mobileDetailPage.waitForTimeout(700);
   const mobileDetail = await mobileDetailPage.evaluate(() => {
@@ -307,11 +399,21 @@ try {
     return {
       ctaHrefs: links.map((link) => link.href),
       overlaps,
+      homeLink: (() => {
+        const link = document.querySelector('.detail-home-link');
+        if (!link) return { href: '', visible: false };
+        const rect = link.getBoundingClientRect();
+        return {
+          href: link.getAttribute('href') || '',
+          visible: rect.width > 0 && rect.height > 0,
+        };
+      })(),
     };
   });
   await mobileDetailPage.close();
+  await mobileContext.close();
 
-  const freshDetailPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const freshDetailPage = await context.newPage();
   await freshDetailPage.goto(`${baseUrl}/service-detail.html?id=0`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await freshDetailPage.waitForTimeout(900);
   const freshDetailRuntime = await freshDetailPage.evaluate(() => {
@@ -342,17 +444,23 @@ try {
     homepageSeo,
     serviceCards,
     projectCases,
+    heroTitleStyle,
     hero,
-    heroSoundAfterVolume,
-    heroSoundAfterSurface,
+    heroSoundAfterSurfaceOn,
+    heroSoundAfterSurfaceOff,
+    heroSoundAfterVolumeOn,
+    heroSoundAfterVolumeOff,
     heroAfterPlayResume,
+    lowerImageSections,
     chatUi,
     chatNetworkUi,
     widgetOpenClose,
     heroAfterScroll,
     serviceCardNavigationUrl,
     detail,
+    detailHomeClickUrl,
     aiPhoto,
+    aiPhotoHomeKeyboardUrl,
     mobileDetail,
     freshDetailRuntime,
   };
@@ -388,20 +496,44 @@ try {
   if (projectCases.length < 6 || projectCases.some((entry) => !entry.title || entry.notes.length < 2)) {
     fail('browser smoke project case context missing', projectCases);
   }
+  const normalizedHeroTitle = heroTitleStyle?.text?.replace(/\s+/g, '');
+  if (
+    !heroTitleStyle ||
+    normalizedHeroTitle !== 'РЕАЛЬНЫЙVАЙБAISTUDIO' ||
+    !/Unbounded/i.test(heroTitleStyle.fontFamily) ||
+    heroTitleStyle.fontWeight !== '600'
+  ) {
+    fail('browser smoke hero title typography changed unexpectedly', heroTitleStyle);
+  }
   if (!hero || !String(hero.src).includes('hero-reel-desktop.webm') || hero.paused) {
     fail('browser smoke hero did not stay playing on optimized WebM', hero);
   }
   if (!hero.muted) {
     fail('browser smoke hero did not start muted for autoplay policy', hero);
   }
-  if (!heroSoundAfterVolume || heroSoundAfterVolume.muted || heroSoundAfterVolume.volume <= 0 || heroSoundAfterVolume.paused) {
-    fail('browser smoke hero volume click did not enable sound playback', heroSoundAfterVolume);
+  if (!heroSoundAfterSurfaceOn || heroSoundAfterSurfaceOn.muted || heroSoundAfterSurfaceOn.volume <= 0 || heroSoundAfterSurfaceOn.paused) {
+    fail('browser smoke hero surface first click did not enable sound playback', heroSoundAfterSurfaceOn);
   }
-  if (!heroSoundAfterSurface || heroSoundAfterSurface.muted || heroSoundAfterSurface.volume <= 0 || heroSoundAfterSurface.paused) {
-    fail('browser smoke hero surface click did not preserve sound playback', heroSoundAfterSurface);
+  if (!heroSoundAfterSurfaceOff || !heroSoundAfterSurfaceOff.muted || heroSoundAfterSurfaceOff.paused) {
+    fail('browser smoke hero surface second click did not mute without pausing', heroSoundAfterSurfaceOff);
+  }
+  if (!heroSoundAfterVolumeOn || heroSoundAfterVolumeOn.muted || heroSoundAfterVolumeOn.volume <= 0 || heroSoundAfterVolumeOn.paused) {
+    fail('browser smoke hero volume click did not enable sound playback', heroSoundAfterVolumeOn);
+  }
+  if (!heroSoundAfterVolumeOff || !heroSoundAfterVolumeOff.muted || heroSoundAfterVolumeOff.paused) {
+    fail('browser smoke hero volume second click did not mute without pausing', heroSoundAfterVolumeOff);
   }
   if (!heroAfterPlayResume || heroAfterPlayResume.muted || heroAfterPlayResume.volume <= 0 || heroAfterPlayResume.paused) {
     fail('browser smoke hero play resume did not keep sound enabled', heroAfterPlayResume);
+  }
+  for (const entry of Object.values(lowerImageSections)) {
+    if (
+      !entry.images.length ||
+      entry.images.some((image) => image.loading !== 'eager' || image.fetchPriority !== 'low') ||
+      entry.images.some((image) => !image.complete || image.naturalWidth <= 0 || image.naturalHeight <= 0 || !image.visible)
+    ) {
+      fail('browser smoke lower section images were not ready when visible', lowerImageSections);
+    }
   }
   if (!chatUi.visible || chatUi.messageCount < 3 || chatUi.inputDisabled || chatUi.buttonDisabled) {
     fail('browser smoke chat widget interaction failed', chatUi);
@@ -432,10 +564,16 @@ try {
       !entry.serviceSchema ||
       entry.decisionCards < 3 ||
       entry.conversionCards < 3 ||
+      entry.homeLink.href !== 'index.html' ||
+      !/На главную/.test(entry.homeLink.text) ||
+      !entry.homeLink.visible ||
       !hasRequiredCtas
     ) {
       fail('browser smoke service detail failed', entry);
     }
+  }
+  if (!/\/(?:index\.html)?$/.test(detailHomeClickUrl)) {
+    fail('browser smoke detail home click navigation failed', detailHomeClickUrl);
   }
   if (
     aiPhoto.hasInlineScript ||
@@ -446,13 +584,21 @@ try {
     !aiPhoto.serviceSchema ||
     aiPhoto.conversionCards < 3 ||
     !['Кому подходит', 'Что получите', 'Как стартуем'].every((label) => aiPhoto.conversionKickers.includes(label)) ||
+    aiPhoto.homeLink.href !== 'index.html' ||
+    !/На главную/.test(aiPhoto.homeLink.text) ||
+    !aiPhoto.homeLink.visible ||
     !['https://t.me/Stivanovv', 'tel:+79319671483', 'mailto:polstan1986@gmail.com']
       .every((href) => aiPhoto.ctaHrefs.includes(href))
   ) {
     fail('browser smoke AI photo detail failed', aiPhoto);
   }
+  if (!/\/(?:index\.html)?$/.test(aiPhotoHomeKeyboardUrl)) {
+    fail('browser smoke AI photo home keyboard navigation failed', aiPhotoHomeKeyboardUrl);
+  }
   if (
     mobileDetail.overlaps.length ||
+    mobileDetail.homeLink.href !== 'index.html' ||
+    !mobileDetail.homeLink.visible ||
     !['https://t.me/Stivanovv', 'tel:+79319671483', 'mailto:polstan1986@gmail.com']
       .every((href) => mobileDetail.ctaHrefs.includes(href))
   ) {
