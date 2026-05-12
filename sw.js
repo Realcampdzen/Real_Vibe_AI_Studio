@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.23-20260512-productux';
+const CACHE_VERSION = 'v1.24-20260512-conversion';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -16,16 +16,16 @@ const STATIC_ASSETS = [
   withBase('/index.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
-  withBase('/css/style.css?v=20260512-productux'),
+  withBase('/css/style.css?v=20260512-conversion'),
   withBase('/css/critical-fixes.css'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
   withBase('/js/scroll-manager.js'),
   withBase('/js/video-optimizer.js'),
-  withBase('/js/script.js?v=20260512-productux'),
+  withBase('/js/script.js?v=20260512-conversion'),
   withBase('/js/page-common.js?v=20260512-productux'),
-  withBase('/js/service-detail-page.js?v=20260512-productux'),
+  withBase('/js/service-detail-page.js?v=20260512-conversion'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),

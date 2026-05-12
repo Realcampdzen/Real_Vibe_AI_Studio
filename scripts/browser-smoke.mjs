@@ -139,6 +139,12 @@ try {
       role: card.getAttribute('role'),
       label: card.getAttribute('aria-label') || '',
       affordance: window.getComputedStyle(card, '::after').content,
+      benefit: card.querySelector('.service-simple-benefit')?.textContent?.trim() || '',
+    })));
+  const projectCases = await page.evaluate(() => [...document.querySelectorAll('#projects-showreel .projects-reel-card')]
+    .map((card) => ({
+      title: card.querySelector('.projects-reel-title')?.textContent?.trim() || '',
+      notes: [...card.querySelectorAll('.projects-reel-note')].map((note) => note.textContent.trim()),
     })));
   await page.waitForTimeout(heroWaitMs);
 
@@ -240,6 +246,7 @@ try {
       canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') || '',
       ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || '',
       serviceSchema: Boolean(document.querySelector('[itemtype="https://schema.org/Service"]')),
+      decisionCards: document.querySelectorAll('.service-decision-card').length,
       conversionCards: document.querySelectorAll('.detail-conversion-card').length,
       ctaHrefs: [...document.querySelectorAll('.service-detail-cta-section a[href]')]
         .map((link) => link.getAttribute('href') || ''),
@@ -257,6 +264,8 @@ try {
     ogTitle: await page.evaluate(() => document.querySelector('meta[property="og:title"]')?.getAttribute('content') || ''),
     serviceSchema: await page.evaluate(() => Boolean(document.querySelector('[itemtype="https://schema.org/Service"]'))),
     conversionCards: await page.evaluate(() => document.querySelectorAll('.detail-conversion-card').length),
+    conversionKickers: await page.evaluate(() => [...document.querySelectorAll('.detail-conversion-kicker')]
+      .map((item) => item.textContent.trim())),
     ctaHrefs: await page.evaluate(() => [...document.querySelectorAll('.service-detail-cta-section a[href]')]
       .map((link) => link.getAttribute('href') || '')),
   };
@@ -332,6 +341,7 @@ try {
     legacyChatOverlayPresent,
     homepageSeo,
     serviceCards,
+    projectCases,
     hero,
     heroSoundAfterVolume,
     heroSoundAfterSurface,
@@ -371,6 +381,12 @@ try {
     serviceCards.some((card) => !card.href || card.tabIndex !== '0' || card.role !== 'link' || !card.label || !/Подробнее/.test(card.affordance))
   ) {
     fail('browser smoke service card affordance failed', serviceCards);
+  }
+  if (serviceCards.some((card) => card.benefit.length < 16)) {
+    fail('browser smoke service card benefit copy missing', serviceCards);
+  }
+  if (projectCases.length < 6 || projectCases.some((entry) => !entry.title || entry.notes.length < 2)) {
+    fail('browser smoke project case context missing', projectCases);
   }
   if (!hero || !String(hero.src).includes('hero-reel-desktop.webm') || hero.paused) {
     fail('browser smoke hero did not stay playing on optimized WebM', hero);
@@ -414,6 +430,7 @@ try {
       !entry.canonical ||
       !entry.ogTitle ||
       !entry.serviceSchema ||
+      entry.decisionCards < 3 ||
       entry.conversionCards < 3 ||
       !hasRequiredCtas
     ) {
@@ -428,6 +445,7 @@ try {
     !aiPhoto.ogTitle ||
     !aiPhoto.serviceSchema ||
     aiPhoto.conversionCards < 3 ||
+    !['Кому подходит', 'Что получите', 'Как стартуем'].every((label) => aiPhoto.conversionKickers.includes(label)) ||
     !['https://t.me/Stivanovv', 'tel:+79319671483', 'mailto:polstan1986@gmail.com']
       .every((href) => aiPhoto.ctaHrefs.includes(href))
   ) {

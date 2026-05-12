@@ -221,6 +221,50 @@
     });
   }
 
+  function compactText(value, fallback = '') {
+    const text = String(value || fallback).replace(/\s+/g, ' ').trim();
+    if (text.length <= 170) return text;
+    return `${text.slice(0, 167).trim()}...`;
+  }
+
+  function firstDetailText(items, fallback = '') {
+    if (!Array.isArray(items) || items.length === 0) return fallback;
+    const item = items.find((entry) => entry?.description || entry?.title);
+    if (!item) return fallback;
+    return compactText(item.description || item.title, fallback);
+  }
+
+  function createSummaryCard(kicker, text) {
+    const card = createElement('article', { className: 'service-decision-card' });
+    appendChildren(card, [
+      createElement('span', { className: 'service-decision-kicker', text: kicker }),
+      createElement('p', { text }),
+    ]);
+    return card;
+  }
+
+  function createDecisionSummary(service) {
+    const fitText = firstDetailText(service.useCases, service.description || service.lead);
+    const resultText = compactText(
+      Array.isArray(service.whatYouGet) ? service.whatYouGet[0] : service.description,
+      'Готовый результат, который можно сразу использовать в рекламе, контенте или работе команды.',
+    );
+    const startText = firstDetailText(
+      service.whatWeDo,
+      'Начинаем с короткого брифа: цель, материалы, сроки, площадки и желаемый результат.',
+    );
+
+    const wrapper = createElement('div', {
+      className: 'service-decision-summary',
+      attrs: { 'aria-label': 'Коротко об услуге' },
+    });
+    return appendChildren(wrapper, [
+      createSummaryCard('Кому подходит', fitText),
+      createSummaryCard('Что получите', resultText),
+      createSummaryCard('Как стартуем', startText),
+    ]);
+  }
+
   function createPrice(service) {
     const price = createElement('div', { className: 'service-price' });
     appendChildren(price, [
@@ -301,6 +345,7 @@
       createIconBlock(service),
       createTextBlock('h1', 'service-detail-title', service.detailTitle || service.title),
       createTextBlock('p', 'service-detail-lead', service.lead),
+      createDecisionSummary(service),
       createContentSection(service.aboutPersonTitle || 'Кто за это отвечает', [
         service.aboutPerson ? appendChildren(createElement('div', { className: 'service-detail-about-person' }), [
           createTextBlock('h3', 'service-detail-person-name', service.aboutPerson.name),
@@ -332,6 +377,7 @@
       createIconBlock(service),
       createTextBlock('h1', 'service-detail-title', service.title),
       createTextBlock('p', 'service-detail-description', service.description),
+      createDecisionSummary(service),
       features,
       createStartSteps(),
       createPrice(service),

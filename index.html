@@ -29,7 +29,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260512-productux" as="style">
+  <link rel="preload" href="css/style.css?v=20260512-conversion" as="style">
   <link rel="preload" href="css/mobile-improvements.css?v=20260506-mobile-hero-nav" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260512-productux">
+  <link rel="stylesheet" href="css/style.css?v=20260512-conversion">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css">
@@ -256,14 +256,14 @@
           Продюсируем творческие проекты.
         </p>
         <div class="hero-cta-row">
-          <button class="btn-primary" data-scroll-target="projects-showreel" data-stop-propagation>
-            Смотреть примеры
+          <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" data-stop-propagation>
+            Обсудить проект
+          </button>
+          <button class="btn-secondary hero-secondary-btn" data-scroll-target="projects-showreel" data-stop-propagation>
+            Смотреть работы
           </button>
           <button class="btn-secondary hero-secondary-btn" data-scroll-target="services" data-stop-propagation>
-            Услуги AI&nbsp;Studio
-          </button>
-          <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" data-stop-propagation>
-            Оставить заявку
+            Выбрать услугу
           </button>
         </div>
       </div>
@@ -299,7 +299,7 @@
       </div>
       <div class="hero-mobile-cta">
         <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" data-stop-propagation>
-          Оставить заявку
+          Обсудить проект
         </button>
       </div>
       <div class="hero-menu" id="hero-speed-menu" aria-label="Выбор скорости">
@@ -332,6 +332,7 @@
             <img class="service-simple-bg-image" src="public/works/AI‑видео картинка.jpg" alt="ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Ролик под рекламу, Reels и запуск продукта</p>
               <div class="service-simple-footer" data-contact-link="telegram">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
             </div>
           </article>
@@ -341,6 +342,7 @@
             <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_2kwtns2kwtns2kwt.jpg" alt="Кастомные GPTs" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Визуалы для e-commerce, баннеров и key visual</p>
               <div class="service-simple-footer" data-contact-link="telegram">AI ФОТО</div>
             </div>
           </article>
@@ -353,6 +355,7 @@
             <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_6ww81h6ww81h6ww8.jpg" alt="ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-CON" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Движение, инфографика и товарные сцены</p>
               <div class="service-simple-footer" data-contact-link="telegram">ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-CON</div>
             </div>
           </article>
@@ -362,6 +365,7 @@
             <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_m9ek4jm9ek4jm9ek.jpg" alt="SMM и контент" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Контент-план, тексты и регулярные публикации</p>
               <div class="service-simple-footer" data-contact-link="telegram">SMM</div>
             </div>
           </article>
@@ -374,6 +378,7 @@
             <img class="service-simple-bg-image" src="public/works/image (7).jpg" alt="СОЗДАНИЕ МУЗЫКИ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Треки, темы и музыкальная айдентика</p>
               <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ МУЗЫКИ</div>
             </div>
           </article>
@@ -383,6 +388,7 @@
             <img class="service-simple-bg-image" src="public/works/озвучка и саунддизайн 1.jpg" alt="ОЗВУЧКА И САУНДДИЗАЙН" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Голос, SFX и чистый звук под площадки</p>
               <div class="service-simple-footer" data-contact-link="telegram">ОЗВУЧКА И САУНДДИЗАЙН</div>
             </div>
           </article>
@@ -395,6 +401,7 @@
             <img class="service-simple-bg-image" src="public/works/ии аватары.jpg" alt="AI-АВАТАРЫ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Персонажи и образы для бренда или эксперта</p>
               <div class="service-simple-footer" data-contact-link="telegram">AI-АВАТАРЫ</div>
             </div>
           </article>
@@ -404,6 +411,7 @@
             <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_8hvbgl8hvbgl8hvb.jpg" alt="СОЗДАНИЕ AI-БОТОВ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Консультации, заявки и поддержка 24/7</p>
               <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ AI-БОТОВ</div>
             </div>
           </article>
@@ -416,6 +424,7 @@
             <img class="service-simple-bg-image" src="public/works/создание сайтов.jpg" alt="Создание сайтов с AI функциями" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Лендинг, сервис и AI-функции под задачу</p>
               <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ САЙТОВ С AI ФУНКЦИЯМИ</div>
             </div>
           </article>
@@ -425,6 +434,7 @@
             <img class="service-simple-bg-image" src="public/works/малахит куб.jpg" alt="Кастомные GPTs" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
+              <p class="service-simple-benefit">Ассистент с вашими знаниями и инструкциями</p>
               <div class="service-simple-footer" data-contact-link="telegram">КАСТОМНЫЕ GPTs</div>
             </div>
           </article>
@@ -516,7 +526,11 @@
           <div class="projects-reel-media">
             <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82.jpg" alt="AI-видео для бренда с атмосферой города" loading="lazy" decoding="async">
           </div>
-          <p class="projects-reel-caption">AI-видео для бренда<br>с атмосферой города</p>
+          <p class="projects-reel-caption">
+            <span class="projects-reel-title">AI-видео для бренда</span>
+            <span class="projects-reel-note">Задача: атмосферный ролик для запуска</span>
+            <span class="projects-reel-note">Результат: готовый визуал для соцсетей</span>
+          </p>
         </div>
 
         <!-- Project 2: Промо-ролик (малый) -->
@@ -524,7 +538,11 @@
           <div class="projects-reel-media">
             <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82%20%D0%BE%D0%B1%D0%BB%D0%BE%D0%B6%D0%BA%D0%B0.jpg" alt="Промо-ролик с ИИ-анимацией и графикой" loading="lazy" decoding="async">
           </div>
-          <p class="projects-reel-caption">Промо-ролик с ИИ-анимацией<br>и графикой</p>
+          <p class="projects-reel-caption">
+            <span class="projects-reel-title">Промо с AI-анимацией</span>
+            <span class="projects-reel-note">Формат: графика и движение продукта</span>
+            <span class="projects-reel-note">Результат: креатив для digital-рекламы</span>
+          </p>
         </div>
       </div>
 
@@ -535,7 +553,11 @@
           <div class="projects-reel-media">
             <img class="projects-reel-image" src="public/works/%D0%B7%D0%B5%D0%BB%D0%B5%D0%BD%D1%8B%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD.jpg" alt="Креативный клип в стиле будущего" loading="lazy" decoding="async">
           </div>
-          <p class="projects-reel-caption">Креативный клип<br>в стиле будущего</p>
+          <p class="projects-reel-caption">
+            <span class="projects-reel-title">Клип в стиле будущего</span>
+            <span class="projects-reel-note">Формат: короткий вертикальный ролик</span>
+            <span class="projects-reel-note">Результат: заметный контент для ленты</span>
+          </p>
         </div>
 
         <!-- Project 4: AI-видео для бренда (БОЛЬШОЙ, дубликат для сетки) -->
@@ -543,7 +565,11 @@
           <div class="projects-reel-media">
             <img class="projects-reel-image" src="public/works/%D0%B1%D0%B0%D0%B1%D0%B0%20%D0%B2%20%D1%86%D0%B8%D1%80%D0%BA%D0%B5.jpg" alt="AI-видео для бренда (вариация сетки)" loading="lazy" decoding="async">
           </div>
-          <p class="projects-reel-caption">AI-видео для бренда<br>(вариация сетки)</p>
+          <p class="projects-reel-caption">
+            <span class="projects-reel-title">Бренд-визуал с AI</span>
+            <span class="projects-reel-note">Задача: запоминающийся образ кампании</span>
+            <span class="projects-reel-note">Результат: кадры для промо и баннеров</span>
+          </p>
         </div>
       </div>
 
@@ -564,7 +590,11 @@
               <i class="fas fa-play"></i>
             </button>
           </div>
-          <p class="projects-reel-caption">Промо-ролик с ИИ-графикой<br>(вариация сетки)</p>
+          <p class="projects-reel-caption">
+            <span class="projects-reel-title">Промо с AI-графикой</span>
+            <span class="projects-reel-note">Кликните play: видео со звуком</span>
+            <span class="projects-reel-note">Результат: ролик для презентации</span>
+          </p>
         </div>
 
         <!-- Project 6: Креативный клип (малый, дубликат) -->
@@ -582,7 +612,11 @@
               <i class="fas fa-play"></i>
             </button>
           </div>
-          <p class="projects-reel-caption">Вирусное видео<br>для соцсетей</p>
+          <p class="projects-reel-caption">
+            <span class="projects-reel-title">Видео для соцсетей</span>
+            <span class="projects-reel-note">Кликните play: видео со звуком</span>
+            <span class="projects-reel-note">Результат: короткий ролик под охват</span>
+          </p>
         </div>
       </div>
     </div>
@@ -781,7 +815,7 @@
   <!-- Core scripts (defer для оптимизации загрузки) -->
   <script src="js/scroll-manager.js?v=20251216-reveal-force" defer></script>
   <script src="js/video-optimizer.js?v=20260511-security" defer></script>
-  <script src="js/script.js?v=20260512-productux" defer></script>
+  <script src="js/script.js?v=20260512-conversion" defer></script>
   <script src="js/chat-client.js?v=20260512-productux" defer></script>
   <script src="js/services-carousel.js?v=20260511-stylecsp" defer></script>
   <script src="js/performance-loader.js?v=20260512-productux" defer></script>
