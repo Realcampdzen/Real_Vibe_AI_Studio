@@ -13,6 +13,41 @@
     primary: { href: 'tel:+79319671483' },
   };
 
+  const ANALYTICS_ENDPOINT = '/api/analytics/event';
+  const ANALYTICS_TYPES = new Set([
+    'page_view',
+    'service_card_click',
+    'cta_click',
+    'chat_open',
+    'chat_send_result',
+  ]);
+
+  function trackEvent(type, details = {}) {
+    if (!ANALYTICS_TYPES.has(type)) return;
+
+    const payload = {
+      type,
+      page: window.location.pathname,
+      serviceId: details.serviceId,
+      target: details.target,
+      botId: details.botId,
+      status: details.status,
+    };
+
+    const body = JSON.stringify(payload);
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: 'application/json' });
+      if (navigator.sendBeacon(ANALYTICS_ENDPOINT, blob)) return;
+    }
+
+    fetch(ANALYTICS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      keepalive: true,
+    }).catch(() => {});
+  }
+
   function applyContactConfig() {
     const textMap = {
       phone: CONTACTS.phone.display,
@@ -25,6 +60,7 @@
       const key = element.getAttribute('data-contact-link');
       const config = CONTACTS[key];
       if (!config?.href) return;
+      if (element.closest('.service-simple-card') && element.tagName.toLowerCase() !== 'a') return;
 
       if (element.tagName.toLowerCase() === 'a') {
         element.setAttribute('href', config.href);
@@ -58,18 +94,66 @@
     if (window.__serviceCardNavigationInitialized) return;
     window.__serviceCardNavigationInitialized = true;
 
+    const resolveCardHref = (card) => {
+      const explicitHref = card.getAttribute('data-detail-href');
+      if (explicitHref) return explicitHref;
+      if (card.dataset.serviceId !== undefined) {
+        return `service-detail.html?id=${encodeURIComponent(card.dataset.serviceId)}`;
+      }
+      return '';
+    };
+
+    const prepareServiceCard = (card) => {
+      const href = resolveCardHref(card);
+      if (!href) return;
+
+      card.setAttribute('role', 'link');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('data-card-href', href);
+
+      const label = card.querySelector('.service-simple-footer')?.textContent?.trim();
+      if (label && !card.getAttribute('aria-label')) {
+        card.setAttribute('aria-label', `Подробнее: ${label}`);
+      }
+    };
+
+    document.querySelectorAll('.service-simple-card[data-service-id], .service-simple-card[data-detail-href]')
+      .forEach(prepareServiceCard);
+
     document.addEventListener('click', (event) => {
-      const card = event.target.closest('.service-simple-card[data-service-id]');
+      const card = event.target.closest('.service-simple-card[data-service-id], .service-simple-card[data-detail-href]');
       if (!card) return;
       if (
         event.target.closest('a') ||
-        event.target.closest('button') ||
-        event.target.closest('[data-contact-link]')
+        event.target.closest('button')
       ) {
         return;
       }
 
-      window.location.href = `service-detail.html?id=${encodeURIComponent(card.dataset.serviceId)}`;
+      const href = card.getAttribute('data-card-href') || resolveCardHref(card);
+      if (!href) return;
+
+      trackEvent('service_card_click', {
+        serviceId: card.dataset.serviceId,
+        target: href,
+      });
+      window.location.href = href;
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const card = event.target.closest?.('.service-simple-card[data-service-id], .service-simple-card[data-detail-href]');
+      if (!card || event.target !== card) return;
+
+      const href = card.getAttribute('data-card-href') || resolveCardHref(card);
+      if (!href) return;
+
+      event.preventDefault();
+      trackEvent('service_card_click', {
+        serviceId: card.dataset.serviceId,
+        target: href,
+      });
+      window.location.href = href;
     });
   }
 
@@ -266,10 +350,25 @@
     initBackToTop();
     initNavigation();
     initRipple();
+    trackEvent('page_view');
+
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('[data-contact-link]');
+      if (!link) return;
+      if (link.closest('.service-simple-card') && link.tagName.toLowerCase() !== 'a') return;
+      trackEvent('cta_click', {
+        target: link.getAttribute('data-contact-link') || link.getAttribute('href') || '',
+      });
+    });
   });
 
   window.RealVibeCommon = {
     applyContactConfig,
     scrollToSection,
+    trackEvent,
+  };
+
+  window.RealVibeAnalytics = {
+    track: trackEvent,
   };
 })();

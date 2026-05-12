@@ -2,6 +2,7 @@ import { chromium } from '@playwright/test';
 
 const baseUrl = (process.env.PERF_PROBE_BASE_URL || 'http://127.0.0.1:3000').replace(/\/$/, '');
 const channel = process.env.PERF_PROBE_CHANNEL || 'msedge';
+const mockLocalAnalytics = /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/i.test(baseUrl);
 const viewportSpecs = (process.env.PERF_PROBE_VIEWPORTS || '1440x900,1920x1080')
   .split(',')
   .map((item) => item.trim())
@@ -110,6 +111,12 @@ try {
         }
       }
     });
+    if (mockLocalAnalytics) {
+      await page.route(/\/api\/analytics\/event(?:\?.*)?$/, (route) => route.fulfill({
+        status: 204,
+        body: '',
+      }));
+    }
     await installObservers(page);
     await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.waitForLoadState('networkidle', { timeout: 30_000 }).catch(() => {});

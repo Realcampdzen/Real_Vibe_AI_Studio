@@ -31,6 +31,18 @@ const invalidChat = await request('/chat', {
 });
 await expect('invalid /chat rejected', [400, 429].includes(invalidChat.status), `status ${invalidChat.status}`);
 
+const analytics = await request('/api/analytics/event', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    type: 'cta_click',
+    page: '/smoke',
+    target: 'telegram',
+    serviceId: '1',
+  }),
+});
+await expect('analytics event accepted', analytics.status === 204, `status ${analytics.status}`);
+
 const webhookBody = JSON.stringify({ type: 'smoke', data: {} });
 const forbiddenWebhook = await request('/api/webhook/smoke', {
   method: 'POST',

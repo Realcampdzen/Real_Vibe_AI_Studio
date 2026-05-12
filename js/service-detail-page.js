@@ -57,6 +57,42 @@
     return button;
   }
 
+  function ensureMeta(selector, create) {
+    let element = document.head.querySelector(selector);
+    if (!element) {
+      element = create();
+      document.head.appendChild(element);
+    }
+    return element;
+  }
+
+  function setMeta(name, content) {
+    const meta = ensureMeta(`meta[name="${name}"]`, () => {
+      const element = document.createElement('meta');
+      element.setAttribute('name', name);
+      return element;
+    });
+    meta.setAttribute('content', content);
+  }
+
+  function setProperty(property, content) {
+    const meta = ensureMeta(`meta[property="${property}"]`, () => {
+      const element = document.createElement('meta');
+      element.setAttribute('property', property);
+      return element;
+    });
+    meta.setAttribute('content', content);
+  }
+
+  function setCanonical(href) {
+    const link = ensureMeta('link[rel="canonical"]', () => {
+      const element = document.createElement('link');
+      element.setAttribute('rel', 'canonical');
+      return element;
+    });
+    link.setAttribute('href', href);
+  }
+
   function createImage(src, alt, className) {
     if (!isSafeAssetUrl(src)) return null;
     return createElement('img', {
@@ -194,6 +230,72 @@
     return price;
   }
 
+  function createStartSteps() {
+    return createContentSection('Как стартуем', [
+      createList([
+        'Вы пишете в Telegram и коротко описываете задачу.',
+        'Мы уточняем формат, сроки, материалы и желаемый результат.',
+        'После согласования запускаем работу и показываем первые промежуточные результаты.',
+      ], 'service-detail-list', true),
+    ]);
+  }
+
+  function updateCtaCopy(service) {
+    const left = document.querySelector('.service-detail-cta-text .cta-text-left');
+    const right = document.querySelector('.service-detail-cta-text .cta-text-right');
+    if (!left || !right) return;
+
+    const title = service.detailTitle || service.title || 'AI-решение под задачу';
+    const description = service.description || service.lead || 'Обсудим формат, сроки и результат до старта.';
+    const price = service.price || 'Стоимость уточняется';
+
+    left.replaceChildren(
+      createElement('p', { className: 'cta-text-line', text: title.replace(/^[^\p{L}\p{N}]+/u, '') }),
+      createElement('p', { className: 'cta-text-line cta-text-line-muted', text: price }),
+    );
+    right.replaceChildren(
+      createElement('p', { className: 'cta-text-line', text: description }),
+      createElement('p', { className: 'cta-text-line', text: 'Первый шаг — написать в Telegram и прислать вводные.' }),
+    );
+  }
+
+  function updateSeo(service, serviceId) {
+    const title = `${service.title} | Реальный Vайб AI Studio`;
+    const description = (service.description || service.lead || 'AI-услуга Real Vibe Studio под задачу бизнеса.').slice(0, 180);
+    const canonical = `${window.location.origin}/service-detail.html?id=${encodeURIComponent(serviceId)}`;
+    const image = new URL(service.backgroundImage || 'public/works/hero-poster.jpg', window.location.href).href;
+
+    document.title = title;
+    setMeta('description', description);
+    setCanonical(canonical);
+    setProperty('og:title', title);
+    setProperty('og:description', description);
+    setProperty('og:type', 'website');
+    setProperty('og:url', canonical);
+    setProperty('og:image', image);
+    setMeta('twitter:card', 'summary_large_image');
+    setMeta('twitter:title', title);
+    setMeta('twitter:description', description);
+    setMeta('twitter:image', image);
+  }
+
+  function createServiceMicrodata(service, serviceId) {
+    const wrapper = createElement('div', {
+      className: 'seo-structured-data',
+      attrs: {
+        itemscope: 'itemscope',
+        itemtype: 'https://schema.org/Service',
+      },
+    });
+    appendChildren(wrapper, [
+      createElement('meta', { attrs: { itemprop: 'name', content: service.detailTitle || service.title } }),
+      createElement('meta', { attrs: { itemprop: 'description', content: service.description || service.lead || '' } }),
+      createElement('meta', { attrs: { itemprop: 'serviceType', content: service.title } }),
+      createElement('link', { attrs: { itemprop: 'url', href: `${window.location.origin}/service-detail.html?id=${encodeURIComponent(serviceId)}` } }),
+    ]);
+    return wrapper;
+  }
+
   function renderDetailedCard(service, content) {
     appendChildren(content, [
       createIconBlock(service),
@@ -213,6 +315,7 @@
       createContentSection('Что вы получаете', [
         createList(service.whatYouGet),
       ]),
+      createStartSteps(),
       createPrice(service),
       createServiceButton(service),
     ]);
@@ -230,6 +333,7 @@
       createTextBlock('h1', 'service-detail-title', service.title),
       createTextBlock('p', 'service-detail-description', service.description),
       features,
+      createStartSteps(),
       createPrice(service),
       createServiceButton(service),
     ]);
@@ -257,7 +361,9 @@
     } else {
       renderSimpleCard(service, content);
     }
+    content.appendChild(createServiceMicrodata(service, service.id));
     card.replaceChildren(content);
+    card.hidden = false;
   }
 
   function showError() {
@@ -276,6 +382,8 @@
     }
 
     renderServiceDetail(service);
+    updateCtaCopy(service);
+    updateSeo(service, serviceId);
 
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) {

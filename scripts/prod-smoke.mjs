@@ -34,6 +34,9 @@ await check('report-only style-src-attr', /style-src-attr 'none'/.test(cspReport
 await check('report-only style CSP has no unsafe-inline', !/style-src[^;]*'unsafe-inline'/.test(cspReportOnly), cspReportOnly);
 await check('legacy chat overlay removed', !homepageText.includes('id="chat-overlay"'), 'legacy #chat-overlay found');
 await check('chat client script present', homepageText.includes('js/chat-client.js'), 'chat-client script not found');
+await check('homepage canonical present', /<link rel="canonical" href="https:\/\/vps\.real-vibe\.studio\/">/.test(homepageText), 'canonical missing');
+await check('homepage Open Graph present', homepageText.includes('property="og:title"') && homepageText.includes('property="og:image"'), 'OG tags missing');
+await check('schema.org microdata present', homepageText.includes('https://schema.org/Organization') && homepageText.includes('https://schema.org/FAQPage'), 'schema.org microdata missing');
 
 const cors = await request('/api/bots/status', {
   headers: { Origin: 'http://localhost:3000' },
@@ -46,6 +49,13 @@ const invalidChat = await request('/chat', {
   body: JSON.stringify({}),
 });
 await check('invalid /chat rejected', [400, 429].includes(invalidChat.status), `status ${invalidChat.status}`);
+
+const analytics = await request('/api/analytics/event', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ type: 'cta_click', page: '/smoke', target: 'telegram', serviceId: '1' }),
+});
+await check('analytics event accepted', analytics.status === 204, `status ${analytics.status}`);
 
 const webhook = await request('/api/webhook/smoke', {
   method: 'POST',
@@ -63,6 +73,12 @@ await check('hero WebM content range', Boolean(heroWebm.headers.get('content-ran
 
 const oldMaster = await request(oldHeroMasterPath);
 await check('old hero master unavailable', oldMaster.status === 404, `status ${oldMaster.status}`);
+
+const robots = await request('/robots.txt');
+await check('robots.txt', robots.ok, `status ${robots.status}`);
+const sitemap = await request('/sitemap.xml');
+const sitemapText = await sitemap.text();
+await check('sitemap.xml', sitemap.ok && sitemapText.includes('/service-detail.html?id=7'), `status ${sitemap.status}`);
 
 if (process.exitCode) {
   process.exit(process.exitCode);

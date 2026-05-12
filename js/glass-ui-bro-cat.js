@@ -85,6 +85,7 @@ class GlassUIBroCat {
             themeClass: 'glass-theme-bro-cat',
             welcomeMessage: 'Мяу! Я Кот Бро, рыжий персона-бот Real Vibe. Показываю, как AI-персонаж может оживить сайт и соцсети. 🐱',
             placeholder: 'Спроси Кота Бро про персона-ботов...',
+            quickQuestions: ['Сколько стоит?', 'Что вы делаете?', 'Хочу заявку'],
             position: { bottom: '200px', right: '20px' },
             onSendMessage: this.handleMessage.bind(this),
             onClose: this.handleClose.bind(this)
@@ -134,6 +135,15 @@ class GlassUIBroCat {
         const lowerMessage = message.toLowerCase();
         if (lowerMessage.includes('привет') || lowerMessage.includes('здравствуй')) {
             return 'Мяу! 🐱 Я Бро, рыжий и пушистый персона-бот! Что хочешь узнать?';
+        }
+        if (lowerMessage.includes('сколько') || lowerMessage.includes('сто')) {
+            return 'Цена зависит от задачи: простой бот, персона-бот, сайт или контент-пакет считаются по-разному. Напиши @Stivanovv — быстро разберём вводные и дадим вилку.';
+        }
+        if (lowerMessage.includes('что вы') || lowerMessage.includes('делаете')) {
+            return 'Real Vibe делает AI-видео, ботов, GPT-ассистентов, сайты, музыку, озвучку и визуальный контент. Я могу подсказать направление, но для заявки лучше писать @Stivanovv.';
+        }
+        if (lowerMessage.includes('заявк') || lowerMessage.includes('хочу')) {
+            return 'Мяу, заявка — это просто: напиши @Stivanovv в Telegram и коротко опиши задачу, сроки и желаемый результат.';
         }
         if (lowerMessage.includes('кот') || lowerMessage.includes('бро')) return this.responses[1];
         if (lowerMessage.includes('бот') || lowerMessage.includes('персона')) {

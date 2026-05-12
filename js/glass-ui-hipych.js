@@ -82,6 +82,7 @@ class GlassUIHipych {
             themeClass: 'glass-theme-hipych',
             welcomeMessage: 'Го! Я Хипыч, геймерский AI-персонаж для стримеров и сообществ. Могу рассказать, как оживлять Telegram и контент. 🎮',
             placeholder: 'Спроси Хипыча про стримы и AI-ботов...',
+            quickQuestions: ['Сколько стоит?', 'Что вы делаете?', 'Хочу заявку'],
             position: { bottom: '100px', right: '20px' },
             onSendMessage: (message) => this.handleMessage(message),
             onClose: () => this.hideChat(),
@@ -118,6 +119,15 @@ class GlassUIHipych {
     getFallbackResponse(message) {
         const lowerMessage = message.toLowerCase();
         if (lowerMessage.includes('привет') || lowerMessage.includes('здравствуй')) return this.responses[0];
+        if (lowerMessage.includes('сколько') || lowerMessage.includes('сто')) {
+            return 'Стоимость зависит от формата: бот, сайт, GPT или контент. Напиши @Stivanovv в Telegram — быстро уточним задачу и дадим вилку по срокам и бюджету.';
+        }
+        if (lowerMessage.includes('что вы') || lowerMessage.includes('делаете')) {
+            return 'Мы делаем AI-контент, персона-ботов, GPT-ассистентов, сайты с AI-функциями, музыку и озвучку. Самый быстрый старт — выбрать услугу на сайте или написать @Stivanovv.';
+        }
+        if (lowerMessage.includes('заявк') || lowerMessage.includes('хочу')) {
+            return 'Отлично. Напиши @Stivanovv в Telegram: что нужно сделать, для какого проекта и какие сроки. Дальше предложим понятный следующий шаг.';
+        }
         if (lowerMessage.includes('стрим') || lowerMessage.includes('настрой')) return this.responses[2];
         if (lowerMessage.includes('бот') || lowerMessage.includes('персона')) {
             return 'Го! 🎮 Персона-боты с AI — это имба! Оживляют соцсети, модерируют чат и помогают продавать без скучных скриптов.';

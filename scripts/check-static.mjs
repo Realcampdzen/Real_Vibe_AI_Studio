@@ -166,11 +166,23 @@ function checkMediaBudget() {
   }
 }
 
+function checkSeoStaticFiles() {
+  const robots = readText('robots.txt');
+  const sitemap = readText('sitemap.xml');
+  if (!/Sitemap:\s*https:\/\/vps\.real-vibe\.studio\/sitemap\.xml/.test(robots)) {
+    fail('robots.txt: sitemap directive missing');
+  }
+  if (!sitemap.includes('https://vps.real-vibe.studio/') || !sitemap.includes('service-detail.html?id=7')) {
+    fail('sitemap.xml: expected public URLs missing');
+  }
+}
+
 checkHtmlEntrypoints();
 checkCriticalDomSinks();
 checkStaticWidgetStyles();
 checkCspPolicy();
 checkMediaBudget();
+checkSeoStaticFiles();
 
 if (process.exitCode) {
   process.exit(process.exitCode);

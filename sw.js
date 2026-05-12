@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.22-20260512-chatcleanup';
+const CACHE_VERSION = 'v1.23-20260512-productux';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -14,26 +14,28 @@ const withBase = (path) => (BASE_PATH ? `${BASE_PATH}${path}` : path);
 const STATIC_ASSETS = [
   withBase('/'),
   withBase('/index.html'),
-  withBase('/css/style.css'),
+  withBase('/robots.txt'),
+  withBase('/sitemap.xml'),
+  withBase('/css/style.css?v=20260512-productux'),
   withBase('/css/critical-fixes.css'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
   withBase('/js/scroll-manager.js'),
   withBase('/js/video-optimizer.js'),
-  withBase('/js/script.js'),
-  withBase('/js/page-common.js'),
-  withBase('/js/service-detail-page.js'),
-  withBase('/js/chat-client.js?v=20260512-chatcleanup'),
-  withBase('/js/chat.js?v=20260512-chatcleanup'),
+  withBase('/js/script.js?v=20260512-productux'),
+  withBase('/js/page-common.js?v=20260512-productux'),
+  withBase('/js/service-detail-page.js?v=20260512-productux'),
+  withBase('/js/chat-client.js?v=20260512-productux'),
+  withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),
-  withBase('/js/performance-loader.js?v=20260512-chatcleanup'),
-  withBase('/js/mobile-enhancements.js?v=20260512-chatcleanup'),
-  withBase('/js/pull-to-refresh.js?v=20260512-chatcleanup'),
-  withBase('/js/glass-ui-hipych.js?v=20260512-chatcleanup'),
-  withBase('/js/glass-ui-bro-cat.js?v=20260512-chatcleanup'),
-  withBase('/js/glass-ui-valyusha.js?v=20260512-chatcleanup'),
-  withBase('/chat-components/GlassUIWidget.js?v=20260512-chatcleanup'),
+  withBase('/js/performance-loader.js?v=20260512-productux'),
+  withBase('/js/mobile-enhancements.js?v=20260512-productux'),
+  withBase('/js/pull-to-refresh.js?v=20260512-productux'),
+  withBase('/js/glass-ui-hipych.js?v=20260512-productux'),
+  withBase('/js/glass-ui-bro-cat.js?v=20260512-productux'),
+  withBase('/js/glass-ui-valyusha.js?v=20260512-productux'),
+  withBase('/chat-components/GlassUIWidget.js?v=20260512-productux'),
   withBase('/images/hipych-avatar.jpg'),
   withBase('/images/bro-avatar.jpg'),
   withBase('/images/neon-room.png')

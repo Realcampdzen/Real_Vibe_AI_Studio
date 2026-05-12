@@ -10,6 +10,9 @@ class GlassUIWidget {
         this.placeholder = options.placeholder || `Напишите сообщение ${this.botName}...`;
         this.onSendMessage = options.onSendMessage || null;
         this.onClose = options.onClose || null;
+        this.quickQuestions = Array.isArray(options.quickQuestions)
+            ? options.quickQuestions.filter((item) => typeof item === 'string' && item.trim()).slice(0, 4)
+            : [];
         this.isVisible = Boolean(options.isVisible);
         this.horizontalOffset = typeof options.horizontalOffset === 'number' ? options.horizontalOffset : 100;
         this.verticalOffset = typeof options.verticalOffset === 'number' ? options.verticalOffset : 20;
@@ -175,6 +178,10 @@ class GlassUIWidget {
         this.messagesArea.appendChild(this.typingIndicator);
 
         const inputArea = this.createElement('div', 'glass-input-area');
+        if (this.quickQuestions.length) {
+            inputArea.appendChild(this.createQuickQuestions());
+        }
+
         this.inputContainer = this.createElement('div', 'glass-input-container');
         this.messageInput = this.createElement('input', 'glass-message-input');
         this.messageInput.type = 'text';
@@ -195,6 +202,20 @@ class GlassUIWidget {
         this.container.appendChild(inputArea);
         document.body.appendChild(this.container);
         this.renderMessages();
+    }
+
+    createQuickQuestions() {
+        const wrapper = this.createElement('div', 'glass-quick-questions');
+        this.quickQuestions.forEach((question) => {
+            const button = this.createElement('button', 'glass-quick-question', question);
+            button.type = 'button';
+            button.addEventListener('click', () => {
+                if (this.isTyping) return;
+                this.handleSendMessage(question);
+            });
+            wrapper.appendChild(button);
+        });
+        return wrapper;
     }
 
     setupEventListeners() {
@@ -246,9 +267,10 @@ class GlassUIWidget {
     }
 
     async handleSendMessage(message) {
+        const sentMessage = message.trim();
         this.messages.push({
             id: Date.now().toString(),
-            text: message,
+            text: sentMessage,
             isBot: false,
             timestamp: new Date()
         });
@@ -266,6 +288,10 @@ class GlassUIWidget {
                 isBot: true,
                 timestamp: new Date()
             });
+            window.RealVibeAnalytics?.track?.('chat_send_result', {
+                botId: this.botName,
+                status: 'success',
+            });
         } catch (error) {
             this.messages.push({
                 id: (Date.now() + 1).toString(),
@@ -274,7 +300,12 @@ class GlassUIWidget {
                     : 'Сейчас не получилось отправить сообщение. Проверьте соединение или напишите в Telegram @Stivanovv.',
                 isBot: true,
                 isError: true,
+                retryText: sentMessage,
                 timestamp: new Date()
+            });
+            window.RealVibeAnalytics?.track?.('chat_send_result', {
+                botId: this.botName,
+                status: 'error',
             });
         } finally {
             this.setBusy(false);
@@ -304,6 +335,25 @@ class GlassUIWidget {
                 `glass-message-bubble${message.isError ? ' glass-message-bubble--error' : ''}`
             );
             bubble.appendChild(this.createElement('div', 'glass-message-text', message.text));
+            if (message.isError) {
+                const actions = this.createElement('div', 'glass-message-actions');
+                const retryButton = this.createElement('button', 'glass-message-action', 'Повторить');
+                retryButton.type = 'button';
+                retryButton.addEventListener('click', () => {
+                    if (!this.isTyping && message.retryText) {
+                        this.handleSendMessage(message.retryText);
+                    }
+                });
+
+                const contactLink = this.createElement('a', 'glass-message-action', 'Telegram');
+                contactLink.href = 'https://t.me/Stivanovv';
+                contactLink.target = '_blank';
+                contactLink.rel = 'noopener';
+                contactLink.setAttribute('data-contact-link', 'telegram');
+                actions.appendChild(retryButton);
+                actions.appendChild(contactLink);
+                bubble.appendChild(actions);
+            }
             messageElement.appendChild(bubble);
             this.messagesList.appendChild(messageElement);
         });
@@ -321,6 +371,9 @@ class GlassUIWidget {
         this.isVisible = true;
         this.applyPosition();
         this.container.classList.add('is-visible');
+        window.RealVibeAnalytics?.track?.('chat_open', {
+            botId: this.botName,
+        });
         window.setTimeout(() => {
             if (this.messageInput) this.messageInput.focus();
         }, 240);

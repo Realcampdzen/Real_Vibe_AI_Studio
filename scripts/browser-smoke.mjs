@@ -4,6 +4,7 @@ const baseUrl = (process.env.BROWSER_SMOKE_BASE_URL || 'http://127.0.0.1:3000').
 const channel = process.env.BROWSER_SMOKE_CHANNEL || 'msedge';
 const heroWaitMs = Number(process.env.BROWSER_SMOKE_HERO_WAIT_MS || 60_000);
 const ignoreReportOnlyCsp = process.env.BROWSER_SMOKE_IGNORE_REPORT_ONLY_CSP !== 'false';
+const mockAnalytics = /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/i.test(baseUrl);
 
 function fail(message, detail) {
   console.error(message);
@@ -48,8 +49,16 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 const consoleIssues = [];
 const cspReportOnlyWarnings = [];
 const oldVideoRequests = [];
+let analyticsRequests = 0;
 let mockedChatRequests = 0;
 let chatRouteMode = 'rate-limit';
+
+if (mockAnalytics) {
+  await page.route(/\/api\/analytics\/event(?:\?.*)?$/, async (route) => {
+    analyticsRequests += 1;
+    await route.fulfill({ status: 204, body: '' });
+  });
+}
 
 await page.route(/\/(?:chat|api\/[^/]+\/chat)(?:\?.*)?$/, async (route) => {
   if (route.request().method() !== 'POST') {
@@ -93,6 +102,9 @@ page.on('request', (request) => {
   if (decodeURIComponent(request.url()).includes('опенинг новый.mp4')) {
     oldVideoRequests.push(request.url());
   }
+  if (request.url().includes('/api/analytics/event')) {
+    analyticsRequests += 1;
+  }
 });
 
 try {
@@ -106,6 +118,23 @@ try {
     }))
     .filter((link) => link.key));
   const legacyChatOverlayPresent = await page.evaluate(() => Boolean(document.getElementById('chat-overlay')));
+  const homepageSeo = await page.evaluate(() => ({
+    title: document.title,
+    description: document.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+    canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') || '',
+    ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || '',
+    ogImage: document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '',
+    organizationSchema: Boolean(document.querySelector('[itemtype="https://schema.org/Organization"]')),
+    faqSchema: Boolean(document.querySelector('[itemtype="https://schema.org/FAQPage"]')),
+  }));
+  const serviceCards = await page.evaluate(() => [...document.querySelectorAll('#services .service-simple-card')]
+    .map((card) => ({
+      href: card.getAttribute('data-card-href') || card.getAttribute('data-detail-href') || card.dataset.serviceId || '',
+      tabIndex: card.getAttribute('tabindex'),
+      role: card.getAttribute('role'),
+      label: card.getAttribute('aria-label') || '',
+      affordance: window.getComputedStyle(card, '::after').content,
+    })));
   await page.waitForTimeout(heroWaitMs);
 
   const hero = await collectHeroState(page);
@@ -114,8 +143,7 @@ try {
   await chatButton.click();
   const chatWidget = page.locator('.glass-ui-widget.is-visible').first();
   await chatWidget.waitFor({ state: 'visible', timeout: 10_000 });
-  await page.locator('.glass-ui-widget.is-visible .glass-message-input').fill('Проверка smoke');
-  await page.locator('.glass-ui-widget.is-visible .glass-send-button').click();
+  await page.locator('.glass-ui-widget.is-visible .glass-quick-question', { hasText: 'Сколько стоит?' }).click();
   await page.locator('.glass-ui-widget.is-visible .glass-message-bubble', {
     hasText: 'На сегодня лимит сообщений исчерпан'
   }).waitFor({ state: 'visible', timeout: 10_000 });
@@ -133,8 +161,7 @@ try {
 
   chatRouteMode = 'network-error';
   await page.locator('.glass-ui-valyusha-button').first().click();
-  await page.locator('.glass-ui-widget.is-visible .glass-message-input').fill('Проверка сети');
-  await page.locator('.glass-ui-widget.is-visible .glass-send-button').click();
+  await page.locator('.glass-ui-widget.is-visible .glass-quick-question', { hasText: 'Что вы делаете?' }).click();
   await page.locator('.glass-ui-widget.is-visible .glass-message-bubble', {
     hasText: 'не могу подключиться'
   }).waitFor({ state: 'visible', timeout: 10_000 });
@@ -173,7 +200,8 @@ try {
   const heroAfterScroll = await collectHeroState(page);
 
   const firstServiceCard = page.locator('.service-simple-card[data-service-id]').first();
-  await firstServiceCard.click({ timeout: 15_000 });
+  await firstServiceCard.focus();
+  await page.keyboard.press('Enter');
   await page.waitForURL(/service-detail\.html\?id=\d+/, { timeout: 15_000 });
   const serviceCardNavigationUrl = page.url();
 
@@ -184,8 +212,14 @@ try {
     detail.push(await page.evaluate(() => ({
       title: document.querySelector('#service-title')?.textContent?.trim() || document.title,
       errorHidden: document.querySelector('#service-error')?.hidden ?? null,
+      cardVisible: !(document.querySelector('#service-detail-card')?.hidden ?? true),
       heroChildren: document.querySelector('#service-hero-reel')?.children.length ?? 0,
       hasInlineScript: [...document.scripts].some((script) => !script.src && script.textContent.trim()),
+      description: document.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+      canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') || '',
+      ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || '',
+      serviceSchema: Boolean(document.querySelector('[itemtype="https://schema.org/Service"]')),
+      conversionCards: document.querySelectorAll('.detail-conversion-card').length,
       ctaHrefs: [...document.querySelectorAll('.service-detail-cta-section a[href]')]
         .map((link) => link.getAttribute('href') || ''),
     })));
@@ -197,6 +231,11 @@ try {
     title: await page.title(),
     bodyTextLength: await page.evaluate(() => document.body.textContent.trim().length),
     hasInlineScript: await hasInlineScript(page),
+    description: await page.evaluate(() => document.querySelector('meta[name="description"]')?.getAttribute('content') || ''),
+    canonical: await page.evaluate(() => document.querySelector('link[rel="canonical"]')?.getAttribute('href') || ''),
+    ogTitle: await page.evaluate(() => document.querySelector('meta[property="og:title"]')?.getAttribute('content') || ''),
+    serviceSchema: await page.evaluate(() => Boolean(document.querySelector('[itemtype="https://schema.org/Service"]'))),
+    conversionCards: await page.evaluate(() => document.querySelectorAll('.detail-conversion-card').length),
     ctaHrefs: await page.evaluate(() => [...document.querySelectorAll('.service-detail-cta-section a[href]')]
       .map((link) => link.getAttribute('href') || '')),
   };
@@ -267,8 +306,11 @@ try {
     consoleIssues,
     cspReportOnlyWarnings: cspReportOnlyWarnings.length,
     oldVideoRequests,
+    analyticsRequests,
     ctaLinks,
     legacyChatOverlayPresent,
+    homepageSeo,
+    serviceCards,
     hero,
     chatUi,
     chatNetworkUi,
@@ -289,6 +331,22 @@ try {
   }
   if (legacyChatOverlayPresent) {
     fail('browser smoke legacy chat overlay is still present');
+  }
+  if (
+    !homepageSeo.description ||
+    !homepageSeo.canonical ||
+    !homepageSeo.ogTitle ||
+    !homepageSeo.ogImage ||
+    !homepageSeo.organizationSchema ||
+    !homepageSeo.faqSchema
+  ) {
+    fail('browser smoke homepage SEO metadata failed', homepageSeo);
+  }
+  if (
+    serviceCards.length < 8 ||
+    serviceCards.some((card) => !card.href || card.tabIndex !== '0' || card.role !== 'link' || !card.label || !/Подробнее/.test(card.affordance))
+  ) {
+    fail('browser smoke service card affordance failed', serviceCards);
   }
   if (!hero || !String(hero.src).includes('hero-reel-desktop.webm') || hero.paused) {
     fail('browser smoke hero did not stay playing on optimized WebM', hero);
@@ -311,13 +369,29 @@ try {
   for (const entry of detail) {
     const requiredCtas = ['https://t.me/Stivanovv', 'tel:+79319671483', 'mailto:polstan1986@gmail.com'];
     const hasRequiredCtas = requiredCtas.every((href) => entry.ctaHrefs.includes(href));
-    if (!entry.errorHidden || entry.heroChildren < 1 || entry.hasInlineScript || !hasRequiredCtas) {
+    if (
+      !entry.errorHidden ||
+      !entry.cardVisible ||
+      entry.heroChildren < 1 ||
+      entry.hasInlineScript ||
+      !entry.description ||
+      !entry.canonical ||
+      !entry.ogTitle ||
+      !entry.serviceSchema ||
+      entry.conversionCards < 3 ||
+      !hasRequiredCtas
+    ) {
       fail('browser smoke service detail failed', entry);
     }
   }
   if (
     aiPhoto.hasInlineScript ||
     aiPhoto.bodyTextLength < 100 ||
+    !aiPhoto.description ||
+    !aiPhoto.canonical ||
+    !aiPhoto.ogTitle ||
+    !aiPhoto.serviceSchema ||
+    aiPhoto.conversionCards < 3 ||
     !['https://t.me/Stivanovv', 'tel:+79319671483', 'mailto:polstan1986@gmail.com']
       .every((href) => aiPhoto.ctaHrefs.includes(href))
   ) {
@@ -336,6 +410,9 @@ try {
     freshDetailRuntime.eagerOffscreenVideos
   ) {
     fail('browser smoke detail page eagerly loaded chat/media runtime', freshDetailRuntime);
+  }
+  if (analyticsRequests < 4) {
+    fail('browser smoke analytics events were not emitted', { analyticsRequests });
   }
 } finally {
   await browser.close();

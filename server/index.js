@@ -18,6 +18,7 @@ import { appVersion } from './config/version.js';
 
 // Routes
 import chatRoutes from './routes/chat.js';
+import analyticsRoutes from './routes/analytics.js';
 import securityReportRoutes from './routes/security-reports.js';
 
 // Services (for health check)
@@ -99,6 +100,7 @@ if (config.isDevelopment) {
 
 // ────── Routes ──────
 app.use('/api/csp-report', securityReportRoutes);
+app.use('/api/analytics', analyticsRoutes);
 app.use(chatRoutes);
 
 // ────── Static pages ──────

@@ -85,6 +85,7 @@ class GlassUIValyusha {
             themeClass: 'glass-theme-valyusha',
             welcomeMessage: 'Привет! Я НейроВалюша, дружелюбная AI-вожатая Реального Лагеря. Помогаю говорить о развитии, 4К навыках и живых персона-ботах. 💜',
             placeholder: 'Спроси НейроВалюшу про лагерь или AI...',
+            quickQuestions: ['Сколько стоит?', 'Что вы делаете?', 'Хочу заявку'],
             position: { bottom: '280px', right: '20px' },
             onSendMessage: this.handleMessage.bind(this),
             onClose: this.hideChat.bind(this)
