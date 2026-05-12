@@ -592,6 +592,14 @@ class VideoOptimizer {
       const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
       video.currentTime = ratio * video.duration;
     };
+    const enableSoundAndPlay = () => {
+      const state = getState();
+      if (state) state.userPaused = false;
+      video.muted = false;
+      video.volume = 1;
+      this.playVideo(video);
+      updateVolumeIcon();
+    };
     const toggleSoundFromSurface = (event) => {
       if (
         event.target.closest('button') ||
@@ -603,10 +611,8 @@ class VideoOptimizer {
       }
       event.preventDefault();
       event.stopPropagation();
-      video.muted = !video.muted;
-      if (!video.muted) {
-        video.volume = 1;
-        this.playVideo(video);
+      if (video.muted || video.volume === 0 || video.paused) {
+        enableSoundAndPlay();
       }
       updateVolumeIcon();
       bumpControls();
@@ -615,8 +621,7 @@ class VideoOptimizer {
     playBtn?.addEventListener('click', () => {
       const state = getState();
       if (video.paused) {
-        if (state) state.userPaused = false;
-        this.playVideo(video);
+        enableSoundAndPlay();
       } else {
         if (state) state.userPaused = true;
         video.pause();
@@ -633,8 +638,7 @@ class VideoOptimizer {
     volumeBtn?.addEventListener('click', () => {
       video.muted = !video.muted;
       if (!video.muted) {
-        video.volume = 1;
-        this.playVideo(video);
+        enableSoundAndPlay();
       }
       updateVolumeIcon();
       bumpControls();

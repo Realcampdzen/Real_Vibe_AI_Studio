@@ -34,6 +34,8 @@ async function collectHeroState(page) {
     return video ? {
       src: video.currentSrc || video.src,
       paused: video.paused,
+      muted: video.muted,
+      volume: video.volume,
       readyState: video.readyState,
       currentTime: Number(video.currentTime.toFixed(2)),
     } : null;
@@ -46,6 +48,9 @@ async function hasInlineScript(page) {
 
 const browser = await launchBrowser();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await page.addInitScript(() => {
+  window.localStorage?.setItem('rv-cookie-consent', 'true');
+});
 const consoleIssues = [];
 const cspReportOnlyWarnings = [];
 const oldVideoRequests = [];
@@ -138,6 +143,22 @@ try {
   await page.waitForTimeout(heroWaitMs);
 
   const hero = await collectHeroState(page);
+  await page.locator('#hero-reel-container').hover({ timeout: 10_000 });
+  await page.waitForTimeout(300);
+  await page.locator('#hero-control-volume').click({ timeout: 10_000 });
+  await page.waitForTimeout(500);
+  const heroSoundAfterVolume = await collectHeroState(page);
+  await page.locator('#hero-reel-container').click({ position: { x: 32, y: 32 }, timeout: 10_000 });
+  await page.waitForTimeout(500);
+  const heroSoundAfterSurface = await collectHeroState(page);
+  await page.locator('#hero-reel-container').hover({ timeout: 10_000 });
+  await page.locator('#hero-control-play').click({ timeout: 10_000 });
+  await page.waitForTimeout(500);
+  await page.locator('#hero-reel-container').hover({ timeout: 10_000 });
+  await page.locator('#hero-control-play').click({ timeout: 10_000 });
+  await page.waitForTimeout(800);
+  const heroAfterPlayResume = await collectHeroState(page);
+
   const chatButton = page.locator('.glass-ui-hipych-button').first();
   await chatButton.waitFor({ state: 'visible', timeout: 20_000 });
   await chatButton.click();
@@ -312,6 +333,9 @@ try {
     homepageSeo,
     serviceCards,
     hero,
+    heroSoundAfterVolume,
+    heroSoundAfterSurface,
+    heroAfterPlayResume,
     chatUi,
     chatNetworkUi,
     widgetOpenClose,
@@ -350,6 +374,18 @@ try {
   }
   if (!hero || !String(hero.src).includes('hero-reel-desktop.webm') || hero.paused) {
     fail('browser smoke hero did not stay playing on optimized WebM', hero);
+  }
+  if (!hero.muted) {
+    fail('browser smoke hero did not start muted for autoplay policy', hero);
+  }
+  if (!heroSoundAfterVolume || heroSoundAfterVolume.muted || heroSoundAfterVolume.volume <= 0 || heroSoundAfterVolume.paused) {
+    fail('browser smoke hero volume click did not enable sound playback', heroSoundAfterVolume);
+  }
+  if (!heroSoundAfterSurface || heroSoundAfterSurface.muted || heroSoundAfterSurface.volume <= 0 || heroSoundAfterSurface.paused) {
+    fail('browser smoke hero surface click did not preserve sound playback', heroSoundAfterSurface);
+  }
+  if (!heroAfterPlayResume || heroAfterPlayResume.muted || heroAfterPlayResume.volume <= 0 || heroAfterPlayResume.paused) {
+    fail('browser smoke hero play resume did not keep sound enabled', heroAfterPlayResume);
   }
   if (!chatUi.visible || chatUi.messageCount < 3 || chatUi.inputDisabled || chatUi.buttonDisabled) {
     fail('browser smoke chat widget interaction failed', chatUi);
