@@ -46,6 +46,104 @@ async function hasInlineScript(page) {
   return page.evaluate(() => [...document.scripts].some((script) => !script.src && script.textContent.trim()));
 }
 
+async function exerciseAuthCartUi(browser) {
+  const desktopContext = await browser.newContext({
+    viewport: { width: 1440, height: 1000 },
+    serviceWorkers: 'block',
+  });
+  await desktopContext.addInitScript(() => {
+    window.localStorage?.setItem('rv-cookie-consent', 'true');
+  });
+  const desktop = await desktopContext.newPage();
+  const email = `browser-smoke-${Date.now()}@example.com`;
+  const result = {
+    desktopHeader: false,
+    authModal: false,
+    accountDrawer: false,
+    profileSaved: false,
+    checkoutSuccess: false,
+    orderHistory: false,
+    repeatOpenedCart: false,
+    mobileCommerce: false,
+    mobileWidgetsHidden: false,
+  };
+
+  try {
+    await desktop.goto(`${baseUrl}/index.html#services`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await desktop.waitForSelector('.rv-account-nav-btn[data-rv-auth-open]', { timeout: 30_000 });
+    result.desktopHeader = await desktop.locator('.rv-account-nav-btn[data-rv-auth-open]').isVisible()
+      && await desktop.locator('.rv-cart-nav-btn[data-rv-cart-open]').isVisible();
+
+    await desktop.locator('.rv-account-nav-btn[data-rv-auth-open]').click();
+    await desktop.waitForSelector('.rv-auth-modal.is-open', { timeout: 30_000 });
+    result.authModal = await desktop.locator('.rv-auth-form').isVisible();
+    await desktop.locator('[data-auth-tab="register"]').click();
+    await desktop.locator('.rv-auth-modal input[name="name"]').fill('Browser Smoke');
+    await desktop.locator('.rv-auth-modal input[name="email"]').fill(email);
+    await desktop.locator('.rv-auth-modal input[name="password"]').fill('BrowserSmoke123!');
+    await desktop.locator('.rv-auth-modal .rv-auth-submit').click();
+    await desktop.waitForSelector('.rv-auth-modal.is-open', { state: 'detached', timeout: 30_000 }).catch(async () => {
+      await desktop.waitForFunction(() => !document.querySelector('.rv-auth-modal')?.classList.contains('is-open'), null, { timeout: 30_000 });
+    });
+
+    await desktop.locator('.rv-account-nav-btn[data-rv-auth-open]').click();
+    await desktop.waitForSelector('.rv-account-shell.is-open .rv-profile-form', { timeout: 30_000 });
+    result.accountDrawer = true;
+    await desktop.locator('.rv-profile-form input[name="defaultContact"]').fill('@browser_smoke');
+    await desktop.locator('.rv-profile-submit').click();
+    await desktop.waitForFunction(async () => {
+      const response = await fetch('/api/account/profile');
+      if (!response.ok) return false;
+      const payload = await response.json();
+      return payload.user?.defaultContact === '@browser_smoke';
+    }, null, { timeout: 30_000 });
+    result.profileSaved = true;
+    await desktop.locator('.rv-account-shell [data-rv-close]').click();
+
+    await desktop.evaluate(() => {
+      document.querySelector('.service-cart-action')?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+    });
+    await desktop.waitForSelector('.rv-cart-shell.is-open .rv-checkout-form', { timeout: 30_000 });
+    await desktop.locator('.rv-checkout-form textarea[name="message"]').fill('Browser smoke UI order');
+    await desktop.locator('.rv-checkout-btn').click();
+    await desktop.waitForSelector('.rv-cart-shell.is-open .rv-order-success', { timeout: 45_000 });
+    result.checkoutSuccess = true;
+
+    await desktop.locator('.rv-order-success [data-rv-auth-open]').click();
+    await desktop.waitForSelector('.rv-account-shell.is-open .rv-order-card', { timeout: 30_000 });
+    result.orderHistory = true;
+    await desktop.locator('.rv-order-toggle').first().click();
+    await desktop.locator('.rv-repeat-order-btn').first().click();
+    await desktop.waitForSelector('.rv-cart-shell.is-open .rv-cart-item', { timeout: 30_000 });
+    result.repeatOpenedCart = true;
+  } finally {
+    await desktopContext.close();
+  }
+
+  const mobileContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    serviceWorkers: 'block',
+  });
+  await mobileContext.addInitScript(() => {
+    window.localStorage?.setItem('rv-cookie-consent', 'true');
+  });
+  const mobile = await mobileContext.newPage();
+  try {
+    await mobile.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await mobile.waitForSelector('#mobile-menu-btn', { timeout: 30_000 });
+    await mobile.locator('#mobile-menu-btn').click();
+    await mobile.waitForSelector('.mobile-nav.active .rv-mobile-commerce', { timeout: 30_000 });
+    result.mobileCommerce = await mobile.locator('.rv-mobile-commerce-btn').count() >= 2;
+    result.mobileWidgetsHidden = await mobile.locator('.glass-ui-floating-button:visible, .glass-ui-widget:visible').count() === 0;
+  } finally {
+    await mobileContext.close();
+  }
+
+  return result;
+}
+
 const browser = await launchBrowser();
 const context = await browser.newContext({
   viewport: { width: 1440, height: 900 },
@@ -136,7 +234,7 @@ try {
     organizationSchema: Boolean(document.querySelector('[itemtype="https://schema.org/Organization"]')),
     faqSchema: Boolean(document.querySelector('[itemtype="https://schema.org/FAQPage"]')),
   }));
-  const serviceCards = await page.evaluate(() => [...document.querySelectorAll('#services .service-simple-card')]
+  const serviceCards = await page.evaluate(() => [...document.querySelectorAll('#services .service-simple-card, .services-continuation .service-simple-card')]
     .map((card) => ({
       href: card.getAttribute('data-card-href') || card.getAttribute('data-detail-href') || card.dataset.serviceId || '',
       tabIndex: card.getAttribute('tabindex'),
@@ -145,11 +243,7 @@ try {
       affordance: window.getComputedStyle(card, '::after').content,
       benefit: card.querySelector('.service-simple-benefit')?.textContent?.trim() || '',
     })));
-  const projectCases = await page.evaluate(() => [...document.querySelectorAll('#projects-showreel .projects-reel-card')]
-    .map((card) => ({
-      title: card.querySelector('.projects-reel-title')?.textContent?.trim() || '',
-      notes: [...card.querySelectorAll('.projects-reel-note')].map((note) => note.textContent.trim()),
-    })));
+  const serviceOrder = serviceCards.map((card) => card.href);
   const heroTitleStyle = await page.evaluate(() => {
     const title = document.querySelector('.hero-title-reel') || document.querySelector('.hero-title');
     if (!title) return null;
@@ -190,15 +284,21 @@ try {
 
   const lowerImageSections = {};
   for (const [key, selector] of [
-    ['projects', '#projects-showreel'],
+    ['services', '#services, .services-continuation'],
     ['process', '#process'],
     ['assistants', '#assistants'],
   ]) {
-    await page.locator(selector).scrollIntoViewIfNeeded({ timeout: 10_000 });
+    const sectionLocator = page.locator(selector);
+    await sectionLocator.first().scrollIntoViewIfNeeded({ timeout: 10_000 });
+    if (await sectionLocator.count() > 1) {
+      await page.waitForTimeout(500);
+      await sectionLocator.last().scrollIntoViewIfNeeded({ timeout: 10_000 });
+    }
     await page.waitForTimeout(900);
     lowerImageSections[key] = await page.evaluate((sectionSelector) => {
-      const images = [...document.querySelectorAll(`${sectionSelector} img`)]
-        .filter((img) => img.matches('.projects-reel-image, .step-image, .assistant-bg-image'))
+      const images = [...document.querySelectorAll(sectionSelector)]
+        .flatMap((section) => [...section.querySelectorAll('img')])
+        .filter((img) => img.matches('.service-simple-bg-image, .step-image, .assistant-bg-image'))
         .map((img) => {
           const rect = img.getBoundingClientRect();
           const parent = img.parentElement?.getBoundingClientRect();
@@ -219,12 +319,12 @@ try {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(800);
 
-  const chatButton = page.locator('.glass-ui-hipych-button').first();
+  const chatButton = page.locator('.glass-ui-health-button').first();
   await chatButton.waitFor({ state: 'visible', timeout: 20_000 });
   await chatButton.click();
   const chatWidget = page.locator('.glass-ui-widget.is-visible').first();
   await chatWidget.waitFor({ state: 'visible', timeout: 10_000 });
-  await page.locator('.glass-ui-widget.is-visible .glass-quick-question', { hasText: 'Сколько стоит?' }).click();
+  await page.locator('.glass-ui-widget.is-visible .glass-quick-question', { hasText: 'Разобрать анализы' }).click();
   await page.locator('.glass-ui-widget.is-visible .glass-message-bubble', {
     hasText: 'На сегодня лимит сообщений исчерпан'
   }).waitFor({ state: 'visible', timeout: 10_000 });
@@ -242,7 +342,7 @@ try {
 
   chatRouteMode = 'network-error';
   await page.locator('.glass-ui-valyusha-button').first().click();
-  await page.locator('.glass-ui-widget.is-visible .glass-quick-question', { hasText: 'Что вы делаете?' }).click();
+  await page.locator('.glass-ui-widget.is-visible .glass-quick-question', { hasText: 'Оживить сообщество' }).click();
   await page.locator('.glass-ui-widget.is-visible .glass-message-bubble', {
     hasText: 'не могу подключиться'
   }).waitFor({ state: 'visible', timeout: 10_000 });
@@ -260,7 +360,7 @@ try {
   chatRouteMode = 'rate-limit';
 
   const widgetOpenClose = [];
-  for (const selector of ['.glass-ui-hipych-button', '.glass-ui-bro-cat-button', '.glass-ui-valyusha-button']) {
+  for (const selector of ['.glass-ui-health-button', '.glass-ui-bro-cat-button', '.glass-ui-valyusha-button']) {
     const button = page.locator(selector).first();
     await button.waitFor({ state: 'visible', timeout: 10_000 });
     await button.click();
@@ -433,6 +533,8 @@ try {
   });
   await freshDetailPage.close();
 
+  const authCartUi = await exerciseAuthCartUi(browser);
+
   const result = {
     baseUrl,
     consoleIssues,
@@ -443,7 +545,7 @@ try {
     legacyChatOverlayPresent,
     homepageSeo,
     serviceCards,
-    projectCases,
+    serviceOrder,
     heroTitleStyle,
     hero,
     heroSoundAfterSurfaceOn,
@@ -463,6 +565,7 @@ try {
     aiPhotoHomeKeyboardUrl,
     mobileDetail,
     freshDetailRuntime,
+    authCartUi,
   };
   console.log(JSON.stringify(result, null, 2));
 
@@ -493,8 +596,22 @@ try {
   if (serviceCards.some((card) => card.benefit.length < 16)) {
     fail('browser smoke service card benefit copy missing', serviceCards);
   }
-  if (projectCases.length < 6 || projectCases.some((entry) => !entry.title || entry.notes.length < 2)) {
-    fail('browser smoke project case context missing', projectCases);
+  const expectedServiceOrder = [
+    'service-detail.html?id=0',
+    'service-detail.html?id=11',
+    'service-detail.html?id=3',
+    'service-detail.html?id=10',
+    'service-detail.html?id=4',
+    'service-detail.html?id=5',
+    'service-detail.html?id=6',
+    'service-detail.html?id=7',
+    'service-detail.html?id=8',
+    'service-detail.html?id=9',
+    'service-detail.html?id=1',
+    'service-detail.html?id=2',
+  ];
+  if (serviceOrder.join('|') !== expectedServiceOrder.join('|')) {
+    fail('browser smoke service funnel order changed', serviceOrder);
   }
   const normalizedHeroTitle = heroTitleStyle?.text?.replace(/\s+/g, '');
   if (
@@ -527,9 +644,10 @@ try {
     fail('browser smoke hero play resume did not keep sound enabled', heroAfterPlayResume);
   }
   for (const entry of Object.values(lowerImageSections)) {
+    const shouldUseEagerLow = !entry.selector.includes('#services');
     if (
       !entry.images.length ||
-      entry.images.some((image) => image.loading !== 'eager' || image.fetchPriority !== 'low') ||
+      (shouldUseEagerLow && entry.images.some((image) => image.loading !== 'eager' || image.fetchPriority !== 'low')) ||
       entry.images.some((image) => !image.complete || image.naturalWidth <= 0 || image.naturalHeight <= 0 || !image.visible)
     ) {
       fail('browser smoke lower section images were not ready when visible', lowerImageSections);
@@ -610,6 +728,9 @@ try {
     freshDetailRuntime.eagerOffscreenVideos
   ) {
     fail('browser smoke detail page eagerly loaded chat/media runtime', freshDetailRuntime);
+  }
+  if (Object.values(authCartUi).some((value) => !value)) {
+    fail('browser smoke auth/cart/account UI flow failed', authCartUi);
   }
   if (analyticsRequests < 4) {
     fail('browser smoke analytics events were not emitted', { analyticsRequests });

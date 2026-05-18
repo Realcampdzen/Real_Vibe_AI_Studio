@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Прайс-дэшборд | Real Vibe AI Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin-prices.css?v=20260518-market-prices">
+</head>
+<body>
+  <main class="price-workbench">
+    <header class="price-topbar">
+      <div class="price-title-block">
+        <p class="eyebrow">Real Vibe AI Studio</p>
+        <h1>Прайс и рыночные ориентиры</h1>
+        <p>Рабочий экран для публичных цен. Меняем нижние пороги, сверяем с рынком, сохраняем в сайт и корзину.</p>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="secondary-action" type="button" data-apply-recommendations>Проставить рекомендации</button>
+        <button class="primary-action" type="button" data-save-prices disabled>Сохранить</button>
+        <a class="link-action" href="index.html">Главная</a>
+        <a class="link-action" href="service-detail.html?id=11">Вайбкодинг</a>
+        <details class="advanced-token">
+          <summary>Token</summary>
+          <label>
+            <span>Admin token</span>
+            <input type="password" data-admin-token placeholder="Для prod-записи">
+          </label>
+        </details>
+      </div>
+    </header>
+
+    <section class="status-rail" aria-label="Статус прайса">
+      <div>
+        <span>API</span>
+        <strong data-api-status>Подключение</strong>
+      </div>
+      <div>
+        <span>Сохранение</span>
+        <strong data-save-status>Нет изменений</strong>
+      </div>
+      <div>
+        <span>Обновлено</span>
+        <strong data-updated-at>—</strong>
+      </div>
+      <div>
+        <span>Открытые цены</span>
+        <strong data-metric-open>0</strong>
+      </div>
+      <div>
+        <span>Ниже рынка</span>
+        <strong data-metric-below>0</strong>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="Фильтры прайса">
+      <label class="search-field">
+        <span>Поиск</span>
+        <input type="search" data-price-search placeholder="Услуга, slug, цена или источник">
+      </label>
+      <div class="filter-pills" role="group" aria-label="Фильтр">
+        <button class="filter-pill is-active" type="button" data-filter="all">Все</button>
+        <button class="filter-pill" type="button" data-filter="needs-price">Нужна цена</button>
+        <button class="filter-pill" type="button" data-filter="below-market">Ниже рынка</button>
+        <button class="filter-pill" type="button" data-filter="changed">Изменены</button>
+        <button class="filter-pill" type="button" data-filter="agentic">Agentic Dev</button>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section class="price-list-panel" aria-labelledby="price-list-title">
+        <div class="panel-heading">
+          <div>
+            <h2 id="price-list-title">Товары и офферы</h2>
+            <p>Сгруппировано по направлениям. Публичная цена пишется в сайт.</p>
+          </div>
+          <span data-visible-count>0 позиций</span>
+        </div>
+        <div class="price-grid-header" aria-hidden="true">
+          <span>Услуга</span>
+          <span>Сейчас</span>
+          <span>Рынок</span>
+          <span>Публичная цена</span>
+          <span>Статус</span>
+        </div>
+        <div class="price-table" data-price-table></div>
+      </section>
+
+      <aside class="inspector-panel" aria-labelledby="inspector-title">
+        <div class="panel-heading">
+          <div>
+            <h2 id="inspector-title">Инспектор</h2>
+            <p>Контекст, пресеты и заметка для агентов.</p>
+          </div>
+          <span data-dirty-count>0 изменений</span>
+        </div>
+        <div class="inspector-content" data-inspector>
+          <p class="muted">Выберите услугу или оффер, чтобы увидеть рекомендацию и быстро поправить цену.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="js/service-prices.js?v=20260518-market-prices" defer></script>
+  <script src="js/service-data.js?v=20260518-market-prices" defer></script>
+  <script src="js/admin-prices.js?v=20260518-market-prices" defer></script>
+</body>
+</html>

@@ -237,28 +237,65 @@
     const mobileNavClose = document.querySelector('.mobile-nav-close');
     if (!mobileMenuBtn || !mobileNav) return;
 
-    const openMenu = () => {
-      mobileMenuBtn.classList.add('active');
-      mobileNav.classList.add('active');
-      mobileNav.setAttribute('aria-hidden', 'false');
+    let scrollYBeforeOpen = 0;
+    let lastFocusedElement = null;
+
+    const lockScroll = () => {
+      scrollYBeforeOpen = window.scrollY || document.documentElement.scrollTop || 0;
+      document.body.style.setProperty('--rv-mobile-nav-scroll-top', `-${scrollYBeforeOpen}px`);
       document.documentElement.classList.add('mobile-nav-open');
       document.body.classList.add('mobile-nav-open', 'no-scroll');
     };
 
+    const unlockScroll = () => {
+      document.documentElement.classList.remove('mobile-nav-open');
+      document.body.classList.remove('mobile-nav-open', 'no-scroll');
+      document.body.style.removeProperty('--rv-mobile-nav-scroll-top');
+      window.scrollTo(0, scrollYBeforeOpen);
+    };
+
+    const openMenu = () => {
+      if (mobileNav.classList.contains('active')) return;
+      lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      mobileMenuBtn.classList.add('active');
+      mobileNav.classList.add('active');
+      mobileNav.setAttribute('aria-hidden', 'false');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      lockScroll();
+      requestAnimationFrame(() => {
+        mobileNavClose?.focus({ preventScroll: true });
+      });
+    };
+
     const closeMenu = () => {
+      if (!mobileNav.classList.contains('active')) return;
       mobileMenuBtn.classList.remove('active');
       mobileNav.classList.remove('active');
       mobileNav.setAttribute('aria-hidden', 'true');
-      document.documentElement.classList.remove('mobile-nav-open');
-      document.body.classList.remove('mobile-nav-open', 'no-scroll');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      unlockScroll();
+      if (lastFocusedElement?.isConnected) {
+        lastFocusedElement.focus({ preventScroll: true });
+      }
+    };
+
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    window.RealVibeMobileNav = {
+      open: openMenu,
+      close: closeMenu,
+      toggle: () => {
+        if (mobileNav.classList.contains('active')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      },
+      isOpen: () => mobileNav.classList.contains('active'),
     };
 
     mobileMenuBtn.addEventListener('click', () => {
-      if (mobileNav.classList.contains('active')) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
+      window.RealVibeMobileNav.toggle();
     });
     mobileNavClose?.addEventListener('click', closeMenu);
 

@@ -384,6 +384,8 @@ class VideoOptimizer {
       return;
     }
 
+    const state = this.states.get(video);
+    const isHero = video.id === 'hero-reel-video';
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -391,8 +393,8 @@ class VideoOptimizer {
         });
       },
       {
-        threshold: video.id === 'hero-reel-video' ? 0.25 : 0.15,
-        rootMargin: video.id === 'hero-reel-video' ? '0px' : '200px 0px',
+        threshold: isHero ? 0.25 : 0.15,
+        rootMargin: isHero || state?.shouldAutoplay === false ? '0px' : '200px 0px',
       }
     );
 

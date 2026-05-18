@@ -61,8 +61,8 @@ const SERVICES_DATA = [
       'Монтаж, цвет, титры и графика',
       'Музыка, озвучка и SFX из нашей студии',
     ],
-    price: 'Уточняется',
-    backgroundImage: serviceAsset('ai-video', 'cover.jpg'),
+    price: 'от 80 000₽',
+    backgroundImage: serviceAsset('ai-video', 'cover-influencer-reel-2026.jpg'),
     avatarImage: serviceAsset('ai-video', 'detail-1.jpg'),
     heroVideo: serviceAsset('ai-video', 'teaser.mp4'),
     heroPoster: serviceAsset('ai-video', 'teaser-poster.jpg'),
@@ -108,7 +108,7 @@ const SERVICES_DATA = [
       'Кадры под маркетплейсы и соцсети',
       'Подготовка форматов под размещение',
     ],
-    price: 'Уточняется',
+    price: 'от 20 000₽ за сет',
     backgroundImage: serviceAsset('ai-photo', 'cover.jpg'),
     avatarImage: serviceAsset('ai-photo', 'detail-1.jpg'),
     heroVideo: '',
@@ -154,7 +154,7 @@ const SERVICES_DATA = [
       'Визуальное объяснение преимуществ',
       'Постеры и кадры под баннеры',
     ],
-    price: 'Уточняется',
+    price: 'от 35 000₽',
     backgroundImage: serviceAsset('ecom-animation', 'cover.jpg'),
     avatarImage: serviceAsset('ecom-animation', 'detail-1.jpg'),
     heroVideo: serviceAsset('ecom-animation', 'teaser.mp4'),
@@ -201,7 +201,7 @@ const SERVICES_DATA = [
       'AI-шаблоны для ускорения команды',
     ],
     price: 'от 40 000₽',
-    backgroundImage: serviceAsset('smm-content', 'cover.jpg'),
+    backgroundImage: serviceAsset('smm-content', 'cover-smm-manager-2026.jpg'),
     avatarImage: serviceAsset('smm-content', 'detail-1.jpg'),
     heroVideo: '',
     heroPoster: serviceAsset('smm-content', 'teaser-poster.jpg'),
@@ -256,7 +256,7 @@ const SERVICES_DATA = [
       'Джинглы и музыкальная айдентика',
       'Файлы и версии под площадки',
     ],
-    price: 'Уточняется',
+    price: 'от 20 000₽',
     backgroundImage: serviceAsset('music', 'cover.jpg'),
     avatarImage: serviceAsset('music', 'detail-1.jpg'),
     heroVideo: '',
@@ -302,7 +302,7 @@ const SERVICES_DATA = [
       'Очистка, сведение и мастеринг',
       'Подготовка под нужные площадки',
     ],
-    price: 'Обсуждается',
+    price: 'от 15 000₽',
     backgroundImage: serviceAsset('sound-design', 'cover.jpg'),
     avatarImage: serviceAsset('sound-design', 'detail-1.jpg'),
     heroVideo: '',
@@ -348,8 +348,8 @@ const SERVICES_DATA = [
       'PostgreSQL/Supabase, роли и дашборды',
       'Деплой, тестирование и стабилизация',
     ],
-    price: 'от 19 000₽ за первый модуль',
-    backgroundImage: serviceAsset('apps', 'cover.jpg'),
+    price: 'от 50 000₽ за MVP-модуль',
+    backgroundImage: serviceAsset('apps', 'cover-ai-app-product-2026.jpg'),
     avatarImage: serviceAsset('apps', 'detail-1.jpg'),
     heroVideo: '',
     heroPoster: serviceAsset('apps', 'teaser-poster.jpg'),
@@ -399,7 +399,7 @@ const SERVICES_DATA = [
       'Admin-панель, роли и уведомления',
       'Оплаты, заявки, CRM и внешние API',
     ],
-    price: 'от 4 000₽',
+    price: 'от 10 000₽',
     backgroundImage: serviceAsset('bots', 'cover.jpg'),
     avatarImage: serviceAsset('bots', 'detail-1.jpg'),
     heroVideo: '',
@@ -446,8 +446,8 @@ const SERVICES_DATA = [
       'Формы, квизы, заявки, аналитика',
       'AI-чат, личные кабинеты и интеграции',
     ],
-    price: 'Уточняется',
-    backgroundImage: serviceAsset('websites', 'cover.jpg'),
+    price: 'от 70 000₽',
+    backgroundImage: serviceAsset('websites', 'cover-white-monitor.jpg'),
     avatarImage: serviceAsset('websites', 'detail-1.jpg'),
     heroVideo: '',
     heroPoster: serviceAsset('websites', 'teaser-poster.jpg'),
@@ -493,7 +493,7 @@ const SERVICES_DATA = [
       'Workflow, проверки и черновики решений',
       'Тестовые сценарии и обучение команды',
     ],
-    price: 'от 15 000₽',
+    price: 'от 25 000₽',
     backgroundImage: serviceAsset('ai-agents', 'cover.jpg'),
     avatarImage: serviceAsset('ai-agents', 'detail-1.jpg'),
     heroVideo: '',
@@ -540,7 +540,7 @@ const SERVICES_DATA = [
       'Сайт, релиз, тур, мерч и digital-витрина',
       'План запуска, production roadmap и координация',
     ],
-    price: 'Уточняется',
+    price: 'от 150 000₽',
     backgroundImage: serviceAsset('creative-production', 'dominia-key-visual.png'),
     avatarImage: serviceAsset('creative-production', 'dominia-world.png'),
     heroVideo: serviceAsset('creative-production', 'dominia-hero-transition.mp4'),
@@ -601,8 +601,8 @@ const SERVICES_DATA = [
       'PostgreSQL, Supabase, Docker, Vercel',
       'OpenAI API, Telegram Bot API и agentic workflow',
     ],
-    price: 'от 4 000₽',
-    backgroundImage: serviceAsset('agentic-ai-dev', 'hero-command-center.jpg'),
+    price: 'разработка от 30 000₽',
+    backgroundImage: serviceAsset('agentic-ai-dev', 'cover-hermes-office-2026.jpg'),
     avatarImage: serviceAsset('agentic-ai-dev', 'detail-1.jpg'),
     heroVideo: '',
     heroPoster: serviceAsset('agentic-ai-dev', 'hero-command-center.jpg'),
@@ -642,10 +642,10 @@ const SERVICES_DATA = [
     ],
     offersTitle: 'Быстрые офферы',
     offers: [
-      { title: 'Telegram Mini App', price: 'от 19 000₽', description: 'Базовый TMA до 3 экранов + API, авторизация и мобильный UX внутри Telegram.' },
-      { title: 'AI-бот + база + admin', price: 'от 4 000₽', description: 'Бот с OpenAI API, базой данных, сценариями, заявками и панелью управления.' },
-      { title: 'AI-code rescue', price: 'от 4 000₽', description: 'Аудит и стабилизация проекта после Cursor, Lovable, Bolt, v0 или другого AI-генератора.' },
-      { title: 'MVP / SaaS модуль', price: 'по оценке', description: 'Авторизация, первый дашборд, база, роли, API и deploy-ready структура.' },
+      { id: 'telegram-mini-app', title: 'Telegram Mini App', price: 'от 30 000₽', description: 'Базовый TMA до 3 экранов + API, авторизация и мобильный UX внутри Telegram.' },
+      { id: 'ai-bot-db-admin', title: 'AI-бот + база + admin', price: 'от 10 000₽', description: 'Бот с OpenAI API, базой данных, сценариями, заявками и панелью управления.' },
+      { id: 'ai-code-rescue', title: 'AI-code rescue', price: 'от 7 000₽', description: 'Аудит и стабилизация проекта после Cursor, Lovable, Bolt, v0 или другого AI-генератора.' },
+      { id: 'mvp-saas-module', title: 'MVP / SaaS модуль', price: 'от 50 000₽', description: 'Авторизация, первый дашборд, база, роли, API и deploy-ready структура.' },
     ],
     proofPointsTitle: 'Proof-of-work',
     proofPoints: [
@@ -668,6 +668,30 @@ const SERVICES_DATA = [
     ],
   },
 ];
+
+function applyServicePriceOverrides(services) {
+  if (typeof window === 'undefined' || !window.SERVICE_PRICE_OVERRIDES) return;
+
+  const priceBook = window.SERVICE_PRICE_OVERRIDES;
+  services.forEach((service) => {
+    const servicePrice = priceBook.services?.[service.slug]?.price;
+    if (servicePrice) {
+      service.price = servicePrice;
+    }
+
+    if (!Array.isArray(service.offers)) return;
+    service.offers.forEach((offer) => {
+      const offerId = offer.id || offer.slug;
+      if (!offerId) return;
+      const offerPrice = priceBook.offers?.[service.slug]?.[offerId]?.price;
+      if (offerPrice) {
+        offer.price = offerPrice;
+      }
+    });
+  });
+}
+
+applyServicePriceOverrides(SERVICES_DATA);
 
 /**
  * Получить данные услуги по ID.

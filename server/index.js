@@ -20,9 +20,14 @@ import { appVersion } from './config/version.js';
 import chatRoutes from './routes/chat.js';
 import analyticsRoutes from './routes/analytics.js';
 import securityReportRoutes from './routes/security-reports.js';
+import authRoutes from './routes/auth.js';
+import accountRoutes from './routes/account.js';
+import cartRoutes from './routes/cart.js';
+import adminPriceRoutes from './routes/admin-prices.js';
 
 // Services (for health check)
 import { isConnected } from './services/openai-client.js';
+import { getDatabaseStatus, initializeDatabase } from './services/db.js';
 
 const __dirname = import.meta.dirname;
 const app = express();
@@ -37,7 +42,16 @@ app.use(attachRequestId());
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (config.cors.allowedOrigins.includes(origin)) {
+    let isLocalDevOrigin = false;
+    if (config.isDevelopment) {
+      try {
+        const originUrl = new URL(origin);
+        isLocalDevOrigin = ['localhost', '127.0.0.1', '::1'].includes(originUrl.hostname);
+      } catch {
+        isLocalDevOrigin = false;
+      }
+    }
+    if (config.cors.allowedOrigins.includes(origin) || isLocalDevOrigin) {
       callback(null, true);
     } else {
       logger.warn('CORS blocked origin', { origin });
@@ -70,6 +84,7 @@ app.use('/chat', apiLimiter);
 const botLimitStack = [cooldownMiddleware, botMinuteLimiter, botHourLimiter, botDayLimiter];
 app.use('/chat', ...botLimitStack);
 app.use('/api/chat', ...botLimitStack);
+app.use('/api/health/chat', ...botLimitStack);
 app.use('/api/hipych/chat', ...botLimitStack);
 app.use('/api/valyusha/chat', ...botLimitStack);
 
@@ -101,11 +116,19 @@ if (config.isDevelopment) {
 // ────── Routes ──────
 app.use('/api/csp-report', securityReportRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/account', accountRoutes);
+app.use('/api', adminPriceRoutes);
+app.use('/api', cartRoutes);
 app.use(chatRoutes);
 
 // ────── Static pages ──────
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+app.get('/ai-photo-detail.html', (req, res) => {
+  res.redirect(301, '/service-detail.html?id=1');
 });
 
 // Static files (after API routes)
@@ -170,17 +193,22 @@ app.use((err, req, res, next) => {
     });
   }
 
-  const error = status === 413 ? 'Слишком большой запрос' : 'Внутренняя ошибка сервера';
+  const error = status === 413
+    ? 'Слишком большой запрос'
+    : (status < 500 && err.message ? err.message : 'Внутренняя ошибка сервера');
   res.status(status >= 400 && status < 600 ? status : 500).json({ error, timestamp: new Date().toISOString() });
 });
 
 // ────── Start ──────
+await initializeDatabase(logger);
+
 const listenArgs = config.host ? [config.port, config.host] : [config.port];
 app.listen(...listenArgs, () => {
   logger.info(`🚀 Сервер работает на http://localhost:${config.port}`, {
     host: config.host || '0.0.0.0',
     port: config.port,
     openai: isConnected() ? 'connected' : 'unavailable',
+    database: getDatabaseStatus(),
     security: 'enhanced',
     version: appVersion,
   });

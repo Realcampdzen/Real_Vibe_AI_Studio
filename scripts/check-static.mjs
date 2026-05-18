@@ -2,13 +2,14 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const root = process.cwd();
-const htmlEntrypoints = ['index.html', 'service-detail.html', 'ai-photo-detail.html'];
+const htmlEntrypoints = ['index.html', 'service-detail.html', 'ai-photo-detail.html', 'admin-prices.html'];
 const criticalDomFiles = [
   'index.html',
   'service-detail.html',
   'ai-photo-detail.html',
   'js/chat-client.js',
   'js/chat.js',
+  'js/auth-cart.js',
   'js/glass-ui-bro-cat.js',
   'js/glass-ui-hipych.js',
   'js/glass-ui-valyusha.js',
@@ -16,7 +17,9 @@ const criticalDomFiles = [
   'js/page-common.js',
   'js/performance-loader.js',
   'js/pull-to-refresh.js',
+  'js/admin-prices.js',
   'js/script.js',
+  'js/service-price-bindings.js',
   'js/service-detail-page.js',
   'js/services-carousel.js',
   'js/skeleton-loader.js',
@@ -26,13 +29,16 @@ const criticalDomFiles = [
 const strictStyleRuntimeFiles = [
   'js/chat-client.js',
   'js/chat.js',
+  'js/auth-cart.js',
   'js/glass-ui-bro-cat.js',
   'js/glass-ui-hipych.js',
   'js/glass-ui-valyusha.js',
   'js/mobile-enhancements.js',
   'js/page-common.js',
   'js/performance-loader.js',
+  'js/admin-prices.js',
   'js/script.js',
+  'js/service-price-bindings.js',
   'chat-components/GlassUIWidget.js',
 ];
 const mediaBudgetBytes = 80 * 1024 * 1024;

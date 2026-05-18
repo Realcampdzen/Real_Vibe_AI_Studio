@@ -74,6 +74,7 @@
     document.querySelectorAll('img:not([loading])').forEach((img) => {
       if (
         (img.dataset && img.dataset.critical === 'true') ||
+        img.classList.contains('service-simple-bg-image') ||
         img.classList.contains('logo-image') ||
         img.closest('header')
       ) {
@@ -108,7 +109,7 @@
     lazyImages();
     // video-optimizer.js загружается напрямую в index.html, не нужно загружать здесь
     schedule(() => {
-      loadScript('js/image-optimizer.js?v=20260518-wellness-bro-ui');
+      loadScript('js/image-optimizer.js?v=20260519-mobile-stability');
       loadScript('js/skeleton-loader.js');
     }, 120);
   }
@@ -124,7 +125,7 @@
 
     // Mobile helpers
     if (isMobile) {
-      schedule(() => loadScript('js/mobile-enhancements.js?v=20260518-wellness-bro-ui'), 220);
+      schedule(() => loadScript('js/mobile-enhancements.js?v=20260519-mobile-stability'), 220);
       schedule(() => loadScript('js/pull-to-refresh.js?v=20260512-productux'), 260);
       schedule(() => loadScript('js/haptic-feedback.js'), 300);
     }

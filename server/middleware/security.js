@@ -10,9 +10,14 @@ const allowedStyleSources = [
   'https://cdnjs.cloudflare.com',
 ];
 
+const allowedScriptSources = [
+  "'self'",
+  'https://telegram.org',
+];
+
 const cspReportOnlyDirectives = {
   'default-src': ["'self'"],
-  'script-src': ["'self'"],
+  'script-src': allowedScriptSources,
   'script-src-attr': ["'none'"],
   'object-src': ["'none'"],
   'base-uri': ["'self'"],
@@ -35,6 +40,10 @@ const cspReportOnlyDirectives = {
     'https://cdnjs.cloudflare.com',
     'data:',
   ],
+  'frame-src': [
+    "'self'",
+    'https://oauth.telegram.org',
+  ],
   'report-uri': ['/api/csp-report'],
 };
 
@@ -54,7 +63,7 @@ export function createHelmetMiddleware() {
       directives: {
         defaultSrc: ["'self'"],
         styleSrc: allowedStyleSources,
-        scriptSrc: ["'self'"],
+        scriptSrc: allowedScriptSources,
         imgSrc: ["'self'", "data:", "https:", "blob:"],
         mediaSrc: ["'self'", "blob:"],
         objectSrc: ["'none'"],
@@ -64,6 +73,10 @@ export function createHelmetMiddleware() {
         fontSrc: [
           "'self'",
           "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:",
+        ],
+        frameSrc: [
+          "'self'",
+          "https://oauth.telegram.org",
         ],
         styleSrcAttr: ["'none'"],
         styleSrcElem: allowedStyleSources,

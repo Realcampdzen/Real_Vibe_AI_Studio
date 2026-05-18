@@ -3,7 +3,20 @@
  * Включает multi-tier rate limiting для ботов и общий API limiter.
  */
 import rateLimit from 'express-rate-limit';
+import { timingSafeEqual } from 'crypto';
 import config from '../config/env.js';
+
+function safeTokenEquals(left, right) {
+  if (!left || !right) return false;
+  const leftBuffer = Buffer.from(String(left));
+  const rightBuffer = Buffer.from(String(right));
+  if (leftBuffer.length !== rightBuffer.length) return false;
+  return timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function isOwnerRequest(req) {
+  return safeTokenEquals(req.get('x-rv-owner-token'), config.chatQuota.ownerToken);
+}
 
 /**
  * Проверяет, нужно ли пропустить rate limiting для данного запроса.
@@ -11,6 +24,7 @@ import config from '../config/env.js';
  * @returns {boolean}
  */
 export function shouldSkipRateLimit(req) {
+  if (isOwnerRequest(req)) return true;
   if (!config.isDevelopment) return false;
 
   const ip = req.ip || req.connection?.remoteAddress || '';
@@ -61,6 +75,7 @@ export function createRateLimiters(logger) {
   const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: config.rateLimits.apiMax,
+    skip: shouldSkipRateLimit,
     standardHeaders: true,
     legacyHeaders: false,
     handler: (req, res) => {

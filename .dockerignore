@@ -5,7 +5,8 @@
 .playwright-mcp
 node_modules
 logs
-data
+data/*
+!data/service-prices.json
 *.log
 .env
 .env.*

@@ -14,6 +14,31 @@ services:
       TRUST_PROXY: loopback
       ALLOWED_ORIGINS: "https://vps.real-vibe.studio,https://real-vibe.studio,https://www.real-vibe.studio"
       CHAT_QUOTA_STORE_PATH: "/app/data/chat-quotas.json"
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-real_vibe}:${POSTGRES_PASSWORD:-real_vibe_change_me}@127.0.0.1:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-real_vibe}"
     volumes:
       - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
     network_mode: host
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: real-vibe-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-real_vibe}"
+      POSTGRES_USER: "${POSTGRES_USER:-real_vibe}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-real_vibe_change_me}"
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:

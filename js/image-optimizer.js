@@ -54,11 +54,6 @@ class ImageOptimizer {
         mobile: 'images/bro-avatar-mobile.jpg',
         webp: 'images/bro-avatar.webp',
         webpMobile: 'images/bro-avatar-mobile.webp' },
-      { selector: '.hipych-avatar', 
-        desktop: 'images/hipych-avatar.jpg',
-        mobile: 'images/hipych-avatar-mobile.jpg',
-        webp: 'images/hipych-avatar.webp',
-        webpMobile: 'images/hipych-avatar-mobile.webp' },
       { selector: '.assistant-avatar[src*="НейроВалюша"]', 
         desktop: 'public/НейроВалюша_аватар.jpg',
         mobile: 'public/НейроВалюша_аватар-mobile.jpg',
@@ -145,9 +140,32 @@ class ImageOptimizer {
     const serviceImages = document.querySelectorAll('.service-simple-bg-image');
     
     serviceImages.forEach(img => {
-      // Добавляем lazy loading
-      img.loading = 'lazy';
+      const card = img.closest('.service-simple-card');
+      const isCriticalService =
+        card?.closest('.services-primary') &&
+        (card.dataset.serviceId === '0' || card.dataset.serviceId === '11');
+
+      if (isCriticalService || img.dataset.critical === 'true') {
+        img.loading = 'eager';
+        img.fetchPriority = 'high';
+        img.setAttribute('fetchpriority', 'high');
+        img.dataset.critical = 'true';
+      } else {
+        img.loading = img.getAttribute('loading') || 'lazy';
+        if (!img.getAttribute('fetchpriority')) {
+          img.fetchPriority = 'low';
+          img.setAttribute('fetchpriority', 'low');
+        }
+      }
       img.decoding = 'async';
+
+      const markReady = () => card?.classList.add('is-media-ready');
+      if (img.complete && img.naturalWidth > 0) {
+        markReady();
+      } else {
+        img.addEventListener('load', markReady, { once: true });
+        img.addEventListener('error', markReady, { once: true });
+      }
       
       // Создаем responsive image если есть разные размеры
       const src = img.src || img.getAttribute('src');
@@ -219,7 +237,7 @@ class ImageOptimizer {
   preloadCriticalImages() {
     const criticalImages = [
       'images/bro-avatar.jpg',
-      'images/hipych-avatar.jpg'
+      'images/wellness-bro-avatar.png'
     ];
 
     criticalImages.forEach(src => {

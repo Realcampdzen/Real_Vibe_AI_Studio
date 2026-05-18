@@ -13,13 +13,6 @@ const BOT_REGISTRY = {
     prompt: PROMPTS['bro-cat'],
     emergencyReply: 'Мяу! 😿 У меня лапки запутались... Но мой хозяин @Stivanovv всё исправит! Он делает крутые AI-боты от 12 000₽ 🤖',
   },
-  'hipych-ai': {
-    id: 'hipych-ai',
-    name: '🎮 Хипыч AI',
-    route: '/api/hipych/chat',
-    prompt: PROMPTS['hipych-ai'],
-    emergencyReply: 'Кринж! 😅 Временные технические лаги. @Stivanovv быстро всё пофиксит! 🎮',
-  },
   'valyusha': {
     id: 'valyusha',
     name: '💜 НейроВалюша',
@@ -29,9 +22,10 @@ const BOT_REGISTRY = {
   },
   'health-assistant': {
     id: 'health-assistant',
-    name: '🩺 Доктор Анна',
+    name: '🩺 Wellness Bro',
+    route: '/api/health/chat',
     prompt: PROMPTS['health-assistant'],
-    emergencyReply: 'Извините, временная ошибка сервиса.',
+    emergencyReply: 'Сейчас Wellness Bro временно недоступен. Если есть острые симптомы или риск для жизни — обратитесь за срочной медицинской помощью. По проекту AI-бота можно написать @Stivanovv.',
   },
   'business-advisor': {
     id: 'business-advisor',

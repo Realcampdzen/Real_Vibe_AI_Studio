@@ -1,4 +1,5 @@
 const baseUrl = (process.env.PROD_SMOKE_BASE_URL || 'https://vps.real-vibe.studio').replace(/\/$/, '');
+const canonicalUrl = process.env.PROD_CANONICAL_URL || 'https://real-vibe.studio/';
 const oldHeroMasterPath = '/public/works/%D0%BE%D0%BF%D0%B5%D0%BD%D0%B8%D0%BD%D0%B3%20%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9.mp4';
 
 function fail(message, detail = '') {
@@ -34,7 +35,11 @@ await check('report-only style-src-attr', /style-src-attr 'none'/.test(cspReport
 await check('report-only style CSP has no unsafe-inline', !/style-src[^;]*'unsafe-inline'/.test(cspReportOnly), cspReportOnly);
 await check('legacy chat overlay removed', !homepageText.includes('id="chat-overlay"'), 'legacy #chat-overlay found');
 await check('chat client script present', homepageText.includes('js/chat-client.js'), 'chat-client script not found');
-await check('homepage canonical present', /<link rel="canonical" href="https:\/\/vps\.real-vibe\.studio\/">/.test(homepageText), 'canonical missing');
+await check(
+  'homepage canonical present',
+  homepageText.includes(`<link rel="canonical" href="${canonicalUrl}">`),
+  `expected ${canonicalUrl}`,
+);
 await check('homepage Open Graph present', homepageText.includes('property="og:title"') && homepageText.includes('property="og:image"'), 'OG tags missing');
 await check('schema.org microdata present', homepageText.includes('https://schema.org/Organization') && homepageText.includes('https://schema.org/FAQPage'), 'schema.org microdata missing');
 

@@ -35,7 +35,7 @@ export const SERVICES = [
     priceTo: 80000,
     currency: 'RUB',
     timeline: '5-14 дней',
-    examples: ['Кот Бро — маскот для VK группы', 'Хипыч AI — бот для стримера', 'НейроВалюша — педагогический бот'],
+    examples: ['Кот Бро — маскот для VK группы', 'Wellness Bro — безопасный health-ассистент', 'НейроВалюша — педагогический бот'],
   },
   {
     id: 'custom-gpts',
@@ -96,7 +96,7 @@ export const SERVICES = [
 
 export const PORTFOLIO_ITEMS = [
   { category: 'ai-bots', title: 'Кот Бро', description: 'Маскот VK-группы по аренде недвижимости. Автокомментирование, общение с подписчиками.', link: '#assistants' },
-  { category: 'ai-bots', title: 'Хипыч AI', description: 'Бот для телеграм-канала стримера. CTA, модерация, розыгрыши.', link: '#assistants' },
+  { category: 'ai-bots', title: 'Wellness Bro', description: 'Публичный health-ассистент: анализы, дневники, питание, напоминания и поддержка без диагнозов, назначений и хранения текста чатов.', link: '#assistants' },
   { category: 'ai-bots', title: 'НейроВалюша', description: 'Педагогический бот для детского лагеря. VK + Telegram + приложение.', link: '#assistants' },
   { category: 'ai-video', title: 'Промо-ролики', description: 'AI-сгенерированные рекламные видео для бизнеса.', link: '#projects-showreel' },
   { category: 'ai-photo', title: 'AI-фотоконтент', description: 'Обложки, баннеры, продуктовые фото.', link: '#projects-showreel' },

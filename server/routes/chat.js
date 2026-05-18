@@ -14,8 +14,13 @@ import { getBot, getAllBotIds, getBotName, getFallbackResponse } from '../bots/r
 import { agentChat } from '../agents/agent-chat.js';
 import { streamAgentChat } from '../agents/stream-chat.js';
 import { consumeChatQuota } from '../services/chat-quota.js';
+import { callWellnessHealthAgent, isWellnessHealthAgentConfigured } from '../services/hermes-safe-agent.js';
+import { getDatabaseStatus } from '../services/db.js';
 
 const router = express.Router();
+const CHAT_BOT_ALIASES = {
+  'hipych-ai': 'health-assistant',
+};
 
 function safeTokenEquals(left, right) {
   if (!left || !right) return false;
@@ -28,6 +33,14 @@ function safeTokenEquals(left, right) {
 function isWebhookAuthorized(req) {
   if (config.isDevelopment && !config.security.webhookToken) return true;
   return safeTokenEquals(req.get('x-rv-webhook-token'), config.security.webhookToken);
+}
+
+function isOwnerRequest(req) {
+  return safeTokenEquals(req.get('x-rv-owner-token'), config.chatQuota.ownerToken);
+}
+
+function normalizeChatBotId(botId) {
+  return CHAT_BOT_ALIASES[botId] || botId;
 }
 
 // Схема валидации
@@ -43,6 +56,8 @@ const messageSchema = Joi.object({
  */
 async function handleChat(req, res, botId) {
   const startedAt = Date.now();
+  const requestedBotId = botId;
+  botId = normalizeChatBotId(botId);
   try {
     const { error, value } = messageSchema.validate(req.body);
     if (error) {
@@ -93,8 +108,32 @@ async function handleChat(req, res, botId) {
     }
 
     let reply;
+    let source = 'fallback';
 
-    if (isConnected()) {
+    const canUseOwnerHealthRoute = botId === 'health-assistant'
+      && isOwnerRequest(req)
+      && isWellnessHealthAgentConfigured();
+
+    if (canUseOwnerHealthRoute) {
+      try {
+        reply = await callWellnessHealthAgent(message);
+        if (reply && reply.trim()) {
+          source = 'hermes-wellnessbro';
+          reply = stripMarkdown(reply);
+        }
+      } catch (error) {
+        logger.warn('Hermes owner health route failed', sanitizedApiMeta(req, {
+          botId,
+          requestedBotId,
+          startedAt,
+          statusCode: error.status || 502,
+          outcome: 'owner_route_failed',
+          error,
+        }));
+      }
+    }
+
+    if (!reply && isConnected()) {
       // Сначала пробуем агентный чат (с tools)
       reply = await agentChat(bot.prompt, message);
 
@@ -106,15 +145,17 @@ async function handleChat(req, res, botId) {
       if (!reply || reply.trim() === '') {
         logger.warn('Chat/API fallback', sanitizedApiMeta(req, {
           botId,
+          requestedBotId,
           startedAt,
           statusCode: 200,
           outcome: 'empty_ai_reply',
         }));
         reply = getFallbackResponse(botId, message);
       } else {
+        source = 'safe-site-agent';
         reply = stripMarkdown(reply);
       }
-    } else {
+    } else if (!reply) {
       reply = getFallbackResponse(botId, message);
     }
 
@@ -126,7 +167,7 @@ async function handleChat(req, res, botId) {
         outcome: 'ok',
       }));
     }
-    res.json({ reply });
+    res.json({ reply, agentId: bot.id, source });
   } catch (error) {
     logger.error('Chat/API error', sanitizedApiMeta(req, {
       botId,
@@ -138,7 +179,7 @@ async function handleChat(req, res, botId) {
 
     const bot = getBot(botId);
     const emergencyReply = bot?.emergencyReply || 'Извините, временные неполадки. Обращайтесь к @Stivanovv!';
-    res.json({ reply: emergencyReply });
+    res.json({ reply: emergencyReply, agentId: bot?.id || botId, source: 'emergency' });
   }
 }
 
@@ -148,10 +189,12 @@ router.post('/chat', (req, res) => handleChat(req, res, 'bro-cat'));
 // ────── SSE Streaming endpoint ──────
 router.post('/api/chat/:botId/stream', async (req, res) => {
   const startedAt = Date.now();
+  const botId = normalizeChatBotId(req.params.botId);
   const { error, value } = messageSchema.validate(req.body);
   if (error) {
     logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
-      botId: req.params.botId,
+      botId,
+      requestedBotId: req.params.botId,
       startedAt,
       statusCode: 400,
       outcome: 'stream_validation_error',
@@ -159,10 +202,11 @@ router.post('/api/chat/:botId/stream', async (req, res) => {
     }));
     return res.status(400).json({ error: error.details[0].message });
   }
-  const bot = getBot(req.params.botId);
+  const bot = getBot(botId);
   if (!bot) {
     logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
-      botId: req.params.botId,
+      botId,
+      requestedBotId: req.params.botId,
       startedAt,
       statusCode: 404,
       outcome: 'stream_bot_not_found',
@@ -170,10 +214,11 @@ router.post('/api/chat/:botId/stream', async (req, res) => {
     return res.status(404).json({ error: 'Ассистент не найден' });
   }
 
-  const quota = await consumeChatQuota(req, res, req.params.botId);
+  const quota = await consumeChatQuota(req, res, botId);
   if (!quota.allowed) {
     logger.warn('Chat/API rejected', sanitizedApiMeta(req, {
-      botId: req.params.botId,
+      botId,
+      requestedBotId: req.params.botId,
       startedAt,
       statusCode: quota.status,
       outcome: 'stream_quota_limited',
@@ -191,7 +236,8 @@ router.post('/api/chat/:botId/stream', async (req, res) => {
 
   if (config.isDevelopment) {
     logger.info('SSE chat stream started', sanitizedApiMeta(req, {
-      botId: req.params.botId,
+      botId,
+      requestedBotId: req.params.botId,
       startedAt,
       statusCode: 200,
       outcome: 'stream_started',
@@ -204,7 +250,8 @@ router.post('/api/chat/:botId/stream', async (req, res) => {
 router.post('/api/chat/:botId', (req, res) => handleChat(req, res, req.params.botId));
 
 // ────── Выделенные endpoints для ключевых ботов ──────
-router.post('/api/hipych/chat', (req, res) => handleChat(req, res, 'hipych-ai'));
+router.post('/api/health/chat', (req, res) => handleChat(req, res, 'health-assistant'));
+router.post('/api/hipych/chat', (req, res) => handleChat(req, res, 'health-assistant'));
 router.post('/api/valyusha/chat', (req, res) => handleChat(req, res, 'valyusha'));
 
 // ────── Status endpoints ──────
@@ -230,18 +277,30 @@ function statusHandler(botId) {
 }
 
 router.get('/api/valyusha/status', statusHandler('valyusha'));
-router.get('/api/hipych/status', statusHandler('hipych-ai'));
+router.get('/api/health/status', statusHandler('health-assistant'));
+router.get('/api/hipych/status', statusHandler('health-assistant'));
+
+router.get('/api/health/info', (req, res) => {
+  res.json({
+    name: 'Wellness Bro',
+    role: 'Ассистент по здоровью Real Vibe Studio',
+    personality: 'Добрый доктор-котик: спокойный, умный, поддерживающий и чуть мемный',
+    specialization: ['Понимание анализов', 'Дневники самочувствия', 'Питание и режим', 'Вопросы врачу', 'Напоминания по назначенным лекарствам', 'Безопасные health-боты'],
+    avatar: '/images/wellness-bro-avatar.png',
+    status: 'active',
+    api_version: appVersion,
+    description: 'Показывает, как AI-ассистент помогает с health-навигацией без диагнозов и назначений: анализы, дневники, питание, поддержка и подготовка к врачу.',
+    owner_core_route: isWellnessHealthAgentConfigured() ? 'available' : 'not_configured',
+  });
+});
 
 router.get('/api/hipych/info', (req, res) => {
   res.json({
-    name: 'Хипыч AI',
-    role: 'Демо-ассистент AI Studio',
-    personality: 'Геймер, стример, ИИ-помощник',
-    specialization: ['AI-технологии', 'Автоматизация', 'Разработка ботов', 'Геймерская тематика'],
-    avatar: '🎮',
-    status: 'active',
+    deprecated: true,
+    alias_for: 'health-assistant',
+    name: 'Wellness Bro',
+    route: '/api/health/chat',
     api_version: appVersion,
-    description: 'Хипыч показывает возможности современных AI-ботов и рассказывает о услугах AI Studio',
   });
 });
 
@@ -266,6 +325,7 @@ router.get('/health', (req, res) => {
     service: 'AI Studio API Gateway',
     timestamp: new Date().toISOString(),
     openai: isConnected() ? 'connected' : 'unavailable',
+    database: getDatabaseStatus(),
     version: appVersion,
     security: 'enhanced',
   });

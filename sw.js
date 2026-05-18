@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.42-20260518-social-preview';
+const CACHE_VERSION = 'v1.62-20260519-agentic-hermes-cover';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -14,30 +14,35 @@ const withBase = (path) => (BASE_PATH ? `${BASE_PATH}${path}` : path);
 const STATIC_ASSETS = [
   withBase('/'),
   withBase('/index.html'),
+  withBase('/admin-prices.html'),
   withBase('/service-detail.html'),
   withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
   withBase('/public/og-real-vibe-ai-studio.jpg'),
-  withBase('/css/style.css?v=20260518-social-preview'),
+  withBase('/css/style.css?v=20260519-agentic-hermes-cover'),
+  withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
-  withBase('/css/mobile-improvements.css?v=20260518-social-preview'),
+  withBase('/css/mobile-improvements.css?v=20260519-ru-oauth'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
   withBase('/js/scroll-manager.js'),
   withBase('/js/video-optimizer.js?v=20260512-hotfix'),
-  withBase('/js/script.js?v=20260518-hermes-health'),
-  withBase('/js/page-common.js?v=20260512-productux'),
-  withBase('/js/service-data.js?v=20260518-agentic-hero'),
-  withBase('/js/service-detail-page.js?v=20260518-agentic-hero'),
-  withBase('/js/auth-cart.js?v=20260518-auth-cart-ui'),
+  withBase('/js/script.js?v=20260519-mobile-stability'),
+  withBase('/js/page-common.js?v=20260519-mobile-stability'),
+  withBase('/js/service-prices.js?v=20260518-market-prices'),
+  withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
+  withBase('/js/service-data.js?v=20260518-websites-white-cover'),
+  withBase('/js/service-detail-page.js?v=20260518-market-prices'),
+  withBase('/js/admin-prices.js?v=20260518-market-prices'),
+  withBase('/js/auth-cart.js?v=20260519-ru-oauth'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),
-  withBase('/js/performance-loader.js?v=20260518-wellness-bro-ui'),
-  withBase('/js/image-optimizer.js?v=20260518-wellness-bro-ui'),
-  withBase('/js/mobile-enhancements.js?v=20260518-wellness-bro-ui'),
+  withBase('/js/performance-loader.js?v=20260519-mobile-stability'),
+  withBase('/js/image-optimizer.js?v=20260519-mobile-stability'),
+  withBase('/js/mobile-enhancements.js?v=20260519-mobile-stability'),
   withBase('/js/pull-to-refresh.js?v=20260512-productux'),
   withBase('/js/glass-ui-health.js?v=20260518-wellness-bro-ui'),
   withBase('/js/glass-ui-bro-cat.js?v=20260518-wellness-bro-ui'),

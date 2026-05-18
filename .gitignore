@@ -25,7 +25,9 @@ yarn-debug.log*
 yarn-error.log*
 
 # Runtime data
-data/
+data/*
+!data/
+!data/service-prices.json
 .playwright-mcp/
 
 # Editors

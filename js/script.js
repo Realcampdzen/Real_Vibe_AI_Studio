@@ -1,7 +1,7 @@
 // AI Studio - Enhanced Interactive Features
 
 // Build marker (helps debug cache/service worker issues)
-window.__AI_STUDIO_BUILD = '20251216-reveal-force';
+window.__AI_STUDIO_BUILD = '20260519-mobile-stability';
 
 // API base. Empty value means same-origin, which is the production VPS default.
 // Override before this script if needed: window.__AI_API_BASE__ = 'http://localhost:3000'
@@ -322,35 +322,78 @@ function initMobileMenu() {
     });
     return;
   }
-  
-  const openMenu = () => {
-    mobileMenuBtn.classList.add('active');
-    mobileNav.classList.add('active');
-    mobileNav.setAttribute('aria-hidden', 'false');
+
+  let scrollYBeforeOpen = 0;
+  let lastFocusedElement = null;
+  const suppressedWidgetsSelector = '.glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget';
+
+  const suppressWidgets = (shouldSuppress) => {
+    document.querySelectorAll(suppressedWidgetsSelector).forEach((widget) => {
+      widget.classList.toggle('is-suppressed', shouldSuppress);
+    });
+  };
+
+  const lockScroll = () => {
+    scrollYBeforeOpen = window.scrollY || document.documentElement.scrollTop || 0;
+    document.body.style.setProperty('--rv-mobile-nav-scroll-top', `-${scrollYBeforeOpen}px`);
     document.body.classList.add('no-scroll');
     document.documentElement.classList.add('mobile-nav-open');
     document.body.classList.add('mobile-nav-open');
-    // Hide bot widgets so they don't overlap the menu.
-    document.querySelectorAll('.glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.classList.add('is-suppressed'));
   };
 
-  const closeMenu = () => {
-    mobileMenuBtn.classList.remove('active');
-    mobileNav.classList.remove('active');
-    mobileNav.setAttribute('aria-hidden', 'true');
+  const unlockScroll = () => {
     document.body.classList.remove('no-scroll');
     document.documentElement.classList.remove('mobile-nav-open');
     document.body.classList.remove('mobile-nav-open');
-    // Restore bot widgets.
-    document.querySelectorAll('.glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.classList.remove('is-suppressed'));
+    document.body.style.removeProperty('--rv-mobile-nav-scroll-top');
+    window.scrollTo(0, scrollYBeforeOpen);
+  };
+  
+  const openMenu = () => {
+    if (mobileNav.classList.contains('active')) return;
+    lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    mobileMenuBtn.classList.add('active');
+    mobileNav.classList.add('active');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    lockScroll();
+    suppressWidgets(true);
+    requestAnimationFrame(() => {
+      mobileNavClose?.focus({ preventScroll: true });
+    });
+  };
+
+  const closeMenu = () => {
+    if (!mobileNav.classList.contains('active')) return;
+    mobileMenuBtn.classList.remove('active');
+    mobileNav.classList.remove('active');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    unlockScroll();
+    suppressWidgets(false);
+    if (lastFocusedElement?.isConnected) {
+      lastFocusedElement.focus({ preventScroll: true });
+    }
+  };
+
+  mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  mobileNav.setAttribute('aria-hidden', 'true');
+
+  window.RealVibeMobileNav = {
+    open: openMenu,
+    close: closeMenu,
+    toggle: () => {
+      if (mobileNav.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    },
+    isOpen: () => mobileNav.classList.contains('active'),
   };
 
   mobileMenuBtn.addEventListener('click', () => {
-    if (mobileNav.classList.contains('active')) {
-      closeMenu();
-    } else {
-      openMenu();
-    }
+    window.RealVibeMobileNav.toggle();
   });
   
   if (mobileNavClose) {
@@ -668,6 +711,7 @@ function preloadImagesForUpcomingElements() {
     if (isNearViewport) {
       const images = el.querySelectorAll('img[loading="lazy"]');
       images.forEach(img => {
+        if (img.classList.contains('service-simple-bg-image')) return;
         // Меняем на eager для предзагрузки
         img.loading = 'eager';
         // Принудительно загружаем изображение

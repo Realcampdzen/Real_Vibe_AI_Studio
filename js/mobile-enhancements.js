@@ -91,16 +91,9 @@ class TouchGestureHandler {
   }
   
   handleSwipeLeft() {
-    // Закрытие мобильного меню
-    const mobileNav = document.getElementById('mobile-nav');
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    
-    if (mobileNav && mobileNav.classList.contains('active')) {
-      mobileNav.classList.remove('active');
-      mobileNav.setAttribute('aria-hidden', 'true');
-      mobileMenuBtn.classList.remove('active');
-      document.documentElement.classList.remove('mobile-nav-open');
-      document.body.classList.remove('mobile-nav-open', 'no-scroll');
+    if (window.RealVibeMobileNav?.isOpen?.()) {
+      window.RealVibeMobileNav.close();
+      return;
     }
     
     // Переключение слайдов в testimonials
@@ -108,18 +101,9 @@ class TouchGestureHandler {
   }
   
   handleSwipeRight() {
-    // Открытие мобильного меню (если курсор близко к краю)
-    if (this.startX < 50) {
-      const mobileNav = document.getElementById('mobile-nav');
-      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-      
-      if (mobileNav && !mobileNav.classList.contains('active')) {
-        mobileNav.classList.add('active');
-        mobileNav.setAttribute('aria-hidden', 'false');
-        mobileMenuBtn.classList.add('active');
-        document.documentElement.classList.add('mobile-nav-open');
-        document.body.classList.add('mobile-nav-open', 'no-scroll');
-      }
+    if (window.RealVibeMobileNav?.isOpen?.()) {
+      window.RealVibeMobileNav.close();
+      return;
     }
     
     // Переключение слайдов в testimonials
@@ -246,13 +230,10 @@ class MobileNavigation {
     
     window.addEventListener('scroll', () => {
       const currentScrollY = window.scrollY;
-      const mobileNav = document.getElementById('mobile-nav');
-      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
       
-      if (mobileNav && mobileNav.classList.contains('active')) {
+      if (window.RealVibeMobileNav?.isOpen?.()) {
         if (Math.abs(currentScrollY - lastScrollY) > 50) {
-          mobileNav.classList.remove('active');
-          mobileMenuBtn.classList.remove('active');
+          window.RealVibeMobileNav.close();
         }
       }
       
@@ -405,14 +386,14 @@ class MobilePerformanceOptimizer {
   }
   
   lazyLoadImages() {
-    const images = document.querySelectorAll('img');
+    const images = document.querySelectorAll('img[data-src]');
     
     if ('IntersectionObserver' in window) {
       const imageObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const img = entry.target;
-            img.src = img.dataset.src || img.src;
+            img.src = img.dataset.src;
             img.classList.remove('lazy');
             observer.unobserve(img);
           }
@@ -527,7 +508,7 @@ class MobileAccessibility {
     const elements = [
       { selector: '.mobile-menu-btn', label: 'Открыть меню' },
       { selector: '.chat-close', label: 'Закрыть чат' },
-      { selector: '.hipych-close', label: 'Закрыть чат с Хипычем' },
+      { selector: '.hipych-close', label: 'Закрыть чат ассистента' },
       { selector: '.bro-cat-close', label: 'Закрыть чат с Бро Котом' },
       { selector: '.back-to-top', label: 'Вернуться наверх' }
     ];
@@ -758,21 +739,19 @@ class AdvancedTouchGestures {
 
   handleSwipeRight(e) {
     // Свайп вправо - закрытие мобильного меню или активного чата
-    const mobileNav = document.getElementById('mobile-nav');
     const activeChat = document.querySelector('.glass-ui-widget.is-visible');
     
-    if (mobileNav && mobileNav.classList.contains('active')) {
-      this.closeMobileMenu();
+    if (window.RealVibeMobileNav?.isOpen?.()) {
+      window.RealVibeMobileNav.close();
     } else if (activeChat) {
       this.closeChat();
     }
   }
 
   handleSwipeLeft(e) {
-    // Свайп влево - открытие мобильного меню
-    const target = e.target.closest('.navbar');
-    if (target) {
-      this.openMobileMenu();
+    // Не открываем меню свайпом: на сервисных карточках это давало случайные состояния.
+    if (window.RealVibeMobileNav?.isOpen?.()) {
+      window.RealVibeMobileNav.close();
     }
   }
 
@@ -899,26 +878,11 @@ class AdvancedTouchGestures {
   }
 
   closeMobileMenu() {
-    const mobileNav = document.getElementById('mobile-nav');
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    
-    if (mobileNav) mobileNav.classList.remove('active');
-    if (menuBtn) menuBtn.classList.remove('active');
-    document.documentElement.classList.remove('mobile-nav-open');
-    document.body.classList.remove('mobile-nav-open', 'no-scroll');
+    window.RealVibeMobileNav?.close?.();
   }
 
   openMobileMenu() {
-    const mobileNav = document.getElementById('mobile-nav');
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    
-    if (mobileNav) {
-      mobileNav.classList.add('active');
-      mobileNav.setAttribute('aria-hidden', 'false');
-    }
-    if (menuBtn) menuBtn.classList.add('active');
-    document.documentElement.classList.add('mobile-nav-open');
-    document.body.classList.add('mobile-nav-open', 'no-scroll');
+    window.RealVibeMobileNav?.open?.();
   }
 
   closeChat() {
@@ -1077,12 +1041,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Функция для добавления CSS стилей для мобильных устройств
 function addMobileStyles() {
-  if (!isMobile()) return;
-  
-  const mobileCSS = document.createElement('link');
-  mobileCSS.rel = 'stylesheet';
-  mobileCSS.href = 'css/mobile-improvements.css';
-  document.head.appendChild(mobileCSS);
+  // mobile-improvements.css is linked in HTML. Re-injecting it at runtime causes a second
+  // stylesheet pass and visible reflow on mobile cards.
 }
 
 // Функция для оптимизации изображений
