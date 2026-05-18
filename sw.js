@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.25-20260512-hotfix';
+const CACHE_VERSION = 'v1.28-20260518-auth-cart';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -14,9 +14,11 @@ const withBase = (path) => (BASE_PATH ? `${BASE_PATH}${path}` : path);
 const STATIC_ASSETS = [
   withBase('/'),
   withBase('/index.html'),
+  withBase('/service-detail.html'),
+  withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
-  withBase('/css/style.css?v=20260512-hotfix'),
+  withBase('/css/style.css?v=20260518-agentic-dev'),
   withBase('/css/critical-fixes.css'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
@@ -25,7 +27,9 @@ const STATIC_ASSETS = [
   withBase('/js/video-optimizer.js?v=20260512-hotfix'),
   withBase('/js/script.js?v=20260512-conversion'),
   withBase('/js/page-common.js?v=20260512-productux'),
-  withBase('/js/service-detail-page.js?v=20260512-conversion'),
+  withBase('/js/service-data.js?v=20260518-agentic-dev'),
+  withBase('/js/service-detail-page.js?v=20260518-agentic-dev'),
+  withBase('/js/auth-cart.js?v=20260518-auth-cart'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),

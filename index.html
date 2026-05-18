@@ -29,7 +29,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260512-hotfix" as="style">
+  <link rel="preload" href="css/style.css?v=20260518-agentic-dev" as="style">
   <link rel="preload" href="css/mobile-improvements.css?v=20260506-mobile-hero-nav" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260512-hotfix">
+  <link rel="stylesheet" href="css/style.css?v=20260518-agentic-dev">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css">
@@ -252,8 +252,8 @@
           и&nbsp;веб&#8209;разработки.<br><br>
           Создаём рекламные видео и&nbsp;трендовые рилсы.<br>
           Пишем музыку, делаем озвучку и&nbsp;саунд&#8209;дизайн.<br>
-          Разрабатываем сайты, приложения, ботов и&nbsp;AI&#8209;агентов для бизнеса.<br>
-          Продюсируем творческие проекты.
+          Разрабатываем сайты, MVP, TMA, ботов и&nbsp;AI&#8209;агентов для бизнеса.<br>
+          Доводим AI&#8209;код до&nbsp;production и&nbsp;делаем creative direction для творческих проектов.
         </p>
         <div class="hero-cta-row">
           <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" data-stop-propagation>
@@ -325,67 +325,58 @@
       <h2 class="section-title hero-title hero-title-reel">УСЛУГИ AI&nbsp;STUDIO</h2>
 
       <div class="services-simple-grid">
-        <!-- Ряд 1: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
-          <!-- Card 1: AI-видео (БОЛЬШОЙ) -->
-          <article class="service-simple-card" data-service-id="3">
-            <img class="service-simple-bg-image" src="public/works/AI‑видео картинка.jpg" alt="ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI" loading="eager" decoding="async">
+          <article class="service-simple-card" data-service-id="0">
+            <img class="service-simple-bg-image" src="public/works/services/ai-video/cover.jpg" alt="ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Ролик под рекламу, Reels и запуск продукта</p>
+              <p class="service-simple-benefit">Ролики под рекламу, Reels, клипы и запуск продукта</p>
               <div class="service-simple-footer" data-contact-link="telegram">ПРОДАЮЩИЕ РЕКЛАМНЫЕ РОЛИКИ С AI</div>
             </div>
           </article>
 
-          <!-- Card 2: GPTs ассистенты (малый) -->
-          <article class="service-simple-card" data-detail-href="ai-photo-detail.html">
-            <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_2kwtns2kwtns2kwt.jpg" alt="Кастомные GPTs" loading="eager" decoding="async">
+          <article class="service-simple-card" data-service-id="1">
+            <img class="service-simple-bg-image" src="public/works/services/ai-photo/cover.jpg" alt="AI ФОТО" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Визуалы для e-commerce, баннеров и key visual</p>
+              <p class="service-simple-benefit">Визуалы для карточек, баннеров, рекламы и key visual</p>
               <div class="service-simple-footer" data-contact-link="telegram">AI ФОТО</div>
             </div>
           </article>
         </div>
 
-        <!-- Ряд 2: малый слева, БОЛЬШОЙ справа -->
         <div class="service-row service-row-small-left">
-          <!-- Card 3: SMM и контент (малый, идёт первым) -->
-          <article class="service-simple-card service-card-animation" data-service-id="3">
-            <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_6ww81h6ww81h6ww8.jpg" alt="ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-CON" loading="eager" decoding="async">
+          <article class="service-simple-card service-card-animation" data-service-id="2">
+            <img class="service-simple-bg-image" src="public/works/services/ecom-animation/cover.jpg" alt="ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-COM" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Движение, инфографика и товарные сцены</p>
-              <div class="service-simple-footer" data-contact-link="telegram">ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-CON</div>
+              <p class="service-simple-benefit">Движение, товарные сцены и понятная визуальная подача</p>
+              <div class="service-simple-footer" data-contact-link="telegram">ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-COM</div>
             </div>
           </article>
 
-          <!-- Card 4: Умные боты (БОЛЬШОЙ, идёт вторым) -->
-          <article class="service-simple-card" data-service-id="2">
-            <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_m9ek4jm9ek4jm9ek.jpg" alt="SMM и контент" loading="eager" decoding="async">
+          <article class="service-simple-card" data-service-id="3">
+            <img class="service-simple-bg-image" src="public/works/services/smm-content/cover.jpg" alt="SMM И КОНТЕНТ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Контент-план, тексты и регулярные публикации</p>
-              <div class="service-simple-footer" data-contact-link="telegram">SMM</div>
+              <p class="service-simple-benefit">Контент-план, тексты, сценарии и регулярные публикации</p>
+              <div class="service-simple-footer" data-contact-link="telegram">SMM И КОНТЕНТ</div>
             </div>
           </article>
         </div>
 
-        <!-- Ряд 3: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
-          <!-- Card 5: Музыка (БОЛЬШОЙ) -->
           <article class="service-simple-card" data-service-id="4">
-            <img class="service-simple-bg-image" src="public/works/image (7).jpg" alt="СОЗДАНИЕ МУЗЫКИ" loading="eager" decoding="async">
+            <img class="service-simple-bg-image" src="public/works/services/music/cover.jpg" alt="СОЗДАНИЕ МУЗЫКИ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Треки, темы и музыкальная айдентика</p>
+              <p class="service-simple-benefit">Треки, темы, джинглы и музыкальная айдентика</p>
               <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ МУЗЫКИ</div>
             </div>
           </article>
 
-          <!-- Card 6: Озвучка (малый) -->
           <article class="service-simple-card" data-service-id="5">
-            <img class="service-simple-bg-image" src="public/works/озвучка и саунддизайн 1.jpg" alt="ОЗВУЧКА И САУНДДИЗАЙН" loading="eager" decoding="async">
+            <img class="service-simple-bg-image" src="public/works/services/sound-design/cover.jpg" alt="ОЗВУЧКА И САУНДДИЗАЙН" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">Голос, SFX и чистый звук под площадки</p>
@@ -394,50 +385,113 @@
           </article>
         </div>
 
-        <!-- Ряд 4: малый слева, БОЛЬШОЙ справа -->
         <div class="service-row service-row-small-left">
-          <!-- Card 7: Приложения (малый, идёт первым) -->
-          <article class="service-simple-card" data-detail-href="ai-photo-detail.html">
-            <img class="service-simple-bg-image" src="public/works/ии аватары.jpg" alt="AI-АВАТАРЫ" loading="eager" decoding="async">
+          <article class="service-simple-card" data-service-id="6">
+            <img class="service-simple-bg-image" src="public/works/services/apps/cover.jpg" alt="СОЗДАНИЕ ПРИЛОЖЕНИЙ С AI ФУНКЦИЯМИ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Персонажи и образы для бренда или эксперта</p>
-              <div class="service-simple-footer" data-contact-link="telegram">AI-АВАТАРЫ</div>
+              <p class="service-simple-benefit">Мобильные и веб-приложения с полезной AI-логикой</p>
+              <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ ПРИЛОЖЕНИЙ С AI ФУНКЦИЯМИ</div>
             </div>
           </article>
 
-          <!-- Card 8: Сайты (БОЛЬШОЙ, идёт вторым) -->
-          <article class="service-simple-card" data-service-id="0">
-            <img class="service-simple-bg-image" src="public/works/Gemini_Generated_Image_8hvbgl8hvbgl8hvb.jpg" alt="СОЗДАНИЕ AI-БОТОВ" loading="eager" decoding="async">
+          <article class="service-simple-card" data-service-id="7">
+            <img class="service-simple-bg-image" src="public/works/services/bots/cover.jpg" alt="СОЗДАНИЕ AI-БОТОВ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Консультации, заявки и поддержка 24/7</p>
+              <p class="service-simple-benefit">Консультации, заявки, поддержка и продажи 24/7</p>
               <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ AI-БОТОВ</div>
             </div>
           </article>
         </div>
 
-        <!-- Ряд 5: БОЛЬШОЙ слева, малый справа -->
         <div class="service-row service-row-big-left">
-          <!-- Card 9: СОЗДАНИЕ САЙТОВ С AI ФУНКЦИЯМИ (БОЛЬШОЙ) -->
-          <article class="service-simple-card" data-service-id="7">
-            <img class="service-simple-bg-image" src="public/works/создание сайтов.jpg" alt="Создание сайтов с AI функциями" loading="eager" decoding="async">
+          <article class="service-simple-card" data-service-id="8">
+            <img class="service-simple-bg-image" src="public/works/services/websites/cover.jpg" alt="СОЗДАНИЕ САЙТОВ С AI ФУНКЦИЯМИ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Лендинг, сервис и AI-функции под задачу</p>
+              <p class="service-simple-benefit">Лендинги, сервисы и AI-функции под задачу</p>
               <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ САЙТОВ С AI ФУНКЦИЯМИ</div>
             </div>
           </article>
 
-          <!-- Card 10: Кастомные GPTs (малый) -->
-          <article class="service-simple-card" data-service-id="1">
-            <img class="service-simple-bg-image" src="public/works/малахит куб.jpg" alt="Кастомные GPTs" loading="eager" decoding="async">
+          <article class="service-simple-card" data-service-id="9">
+            <img class="service-simple-bg-image" src="public/works/services/ai-agents/cover.jpg" alt="AI-АГЕНТЫ И КАСТОМНЫЕ GPTs" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Ассистент с вашими знаниями и инструкциями</p>
-              <div class="service-simple-footer" data-contact-link="telegram">КАСТОМНЫЕ GPTs</div>
+              <p class="service-simple-benefit">Ассистенты с вашими знаниями, правилами и процессами</p>
+              <div class="service-simple-footer" data-contact-link="telegram">AI-АГЕНТЫ И КАСТОМНЫЕ GPTs</div>
             </div>
           </article>
+        </div>
+
+        <div class="service-row service-row-big-left">
+          <article class="service-simple-card" data-service-id="10">
+            <img class="service-simple-bg-image" src="public/works/services/creative-production/dominia-key-visual.png" alt="CREATIVE DIRECTION + AI PRODUCTION" loading="eager" decoding="async">
+            <div class="service-simple-overlay"></div>
+            <div class="service-simple-content">
+              <p class="service-simple-benefit">Визуальный мир, сайт, релиз, мерч и промо-материалы проекта</p>
+              <div class="service-simple-footer" data-contact-link="telegram">CREATIVE DIRECTION + AI PRODUCTION</div>
+            </div>
+          </article>
+
+          <article class="service-simple-card service-card-agentic" data-service-id="11">
+            <img class="service-simple-bg-image" src="public/works/services/agentic-ai-dev/cover.jpg" alt="ВАЙБКОДИНГ И AGENTIC AI DEV" loading="eager" decoding="async">
+            <div class="service-simple-overlay"></div>
+            <div class="service-simple-content">
+              <p class="service-simple-benefit">MVP, SaaS, TMA, AI-боты и стабилизация AI-кода до production</p>
+              <div class="service-simple-footer" data-contact-link="telegram">ВАЙБКОДИНГ И AGENTIC AI DEV</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agentic Dev Showcase -->
+  <section id="agentic-dev" class="agentic-dev-section">
+    <div class="container agentic-dev-inner">
+      <div class="agentic-dev-copy">
+        <p class="section-kicker">Agentic Full-Stack Developer / Вайбкодер</p>
+        <h2 class="section-title agentic-dev-title">Вайбкодинг, который доезжает до релиза</h2>
+        <p class="agentic-dev-lead">
+          Беру идею, сырой прототип или сломанный AI-код из Cursor, Lovable, Bolt, v0 и довожу до стабильного продукта: архитектура, frontend, backend, база, AI-интеграции, деплой и понятный следующий этап.
+        </p>
+
+        <div class="agentic-dev-offers" aria-label="Agentic AI Dev офферы">
+          <article class="agentic-dev-offer">
+            <span>Telegram Mini App</span>
+            <strong>от 19 000₽</strong>
+          </article>
+          <article class="agentic-dev-offer">
+            <span>AI-бот + база + admin</span>
+            <strong>от 4 000₽</strong>
+          </article>
+          <article class="agentic-dev-offer">
+            <span>AI-code rescue</span>
+            <strong>от 4 000₽</strong>
+          </article>
+          <article class="agentic-dev-offer">
+            <span>MVP / SaaS модуль</span>
+            <strong>по оценке</strong>
+          </article>
+        </div>
+
+        <div class="agentic-dev-actions">
+          <button class="btn-primary" type="button" data-contact-link="telegram" data-stop-propagation>
+            Бесплатно разобрать задачу
+          </button>
+          <button class="btn-secondary" data-location-href="service-detail.html?id=11" data-stop-propagation>
+            Смотреть направление
+          </button>
+        </div>
+      </div>
+
+      <div class="agentic-dev-proof" aria-label="Agentic development proof">
+        <img src="public/works/services/agentic-ai-dev/detail-1.jpg" alt="Санитизированный интерфейс Agentic AI Dev workflow" loading="lazy" decoding="async">
+        <div class="agentic-dev-proof-panel">
+          <span>Proof-of-work</span>
+          <p>8 ролей, 15+ дашбордов, Agent OS, Kanban, Roadmaps, Freelance CRM и approval-gated AI workflow.</p>
         </div>
       </div>
     </div>
@@ -817,6 +871,7 @@
   <script src="js/video-optimizer.js?v=20260512-hotfix" defer></script>
   <script src="js/script.js?v=20260512-conversion" defer></script>
   <script src="js/chat-client.js?v=20260512-productux" defer></script>
+  <script src="js/auth-cart.js?v=20260518-auth-cart" defer></script>
   <script src="js/services-carousel.js?v=20260511-stylecsp" defer></script>
   <script src="js/performance-loader.js?v=20260512-hotfix" defer></script>
   
