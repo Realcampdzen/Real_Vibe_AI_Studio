@@ -25,7 +25,7 @@ The repository contains:
 | Service data | `js/service-data.js`, `data/service-prices.json`, `js/service-prices.js` |
 | Detail pages | `service-detail.html`, `js/service-detail-page.js`, `ai-photo-detail.html` |
 | Service media | `public/works/services/<slug>/` |
-| Social preview | `public/og-real-vibe-ai-studio.jpg`, OG/Twitter meta in `index.html` |
+| Social preview | versioned `public/og-real-vibe-ai-studio-YYYYMMDD.jpg`, OG/Twitter meta in `index.html` |
 | PWA/cache | `sw.js`, `manifest.json` |
 | Chat widgets | `chat-components/GlassUIWidget.js`, `js/glass-ui-*.js`, `js/performance-loader.js` |
 | Server/API | `server/index.js`, `server/routes`, `server/services`, `server/bots` |
@@ -178,7 +178,7 @@ Telegram and messengers use Open Graph tags in `index.html`.
 Current social preview image:
 
 ```text
-public/og-real-vibe-ai-studio.jpg
+public/og-real-vibe-ai-studio-YYYYMMDD.jpg
 ```
 
 Required meta fields:
@@ -187,19 +187,21 @@ Required meta fields:
 - `og:description`
 - `og:url`
 - `og:image`
+- `og:image:url`
 - `og:image:secure_url`
 - `og:image:type`
 - `og:image:width`
 - `og:image:height`
 - `og:image:alt`
+- `link rel="image_src"`
 - `twitter:card`
 - `twitter:image`
 
 When changing the preview:
 
 1. Create a 1200x630 JPG or PNG.
-2. Update `og:image` and `twitter:image`.
-3. Add a version query, for example `?v=20260518-social-preview`.
+2. Update `og:image`, `og:image:url`, `og:image:secure_url`, `twitter:image`, and `link rel="image_src"`.
+3. Prefer a new versioned filename over a query string, because Telegram may keep a stale preview for the old image URL.
 4. Update `sw.js` cache version and precache list if needed.
 5. Deploy and verify with `curl` against `https://real-vibe.studio/`.
 6. Remember that Telegram caches previews; use `@WebpageBot` or a querystring URL for testing.
@@ -352,7 +354,7 @@ After deploy:
 ```bash
 curl -I https://real-vibe.studio/
 curl -I https://real-vibe.studio/sw.js
-curl -I https://real-vibe.studio/public/og-real-vibe-ai-studio.jpg
+curl -I https://real-vibe.studio/public/og-real-vibe-ai-studio-YYYYMMDD.jpg
 ```
 
 Also verify content:

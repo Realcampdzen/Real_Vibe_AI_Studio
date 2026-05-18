@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.62-20260519-agentic-hermes-cover';
+const CACHE_VERSION = 'v1.63-20260519-telegram-preview';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -19,7 +19,7 @@ const STATIC_ASSETS = [
   withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
-  withBase('/public/og-real-vibe-ai-studio.jpg'),
+  withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
   withBase('/css/style.css?v=20260519-agentic-hermes-cover'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
