@@ -1,4 +1,8 @@
 (function initRealVibeAuthCart() {
+  const scriptElement = document.currentScript;
+  const isEnabled = window.__RV_AUTH_CART_ENABLED__ === true || scriptElement?.dataset?.enabled === 'true';
+  if (!isEnabled) return;
+
   const state = {
     csrfToken: '',
     user: null,
