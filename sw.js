@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.39-20260518-agent-coins';
+const CACHE_VERSION = 'v1.40-20260518-service-funnel';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -18,9 +18,9 @@ const STATIC_ASSETS = [
   withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
-  withBase('/css/style.css?v=20260518-agent-coins'),
-  withBase('/css/critical-fixes.css?v=20260518-agent-coins'),
-  withBase('/css/mobile-improvements.css?v=20260518-agent-coins'),
+  withBase('/css/style.css?v=20260518-service-funnel'),
+  withBase('/css/critical-fixes.css?v=20260518-service-funnel'),
+  withBase('/css/mobile-improvements.css?v=20260518-service-funnel'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
