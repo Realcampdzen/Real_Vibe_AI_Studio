@@ -331,7 +331,7 @@ function initMobileMenu() {
     document.documentElement.classList.add('mobile-nav-open');
     document.body.classList.add('mobile-nav-open');
     // Hide bot widgets so they don't overlap the menu.
-    document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.classList.add('is-suppressed'));
+    document.querySelectorAll('.glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.classList.add('is-suppressed'));
   };
 
   const closeMenu = () => {
@@ -342,7 +342,7 @@ function initMobileMenu() {
     document.documentElement.classList.remove('mobile-nav-open');
     document.body.classList.remove('mobile-nav-open');
     // Restore bot widgets.
-    document.querySelectorAll('.glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.classList.remove('is-suppressed'));
+    document.querySelectorAll('.glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget').forEach(w => w.classList.remove('is-suppressed'));
   };
 
   mobileMenuBtn.addEventListener('click', () => {

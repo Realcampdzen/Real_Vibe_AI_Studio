@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Cache buster: 2026-05-06-mobile-hero-nav -->
+  <!-- Cache buster: 2026-05-18-agent-coins -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -29,8 +29,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260518-agentic-dev" as="style">
-  <link rel="preload" href="css/mobile-improvements.css?v=20260506-mobile-hero-nav" as="style" media="(max-width: 900px)">
+  <link rel="preload" href="css/style.css?v=20260518-agent-coins" as="style">
+  <link rel="preload" href="css/mobile-improvements.css?v=20260518-agent-coins" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,13 +39,13 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260518-agentic-dev">
+  <link rel="stylesheet" href="css/style.css?v=20260518-agent-coins">
   
   <!-- Critical fixes -->
-  <link rel="stylesheet" href="css/critical-fixes.css">
+  <link rel="stylesheet" href="css/critical-fixes.css?v=20260518-agent-coins">
   
   <!-- Mobile optimizations -->
-  <link rel="stylesheet" href="css/mobile-improvements.css?v=20260506-mobile-hero-nav" media="(max-width: 900px)">
+  <link rel="stylesheet" href="css/mobile-improvements.css?v=20260518-agent-coins" media="(max-width: 900px)">
   
   <!-- Mobile advanced features -->
   <link rel="stylesheet" href="css/mobile-advanced.css" media="(max-width: 900px)">
@@ -183,7 +183,7 @@
           <a href="#about" class="mobile-nav-link">О нас</a>
           <a href="#services" class="mobile-nav-link">Услуги</a>
           <a href="#benefits" class="mobile-nav-link">Преимущества</a>
-          <a href="#projects-showreel" class="mobile-nav-link">Работы</a>
+          <a href="#services" class="mobile-nav-link">Направления</a>
           <a href="#assistants" class="mobile-nav-link">Ассистенты</a>
           <a href="#process" class="mobile-nav-link">Процесс</a>
           <a href="#testimonials" class="mobile-nav-link">Отзывы</a>
@@ -259,11 +259,11 @@
           <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" data-stop-propagation>
             Обсудить проект
           </button>
-          <button class="btn-secondary hero-secondary-btn" data-scroll-target="projects-showreel" data-stop-propagation>
-            Смотреть работы
-          </button>
           <button class="btn-secondary hero-secondary-btn" data-scroll-target="services" data-stop-propagation>
-            Выбрать услугу
+            Смотреть направления
+          </button>
+          <button class="btn-secondary hero-secondary-btn" data-scroll-target="agentic-dev" data-stop-propagation>
+            Вайбкодинг
           </button>
         </div>
       </div>
@@ -320,7 +320,7 @@
   <div id="about"></div>
 
   <!-- Services Section (moved up from below) -->
-  <section id="services" class="services">
+  <section id="services" class="services services-primary">
     <div class="container">
       <h2 class="section-title hero-title hero-title-reel">УСЛУГИ AI&nbsp;STUDIO</h2>
 
@@ -335,32 +335,32 @@
             </div>
           </article>
 
-          <article class="service-simple-card" data-service-id="1">
-            <img class="service-simple-bg-image" src="public/works/services/ai-photo/cover.jpg" alt="AI ФОТО" loading="eager" decoding="async">
+          <article class="service-simple-card service-card-agentic" data-service-id="11">
+            <img class="service-simple-bg-image" src="public/works/services/agentic-ai-dev/hero-command-center.jpg" alt="ВАЙБКОДИНГ И AGENTIC AI DEV" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Визуалы для карточек, баннеров, рекламы и key visual</p>
-              <div class="service-simple-footer" data-contact-link="telegram">AI ФОТО</div>
+              <p class="service-simple-benefit">MVP, SaaS, TMA, AI-боты и стабилизация AI-кода до production</p>
+              <div class="service-simple-footer" data-contact-link="telegram">ВАЙБКОДИНГ И AGENTIC AI DEV</div>
             </div>
           </article>
         </div>
 
         <div class="service-row service-row-small-left">
-          <article class="service-simple-card service-card-animation" data-service-id="2">
-            <img class="service-simple-bg-image" src="public/works/services/ecom-animation/cover.jpg" alt="ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-COM" loading="eager" decoding="async">
-            <div class="service-simple-overlay"></div>
-            <div class="service-simple-content">
-              <p class="service-simple-benefit">Движение, товарные сцены и понятная визуальная подача</p>
-              <div class="service-simple-footer" data-contact-link="telegram">ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-COM</div>
-            </div>
-          </article>
-
           <article class="service-simple-card" data-service-id="3">
             <img class="service-simple-bg-image" src="public/works/services/smm-content/cover.jpg" alt="SMM И КОНТЕНТ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">Контент-план, тексты, сценарии и регулярные публикации</p>
               <div class="service-simple-footer" data-contact-link="telegram">SMM И КОНТЕНТ</div>
+            </div>
+          </article>
+
+          <article class="service-simple-card" data-service-id="10">
+            <img class="service-simple-bg-image" src="public/works/services/creative-production/dominia-key-visual.png" alt="CREATIVE DIRECTION + AI PRODUCTION" loading="eager" decoding="async">
+            <div class="service-simple-overlay"></div>
+            <div class="service-simple-content">
+              <p class="service-simple-benefit">Визуальный мир, сайт, релиз, мерч и промо-материалы проекта</p>
+              <div class="service-simple-footer" data-contact-link="telegram">CREATIVE DIRECTION + AI PRODUCTION</div>
             </div>
           </article>
         </div>
@@ -384,8 +384,31 @@
             </div>
           </article>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="service-row service-row-small-left">
+  <section class="value-highlight services-value-highlight">
+    <div class="container">
+      <div class="value-card">
+        <div class="value-left">
+          <p class="value-kicker">Экономия бюджета</p>
+          <h3 class="value-title">До 10 раз дешевле традиционного продакшна</h3>
+        </div>
+        <div class="value-right">
+          <p class="value-text">
+            Оптимизируем съемки и постпродакшн с помощью AI-инструментов, сохраняя качество и ускоряя релизы.
+          </p>
+          <a class="btn-primary" data-contact-link="primary" href="https://t.me/Stivanovv">Оставить заявку</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="services services-continuation" aria-label="Дополнительные услуги AI Studio">
+    <div class="container">
+      <div class="services-simple-grid">
+        <div class="service-row service-row-big-left">
           <article class="service-simple-card" data-service-id="6">
             <img class="service-simple-bg-image" src="public/works/services/apps/cover.jpg" alt="СОЗДАНИЕ ПРИЛОЖЕНИЙ С AI ФУНКЦИЯМИ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
@@ -405,7 +428,7 @@
           </article>
         </div>
 
-        <div class="service-row service-row-big-left">
+        <div class="service-row service-row-small-left">
           <article class="service-simple-card" data-service-id="8">
             <img class="service-simple-bg-image" src="public/works/services/websites/cover.jpg" alt="СОЗДАНИЕ САЙТОВ С AI ФУНКЦИЯМИ" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
@@ -426,21 +449,21 @@
         </div>
 
         <div class="service-row service-row-big-left">
-          <article class="service-simple-card" data-service-id="10">
-            <img class="service-simple-bg-image" src="public/works/services/creative-production/dominia-key-visual.png" alt="CREATIVE DIRECTION + AI PRODUCTION" loading="eager" decoding="async">
+          <article class="service-simple-card" data-service-id="1">
+            <img class="service-simple-bg-image" src="public/works/services/ai-photo/cover.jpg" alt="AI ФОТО" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">Визуальный мир, сайт, релиз, мерч и промо-материалы проекта</p>
-              <div class="service-simple-footer" data-contact-link="telegram">CREATIVE DIRECTION + AI PRODUCTION</div>
+              <p class="service-simple-benefit">Визуалы для карточек, баннеров, рекламы и key visual</p>
+              <div class="service-simple-footer" data-contact-link="telegram">AI ФОТО</div>
             </div>
           </article>
 
-          <article class="service-simple-card service-card-agentic" data-service-id="11">
-            <img class="service-simple-bg-image" src="public/works/services/agentic-ai-dev/cover.jpg" alt="ВАЙБКОДИНГ И AGENTIC AI DEV" loading="eager" decoding="async">
+          <article class="service-simple-card service-card-animation" data-service-id="2">
+            <img class="service-simple-bg-image" src="public/works/services/ecom-animation/cover.jpg" alt="ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-COM" loading="eager" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
-              <p class="service-simple-benefit">MVP, SaaS, TMA, AI-боты и стабилизация AI-кода до production</p>
-              <div class="service-simple-footer" data-contact-link="telegram">ВАЙБКОДИНГ И AGENTIC AI DEV</div>
+              <p class="service-simple-benefit">Движение, товарные сцены и понятная визуальная подача</p>
+              <div class="service-simple-footer" data-contact-link="telegram">ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-COM</div>
             </div>
           </article>
         </div>
@@ -544,138 +567,6 @@
     </div>
   </section>
 
-  <section class="value-highlight">
-    <div class="container">
-      <div class="value-card">
-        <div class="value-left">
-          <p class="value-kicker">Экономия бюджета</p>
-          <h3 class="value-title">До 10 раз дешевле традиционного продакшна</h3>
-        </div>
-        <div class="value-right">
-          <p class="value-text">
-            Оптимизируем съемки и постпродакшн с помощью AI-инструментов, сохраняя качество и ускоряя релизы.
-          </p>
-          <a class="btn-primary" data-contact-link="primary" href="https://t.me/Stivanovv">Оставить заявку</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Neon Projects Banner + Reel -->
-  <section id="projects-showreel" class="projects-banner-section">
-    <div class="projects-banner-inner">
-      <div class="projects-banner-text">
-        <h2 class="projects-banner-title">
-          СОЗДАЁМ ПРОЕКТЫ,<br>Которые говорят сами за себя
-        </h2>
-      </div>
-      <!-- Project nav arrows removed (no carousel logic connected) -->
-    </div>
-
-    <div class="projects-reel-grid">
-      <!-- Ряд 1: БОЛЬШОЙ слева, малый справа -->
-      <div class="projects-row projects-row-big-left">
-        <!-- Project 1: AI-видео для бренда (БОЛЬШОЙ) -->
-        <div class="projects-reel-card">
-          <div class="projects-reel-media">
-            <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82.jpg" alt="AI-видео для бренда с атмосферой города" loading="eager" fetchpriority="low" decoding="async">
-          </div>
-          <p class="projects-reel-caption">
-            <span class="projects-reel-title">AI-видео для бренда</span>
-            <span class="projects-reel-note">Задача: атмосферный ролик для запуска</span>
-            <span class="projects-reel-note">Результат: готовый визуал для соцсетей</span>
-          </p>
-        </div>
-
-        <!-- Project 2: Промо-ролик (малый) -->
-        <div class="projects-reel-card">
-          <div class="projects-reel-media">
-            <img class="projects-reel-image" src="public/works/%D1%84%D0%BE%D1%82%D0%BE%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BD%D1%82%20%D0%BE%D0%B1%D0%BB%D0%BE%D0%B6%D0%BA%D0%B0.jpg" alt="Промо-ролик с ИИ-анимацией и графикой" loading="eager" fetchpriority="low" decoding="async">
-          </div>
-          <p class="projects-reel-caption">
-            <span class="projects-reel-title">Промо с AI-анимацией</span>
-            <span class="projects-reel-note">Формат: графика и движение продукта</span>
-            <span class="projects-reel-note">Результат: креатив для digital-рекламы</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Ряд 2: малый слева, БОЛЬШОЙ справа -->
-      <div class="projects-row projects-row-small-left">
-        <!-- Project 3: Креативный клип (малый) -->
-        <div class="projects-reel-card">
-          <div class="projects-reel-media">
-            <img class="projects-reel-image" src="public/works/%D0%B7%D0%B5%D0%BB%D0%B5%D0%BD%D1%8B%D0%B9%20%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD.jpg" alt="Креативный клип в стиле будущего" loading="eager" fetchpriority="low" decoding="async">
-          </div>
-          <p class="projects-reel-caption">
-            <span class="projects-reel-title">Клип в стиле будущего</span>
-            <span class="projects-reel-note">Формат: короткий вертикальный ролик</span>
-            <span class="projects-reel-note">Результат: заметный контент для ленты</span>
-          </p>
-        </div>
-
-        <!-- Project 4: AI-видео для бренда (БОЛЬШОЙ, дубликат для сетки) -->
-        <div class="projects-reel-card">
-          <div class="projects-reel-media">
-            <img class="projects-reel-image" src="public/works/%D0%B1%D0%B0%D0%B1%D0%B0%20%D0%B2%20%D1%86%D0%B8%D1%80%D0%BA%D0%B5.jpg" alt="AI-видео для бренда (вариация сетки)" loading="eager" fetchpriority="low" decoding="async">
-          </div>
-          <p class="projects-reel-caption">
-            <span class="projects-reel-title">Бренд-визуал с AI</span>
-            <span class="projects-reel-note">Задача: запоминающийся образ кампании</span>
-            <span class="projects-reel-note">Результат: кадры для промо и баннеров</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Ряд 3: БОЛЬШОЙ слева, малый справа -->
-      <div class="projects-row projects-row-big-left">
-        <!-- Project 5: Промо-ролик (БОЛЬШОЙ, дубликат) -->
-        <div class="projects-reel-card">
-          <div class="projects-reel-media">
-            <video
-              class="projects-reel-video"
-              muted
-              playsinline
-              preload="none"
-              data-src="public/works/Hyperrealistic_cinematic_video_202511230411.mp4"
-              data-type="video/mp4"
-            ></video>
-            <button class="projects-reel-play" type="button" aria-label="Смотреть видео">
-              <i class="fas fa-play"></i>
-            </button>
-          </div>
-          <p class="projects-reel-caption">
-            <span class="projects-reel-title">Промо с AI-графикой</span>
-            <span class="projects-reel-note">Кликните play: видео со звуком</span>
-            <span class="projects-reel-note">Результат: ролик для презентации</span>
-          </p>
-        </div>
-
-        <!-- Project 6: Креативный клип (малый, дубликат) -->
-        <div class="projects-reel-card">
-          <div class="projects-reel-media">
-            <video
-              class="projects-reel-video"
-              muted
-              playsinline
-              preload="none"
-              data-src="public/works/Oct_25__2209_16s_202510252255_leh5x.mp4"
-              data-type="video/mp4"
-            ></video>
-            <button class="projects-reel-play" type="button" aria-label="Смотреть видео">
-              <i class="fas fa-play"></i>
-            </button>
-          </div>
-          <p class="projects-reel-caption">
-            <span class="projects-reel-title">Видео для соцсетей</span>
-            <span class="projects-reel-note">Кликните play: видео со звуком</span>
-            <span class="projects-reel-note">Результат: короткий ролик под охват</span>
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Primary CTA Section -->
   <section id="cta-apply" class="cta-section">
     <div class="container">
@@ -735,11 +626,11 @@
       <p class="section-description">Наши AI-боты живут в соцсетях и на сайтах проектов, общаются с подписчиками и клиентами, пишут комментарии под постами, отвечают на комментарии и сообщения людей и создают атмосферу будущего, которое уже наступило!</p>
       
       <div class="assistants-grid">
-        <!-- Хипыч AI -->
-        <div class="assistant-card" data-bot="hipych-ai">
-          <img src="public/works/Хипыч карточка.jpg" alt="Хипыч AI" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
+        <!-- Wellness Bro -->
+        <div class="assistant-card" data-bot="health-assistant">
+          <img src="images/wellness-bro-avatar.png" alt="Wellness Bro" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
           <div class="assistant-content">
-            <div class="assistant-footer">🎮 Хипыч AI</div>
+            <div class="assistant-footer">🩺 Wellness Bro</div>
           </div>
         </div>
 
@@ -869,11 +760,11 @@
   <!-- Core scripts (defer для оптимизации загрузки) -->
   <script src="js/scroll-manager.js?v=20251216-reveal-force" defer></script>
   <script src="js/video-optimizer.js?v=20260512-hotfix" defer></script>
-  <script src="js/script.js?v=20260512-conversion" defer></script>
+  <script src="js/script.js?v=20260518-hermes-health" defer></script>
   <script src="js/chat-client.js?v=20260512-productux" defer></script>
-  <script src="js/auth-cart.js?v=20260518-auth-cart" defer></script>
+  <script src="js/auth-cart.js?v=20260518-auth-cart-ui" defer></script>
   <script src="js/services-carousel.js?v=20260511-stylecsp" defer></script>
-  <script src="js/performance-loader.js?v=20260512-hotfix" defer></script>
+  <script src="js/performance-loader.js?v=20260518-wellness-bro-ui" defer></script>
   
   <!-- Snow Effect JS removed (seasonal) -->
 

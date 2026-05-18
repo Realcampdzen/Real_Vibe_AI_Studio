@@ -8,6 +8,8 @@ class GlassUIWidget {
         this.position = options.position || { bottom: '20px', right: '20px' };
         this.welcomeMessage = options.welcomeMessage || `Привет! Я ${this.botName}. На связи.`;
         this.placeholder = options.placeholder || `Напишите сообщение ${this.botName}...`;
+        this.idleStatusText = options.statusText || 'онлайн';
+        this.busyStatusText = options.busyStatusText || 'печатает...';
         this.onSendMessage = options.onSendMessage || null;
         this.onClose = options.onClose || null;
         this.quickQuestions = Array.isArray(options.quickQuestions)
@@ -42,6 +44,7 @@ class GlassUIWidget {
     resolveThemeClass(theme, botName) {
         const name = String(botName || '').toLowerCase();
         const normalizedTheme = String(theme || '').toLowerCase();
+        if (name.includes('здоров') || name.includes('health') || name.includes('wellness') || normalizedTheme === '#14b8a6') return 'glass-theme-health';
         if (name.includes('хипыч') || normalizedTheme === '#3b82f6') return 'glass-theme-hipych';
         if (name.includes('кот') || normalizedTheme === '#f97316') return 'glass-theme-bro-cat';
         if (name.includes('валюш') || normalizedTheme === '#a855f7') return 'glass-theme-valyusha';
@@ -77,14 +80,14 @@ class GlassUIWidget {
     computeWidgetWidth() {
         const viewportWidth = this.getViewportWidth();
         const margin = this.getViewportMargin();
-        return Math.min(380, Math.max(280, viewportWidth - margin * 2));
+        return Math.min(360, Math.max(280, viewportWidth - margin * 2));
     }
 
     computeTopOffset() {
         const viewportHeight = this.getViewportHeight();
         const viewportWidth = this.getViewportWidth();
         const margin = this.getViewportMargin();
-        const desiredHeight = 600;
+        const desiredHeight = 500;
         const maxAllowedHeight = Math.max(320, viewportHeight - margin * 2);
         const effectiveHeight = Math.min(desiredHeight, maxAllowedHeight);
         const centeredTop = Math.max(margin, Math.floor((viewportHeight - effectiveHeight) / 2));
@@ -150,11 +153,11 @@ class GlassUIWidget {
         const headerText = this.createElement('div', 'glass-chat-title');
         headerText.appendChild(this.createElement('div', 'glass-chat-name', this.botName));
         this.statusText = this.createElement('div', 'glass-status-text');
-        this.setStatusText('онлайн');
+        this.setStatusText(this.idleStatusText);
         headerText.appendChild(this.statusText);
         headerInfo.appendChild(headerText);
 
-        const closeButton = this.createElement('button', 'glass-chat-close', 'x');
+        const closeButton = this.createElement('button', 'glass-chat-close', '×');
         closeButton.type = 'button';
         closeButton.setAttribute('aria-label', `Закрыть чат ${this.botName}`);
         closeButton.addEventListener('click', () => {
@@ -263,7 +266,7 @@ class GlassUIWidget {
         if (this.messageInput) this.messageInput.disabled = isBusy;
         if (this.sendButton) this.sendButton.disabled = isBusy;
         if (this.typingIndicator) this.typingIndicator.classList.toggle('is-visible', isBusy);
-        this.setStatusText(isBusy ? 'печатает...' : 'онлайн', isBusy);
+        this.setStatusText(isBusy ? this.busyStatusText : this.idleStatusText, isBusy);
     }
 
     async handleSendMessage(message) {

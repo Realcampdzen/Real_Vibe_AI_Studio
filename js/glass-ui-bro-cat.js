@@ -34,7 +34,7 @@ class GlassUIBroCat {
 
         this.floatingButton.appendChild(this.createButtonBackground());
         this.floatingButton.appendChild(this.createAvatarOrIcon());
-        this.floatingButton.appendChild(this.createBadge('🐱'));
+        this.floatingButton.appendChild(this.createBadge());
 
         this.floatingButton.addEventListener('click', () => {
             this.toggleChat();
@@ -71,10 +71,11 @@ class GlassUIBroCat {
         return icon;
     }
 
-    createBadge(text) {
+    createBadge() {
         const badge = document.createElement('div');
-        badge.className = 'glass-ui-notification-badge glass-cat-notification-badge';
-        badge.textContent = text;
+        badge.className = 'glass-ui-notification-badge glass-online-badge glass-cat-notification-badge';
+        badge.setAttribute('aria-label', 'Кот Бро на связи');
+        badge.title = 'На связи';
         return badge;
     }
 
@@ -83,9 +84,10 @@ class GlassUIBroCat {
             botName: this.name,
             botAvatar: this.avatar,
             themeClass: 'glass-theme-bro-cat',
-            welcomeMessage: 'Мяу! Я Кот Бро, рыжий персона-бот Real Vibe. Показываю, как AI-персонаж может оживить сайт и соцсети. 🐱',
-            placeholder: 'Спроси Кота Бро про персона-ботов...',
-            quickQuestions: ['Сколько стоит?', 'Что вы делаете?', 'Хочу заявку'],
+            statusText: 'Мемный AI-гид',
+            welcomeMessage: 'Мяу! Я Кот Бро 🐱 Показываю, как персона-бот с характером оживляет сайт, отвечает клиентам и доводит до заявки.',
+            placeholder: 'Спросите про персона-бота...',
+            quickQuestions: ['Зачем персона-бот?', 'Примеры', 'Оценить проект'],
             position: { bottom: '200px', right: '20px' },
             onSendMessage: this.handleMessage.bind(this),
             onClose: this.handleClose.bind(this)
@@ -160,6 +162,7 @@ class GlassUIBroCat {
     }
 
     closeOtherChats() {
+        if (window.glassUIHealth?.isVisible) window.glassUIHealth.hideChat();
         if (window.glassUIHipych?.isVisible) window.glassUIHipych.hideChat();
         if (window.glassUIValyusha?.isVisible) window.glassUIValyusha.hideChat();
     }

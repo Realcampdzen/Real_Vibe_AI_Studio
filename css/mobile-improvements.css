@@ -1441,6 +1441,62 @@ img[data-src]::before {
   }
 }
 
+/* Unified tablet/mobile agent launcher sizing. Keep all three bots in one clean row. */
+@media screen and (max-width: 900px) {
+  .glass-ui-health-button,
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button,
+  .glass-ui-valyusha-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+
+  .glass-ui-health-button img,
+  .glass-ui-hipych-button img,
+  .glass-ui-bro-cat-button img,
+  .glass-ui-valyusha-button img {
+    width: var(--agent-avatar-size, 50px) !important;
+    height: var(--agent-avatar-size, 50px) !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    border-radius: 50% !important;
+    position: relative !important;
+    z-index: 2 !important;
+    border: 0 !important;
+    text-indent: 0 !important;
+  }
+
+  .glass-ui-health-button::before,
+  .glass-ui-hipych-button::before,
+  .glass-ui-bro-cat-button::before,
+  .glass-ui-valyusha-button::before {
+    display: block !important;
+    content: '' !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .glass-ui-notification-badge {
+    top: 0 !important;
+    right: 0 !important;
+    width: var(--agent-badge-size, 10px) !important;
+    height: var(--agent-badge-size, 10px) !important;
+    min-width: var(--agent-badge-size, 10px) !important;
+    min-height: var(--agent-badge-size, 10px) !important;
+    z-index: 5 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    text-indent: 0 !important;
+    background: #22c55e !important;
+    border: 2px solid rgba(5, 8, 12, 0.92) !important;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.52) !important;
+    box-sizing: border-box !important;
+    animation: onlineBadgePulse 2s ease-in-out infinite !important;
+  }
+}
+
 /* Final hero layout override: mobile CTA must stay visible after the video controls. */
 @media screen and (max-width: 768px) {
   .hero {

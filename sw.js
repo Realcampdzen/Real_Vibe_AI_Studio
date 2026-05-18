@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.28-20260518-auth-cart';
+const CACHE_VERSION = 'v1.39-20260518-agent-coins';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -18,30 +18,31 @@ const STATIC_ASSETS = [
   withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
-  withBase('/css/style.css?v=20260518-agentic-dev'),
-  withBase('/css/critical-fixes.css'),
+  withBase('/css/style.css?v=20260518-agent-coins'),
+  withBase('/css/critical-fixes.css?v=20260518-agent-coins'),
+  withBase('/css/mobile-improvements.css?v=20260518-agent-coins'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
   withBase('/js/scroll-manager.js'),
   withBase('/js/video-optimizer.js?v=20260512-hotfix'),
-  withBase('/js/script.js?v=20260512-conversion'),
+  withBase('/js/script.js?v=20260518-hermes-health'),
   withBase('/js/page-common.js?v=20260512-productux'),
-  withBase('/js/service-data.js?v=20260518-agentic-dev'),
-  withBase('/js/service-detail-page.js?v=20260518-agentic-dev'),
-  withBase('/js/auth-cart.js?v=20260518-auth-cart'),
+  withBase('/js/service-data.js?v=20260518-agentic-hero'),
+  withBase('/js/service-detail-page.js?v=20260518-agentic-hero'),
+  withBase('/js/auth-cart.js?v=20260518-auth-cart-ui'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),
-  withBase('/js/performance-loader.js?v=20260512-hotfix'),
-  withBase('/js/image-optimizer.js?v=20260512-hotfix'),
-  withBase('/js/mobile-enhancements.js?v=20260512-productux'),
+  withBase('/js/performance-loader.js?v=20260518-wellness-bro-ui'),
+  withBase('/js/image-optimizer.js?v=20260518-wellness-bro-ui'),
+  withBase('/js/mobile-enhancements.js?v=20260518-wellness-bro-ui'),
   withBase('/js/pull-to-refresh.js?v=20260512-productux'),
-  withBase('/js/glass-ui-hipych.js?v=20260512-productux'),
-  withBase('/js/glass-ui-bro-cat.js?v=20260512-productux'),
-  withBase('/js/glass-ui-valyusha.js?v=20260512-productux'),
-  withBase('/chat-components/GlassUIWidget.js?v=20260512-productux'),
-  withBase('/images/hipych-avatar.jpg'),
+  withBase('/js/glass-ui-health.js?v=20260518-wellness-bro-ui'),
+  withBase('/js/glass-ui-bro-cat.js?v=20260518-wellness-bro-ui'),
+  withBase('/js/glass-ui-valyusha.js?v=20260518-wellness-bro-ui'),
+  withBase('/chat-components/GlassUIWidget.js?v=20260518-wellness-bro-ui'),
+  withBase('/images/wellness-bro-avatar.png'),
   withBase('/images/bro-avatar.jpg'),
   withBase('/images/neon-room.png')
 ];

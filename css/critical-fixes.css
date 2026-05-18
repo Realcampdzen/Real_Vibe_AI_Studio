@@ -33,8 +33,10 @@ body .bro-cat-message-avatar.fallback::after {
 /* ===== GLASS UI КНОПКИ - ПРИНУДИТЕЛЬНОЕ ОТОБРАЖЕНИЕ ===== */
 
 /* Принудительное отображение Glass UI кнопок и их содержимого */
+body .glass-ui-health-button,
 body .glass-ui-hipych-button,
-body .glass-ui-bro-cat-button {
+body .glass-ui-bro-cat-button,
+body .glass-ui-valyusha-button {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -44,30 +46,32 @@ body .glass-ui-bro-cat-button {
 }
 
 /* Принудительное отображение изображений в Glass UI кнопках */
+body .glass-ui-health-button img,
 body .glass-ui-hipych-button img,
-body .glass-ui-bro-cat-button img {
+body .glass-ui-bro-cat-button img,
+body .glass-ui-valyusha-button img {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  width: 64px !important;
-  height: 64px !important;
+  width: var(--agent-avatar-size, 60px) !important;
+  height: var(--agent-avatar-size, 60px) !important;
   border-radius: 50% !important;
   object-fit: cover !important;
+  object-position: center center !important;
   position: relative !important;
-  z-index: 10 !important;
-  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  z-index: 2 !important;
+  border: 0 !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
 }
 
-/* Убираем псевдоэлементы из Glass UI кнопок ТОЛЬКО на мобильных устройствах */
-/* НО оставляем ::before для вращающейся границы на десктопе! */
+/* Убираем мобильный tooltip, но оставляем тонкий avatar ring через ::before. */
 @media screen and (max-width: 768px) {
-  body .glass-ui-hipych-button::before,
-  body .glass-ui-bro-cat-button::before,
+  body .glass-ui-health-button::after,
   body .glass-ui-hipych-button::after,
-  body .glass-ui-bro-cat-button::after {
+  body .glass-ui-bro-cat-button::after,
+  body .glass-ui-valyusha-button::after {
     display: none !important;
     content: none !important;
     visibility: hidden !important;
@@ -77,8 +81,10 @@ body .glass-ui-bro-cat-button img {
 
 /* На десктопе разрешаем ::before для вращающейся границы */
 @media screen and (min-width: 769px) {
+  body .glass-ui-health-button::before,
   body .glass-ui-hipych-button::before,
-  body .glass-ui-bro-cat-button::before {
+  body .glass-ui-bro-cat-button::before,
+  body .glass-ui-valyusha-button::before {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -230,27 +236,31 @@ html body .message-avatar.fallback {
 
 /* Если JavaScript не создал кнопки, создаем их через CSS */
 body::after {
-  content: '';
+  content: '🩺';
   position: fixed;
   bottom: 20px;
   right: 20px;
   width: 70px;
   height: 70px;
-  background: linear-gradient(135deg, #3b82f6dd, #3b82f6) url('../images/hipych-avatar.jpg');
-  background-size: 50px 50px, cover;
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
+  background: linear-gradient(135deg, #14b8a6dd, #0f766e);
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 15px 35px rgba(20, 184, 166, 0.4);
   cursor: pointer;
   z-index: 1002;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   visibility: visible;
   opacity: 1;
+  color: #fff;
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 30px;
+  line-height: 1;
 }
 
 /* Скрываем CSS кнопку если есть JavaScript кнопка */
+body:has(.glass-ui-health-button)::after,
 body:has(.glass-ui-hipych-button)::after {
   display: none !important;
 } 

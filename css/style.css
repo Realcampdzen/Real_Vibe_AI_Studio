@@ -2366,6 +2366,7 @@ body::before {
 
 /* Neon projects banner & reel */
 .projects-banner-section {
+  scroll-margin-top: 120px;
   /* Чуть поднимаем блок с примерами работ, уменьшая верхний внутренний отступ */
   padding: var(--section-space-compact) 0;
   /* Делаем фон секции с примерами работ прозрачным,
@@ -2450,6 +2451,8 @@ body::before {
   height: 100%;
   display: flex;
   flex-direction: column;
+  color: inherit;
+  text-decoration: none;
   border-radius: var(--panel-radius);
   overflow: hidden;
   background: var(--panel-bg);
@@ -2462,6 +2465,11 @@ body::before {
   transform: translateY(-6px);
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.82);
   border-color: rgba(255, 255, 255, 0.18);
+}
+
+.projects-service-card:focus-visible {
+  outline: 2px solid var(--accent-contrast, #33f5c8);
+  outline-offset: 5px;
 }
 
 .projects-reel-media {
@@ -3033,6 +3041,27 @@ body::before {
 .services {
   padding: 0 0 var(--section-space-compact);
   margin-top: -8px;
+}
+
+.services-primary {
+  padding-bottom: clamp(2rem, 4vw, 3.25rem);
+}
+
+.services-continuation {
+  padding-top: clamp(2rem, 4vw, 3.25rem);
+  margin-top: 0;
+}
+
+.services-value-highlight {
+  padding: clamp(2.25rem, 5vw, 4rem) 0;
+  background: radial-gradient(circle at 12% 50%, rgba(255, 155, 74, 0.18), transparent 42%),
+              radial-gradient(circle at 88% 40%, rgba(236, 31, 221, 0.16), transparent 44%),
+              linear-gradient(180deg, rgba(0, 0, 0, 0.9), rgba(8, 6, 16, 0.96));
+}
+
+.services-value-highlight .value-card {
+  width: min(calc(100% - 32px), 1180px);
+  margin: 0 auto;
 }
 
 /* Tighter space specifically under the "Услуги AI STUDIO" heading */
@@ -5710,9 +5739,9 @@ article.service-simple-card:has(video.service-simple-bg-video) {
 }
 
 /* Уникальные градиенты для каждого ассистента */
-/* Хипыч - синий градиент */
+/* Агент здоровья - teal градиент */
 .assistant-card:nth-child(1) .assistant-icon {
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  background: linear-gradient(135deg, #14b8a6, #84cc16);
 }
 
 /* Кот Бро - оранжевый градиент (featured) */
@@ -5725,7 +5754,7 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   background: linear-gradient(135deg, #a855f7, #ec4899);
 }
 
-/* Хипыч - Выделенная карточка */
+/* Кот Бро - Выделенная карточка */
 .assistant-card.featured-bot {
   background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(251, 191, 36, 0.15) 100%);
   border: 2px solid rgba(249, 115, 22, 0.4);
@@ -7941,6 +7970,17 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   max-width: 1400px;
 }
 
+body[data-service-slug="agentic-ai-dev"] .service-detail-hero .hero-reel-video {
+  filter: saturate(1.12) contrast(1.08) brightness(1.08);
+}
+
+body[data-service-slug="agentic-ai-dev"] .service-detail-hero .hero-reel-overlay {
+  background:
+    linear-gradient(to bottom, rgba(5, 5, 5, 0.02), rgba(5, 5, 5, 0.22)),
+    radial-gradient(circle at 18% 18%, rgba(255, 155, 74, 0.22), transparent 58%),
+    radial-gradient(circle at 86% 28%, rgba(126, 99, 255, 0.26), transparent 58%);
+}
+
 /* Service Detail CTA Section with Large Green Button */
 .service-detail-cta-section {
   width: 100%;
@@ -9539,6 +9579,7 @@ body.new-year-page {
 
 .glass-ui-widget,
 .glass-ui-widget *,
+.glass-ui-health-button,
 .glass-ui-hipych-button,
 .glass-ui-bro-cat-button,
 .glass-ui-valyusha-button {
@@ -9546,6 +9587,7 @@ body.new-year-page {
   -webkit-backdrop-filter: none !important;
 }
 
+.glass-ui-health-button,
 .glass-ui-hipych-button,
 .glass-ui-bro-cat-button,
 .glass-ui-valyusha-button {
@@ -9554,6 +9596,8 @@ body.new-year-page {
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28) !important;
 }
 
+.glass-ui-health-button::before,
+.glass-ui-health-button::after,
 .glass-ui-hipych-button::before,
 .glass-ui-hipych-button::after,
 .glass-ui-bro-cat-button::before,
@@ -9895,6 +9939,7 @@ body.rv-overlay-open {
 }
 
 .rv-mobile-action {
+  position: relative;
   width: 100%;
   cursor: pointer;
   font: inherit;
@@ -10193,6 +10238,12 @@ body.rv-overlay-open {
     width: 100vw;
   }
 
+  .rv-cart-list {
+    flex: 0 0 auto;
+    overflow: visible;
+    padding-right: 0;
+  }
+
   .rv-cart-item {
     grid-template-columns: 1fr;
   }
@@ -10200,6 +10251,495 @@ body.rv-overlay-open {
   .rv-cart-item-actions {
     width: max-content;
   }
+}
+
+/* Auth + cart UX refresh */
+.rv-nav-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  margin-left: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(6, 7, 8, 0.42);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.rv-nav-action {
+  appearance: none;
+  position: relative;
+  min-width: 44px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-primary);
+  font: 700 12px var(--font-body);
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.rv-nav-action:hover,
+.rv-nav-action:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.rv-nav-action.is-authenticated .rv-nav-action-icon,
+.rv-cart-nav-btn .rv-nav-action-icon {
+  color: var(--accent-contrast);
+}
+
+.rv-nav-action-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.rv-nav-action-label {
+  white-space: nowrap;
+}
+
+.rv-cart-count {
+  top: -5px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid rgba(8, 8, 9, 0.72);
+  background: var(--accent-contrast);
+  box-shadow: 0 8px 18px rgba(51, 245, 200, 0.2);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.rv-mobile-commerce {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.rv-mobile-commerce-btn {
+  position: relative;
+  min-height: 66px;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--text-primary);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.rv-mobile-commerce-btn:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.rv-mobile-commerce-icon {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--accent-contrast);
+}
+
+.rv-mobile-commerce-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.rv-mobile-commerce-title {
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.rv-mobile-commerce-subtitle {
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.rv-mobile-cart-btn .rv-cart-count {
+  top: 8px;
+  right: 8px;
+}
+
+.rv-modal-shell {
+  background: rgba(3, 4, 6, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.rv-auth-panel,
+.rv-cart-panel {
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(8, 9, 11, 0.97);
+}
+
+.rv-auth-panel {
+  width: min(520px, calc(100vw - 32px));
+}
+
+.rv-cart-panel {
+  width: min(500px, 100vw);
+  display: flex;
+  flex-direction: column;
+}
+
+.rv-panel-header {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 20px;
+  padding-right: 42px;
+}
+
+.rv-panel-icon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(51, 245, 200, 0.12);
+  color: var(--accent-contrast);
+  font-size: 18px;
+}
+
+.rv-panel-heading {
+  min-width: 0;
+}
+
+.rv-panel-title {
+  margin: 0;
+}
+
+.rv-panel-desc,
+.rv-cart-summary {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.rv-auth-tabs {
+  padding: 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.rv-auth-tab {
+  border-radius: 6px;
+}
+
+.rv-field-wrap {
+  display: grid;
+  gap: 7px;
+}
+
+.rv-field-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rv-field {
+  border-radius: 8px;
+}
+
+.rv-google-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.rv-account-summary {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.rv-account-avatar {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--accent-contrast);
+}
+
+.rv-cart-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 0 0 18px;
+}
+
+.rv-cart-step {
+  position: relative;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.rv-cart-step.is-active {
+  background: rgba(51, 245, 200, 0.14);
+  color: var(--accent-contrast);
+}
+
+.rv-cart-step.is-complete {
+  color: #050505;
+  background: var(--accent-contrast);
+}
+
+.rv-cart-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+  align-content: start;
+}
+
+.rv-cart-item {
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.rv-cart-item-title {
+  font-size: 15px;
+}
+
+.rv-cart-item-actions {
+  width: max-content;
+  display: inline-grid;
+  grid-template-columns: 36px 32px 36px 36px;
+}
+
+.rv-stepper-btn,
+.rv-remove-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.rv-remove-btn {
+  color: #ffb4a7;
+}
+
+.rv-cart-checkout {
+  flex: 0 0 auto;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rv-checkout-heading {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.rv-checkout-title,
+.rv-login-title,
+.rv-empty-title,
+.rv-success-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.rv-login-required,
+.rv-empty-state,
+.rv-order-success {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.rv-login-icon,
+.rv-empty-icon,
+.rv-success-icon {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(51, 245, 200, 0.12);
+  color: var(--accent-contrast);
+}
+
+.rv-success-icon {
+  background: var(--accent-contrast);
+  color: #050505;
+}
+
+.rv-empty-link {
+  width: max-content;
+  max-width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .rv-nav-action-label {
+    display: none;
+  }
+
+  .rv-nav-action {
+    width: 40px;
+    min-width: 40px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .rv-nav-cluster {
+    gap: 0;
+    padding: 0;
+    margin-left: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .rv-account-nav-btn {
+    display: none;
+  }
+
+  .rv-cart-nav-btn {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .rv-cart-nav-btn .rv-nav-action-icon {
+    font-size: 14px;
+  }
+
+  .rv-auth-modal {
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .rv-auth-panel {
+    width: 100%;
+    max-height: calc(100svh - 24px);
+  }
+
+  .rv-cart-panel {
+    width: 100vw;
+  }
+
+  .rv-cart-list {
+    flex: 0 0 auto;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  body.rv-overlay-open .rv-toast {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
+  }
+}
+
+@media (max-width: 520px) {
+  .rv-mobile-commerce {
+    grid-template-columns: 1fr;
+    padding-inline: 16px;
+  }
+
+  .rv-panel-header {
+    grid-template-columns: 38px 1fr;
+    gap: 12px;
+    padding-right: 36px;
+  }
+
+  .rv-panel-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .rv-cart-panel,
+  .rv-auth-panel {
+    padding: 22px 16px;
+  }
+
+  .rv-cart-steps {
+    gap: 4px;
+  }
+
+  .rv-cart-step {
+    font-size: 10px;
+  }
+}
+
+.redirect-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #050505;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+.redirect-page-main {
+  padding: 24px;
+  text-align: center;
+}
+
+.redirect-page-main a {
+  color: var(--accent-contrast, #33f5c8);
 }
 
 /* Glass chat widgets */
@@ -10230,8 +10770,16 @@ body.rv-overlay-open {
 
 .glass-ui-floating-button.is-suppressed,
 .glass-ui-widget.is-suppressed {
-  visibility: hidden;
-  pointer-events: none;
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.mobile-nav-open .glass-ui-floating-button,
+body.mobile-nav-open .glass-ui-widget {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .glass-ui-floating-button::before {
@@ -10283,7 +10831,7 @@ body.rv-overlay-open {
   border-radius: 50%;
   object-fit: cover;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
@@ -10296,27 +10844,45 @@ body.rv-overlay-open {
 
 .glass-ui-notification-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 20px;
-  height: 20px;
+  top: -2px;
+  right: -2px;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  line-height: 20px;
+  font-size: 0;
+  line-height: 1;
   font-weight: 700;
   color: #fff;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 0 6px var(--glass-badge-shadow);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-  background: var(--glass-badge-bg);
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  border: 2px solid rgba(8, 12, 16, 0.96);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.45), 0 0 12px rgba(34, 197, 94, 0.55);
+  background: #22c55e;
+  z-index: 5;
+  text-indent: 0 !important;
+  animation: onlineBadgePulse 2s ease-in-out infinite !important;
+}
+
+.glass-ui-floating-button .glass-online-badge {
+  animation: onlineBadgePulse 2s ease-in-out infinite !important;
+  transform-origin: center;
 }
 
 .glass-ui-notification-badge.is-hidden {
   display: none;
+}
+
+.glass-ui-health-button {
+  bottom: 20px;
+  --glass-button-z: 1002;
+  --glass-button-bg: linear-gradient(135deg, rgba(20, 184, 166, 0.9), #0f766e);
+  --glass-button-ring: linear-gradient(45deg, #14b8a6, transparent, #84cc16);
+  --glass-button-shadow: 0 10px 24px rgba(20, 184, 166, 0.32), inset 0 2px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  --glass-button-shadow-hover: 0 14px 30px rgba(20, 184, 166, 0.42), 0 0 18px rgba(132, 204, 22, 0.2), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  --glass-badge-bg: linear-gradient(135deg, #14b8a6, #84cc16);
+  --glass-badge-shadow: rgba(20, 184, 166, 0.45);
 }
 
 .glass-ui-hipych-button {
@@ -10383,19 +10949,19 @@ body.rv-overlay-open {
   left: auto;
   display: flex;
   flex-direction: column;
-  width: 380px;
-  height: 600px;
+  width: 360px;
+  height: 540px;
   max-width: calc(100vw - 40px);
   max-height: calc(100vh - 80px);
   overflow: hidden;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(30px) scale(0.9);
+  transform: translateY(18px) scale(0.96);
   transition: opacity 0.24s ease, transform 0.24s ease, visibility 0.24s ease;
-  background: rgba(18, 20, 26, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 24px;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+  background: rgba(12, 14, 18, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  box-shadow: 0 22px 58px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: normal;
   text-align: left;
@@ -10416,6 +10982,13 @@ body.rv-overlay-open {
 .glass-ui-widget.is-busy .glass-message-input,
 .glass-ui-widget.is-busy .glass-send-button {
   opacity: 0.68;
+}
+
+.glass-theme-health {
+  --glass-theme: #14b8a6;
+  --glass-theme-soft: rgba(20, 184, 166, 0.67);
+  --glass-theme-strong: rgba(15, 118, 110, 0.87);
+  --glass-theme-shadow: rgba(20, 184, 166, 0.28);
 }
 
 .glass-theme-hipych {
@@ -10452,7 +11025,8 @@ body.rv-overlay-open {
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
-  padding: 20px;
+  min-height: 72px;
+  padding: 14px 16px;
   color: #fff;
   background: linear-gradient(135deg, var(--glass-theme-strong), var(--glass-theme-soft));
 }
@@ -10469,14 +11043,14 @@ body.rv-overlay-open {
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   min-width: 0;
 }
 
 .glass-chat-avatar-wrap {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   flex: 0 0 auto;
 }
 
@@ -10499,11 +11073,14 @@ body.rv-overlay-open {
 .glass-chat-name {
   font-weight: 700;
   font-size: 16px;
+  line-height: 1.12;
 }
 
 .glass-status-text {
+  margin-top: 4px;
   font-size: 12px;
-  opacity: 0.9;
+  line-height: 1.15;
+  opacity: 0.88;
 }
 
 .status-indicator {
@@ -10527,14 +11104,15 @@ body.rv-overlay-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   padding: 8px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  font-size: 16px;
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
 }
@@ -10548,15 +11126,15 @@ body.rv-overlay-open {
   position: relative;
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  padding: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.012) 100%);
 }
 
 .glass-messages-bg-decor {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  opacity: 0;
 }
 
 .glass-messages-list {
@@ -10587,28 +11165,29 @@ body.rv-overlay-open {
 }
 
 .glass-input-area {
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 14px 16px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 .glass-quick-questions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.875rem;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
 }
 
 .glass-quick-question {
-  min-height: 34px;
-  padding: 0.45rem 0.72rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
+  min-height: 32px;
+  padding: 0.42rem 0.68rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.065);
   color: #ffffff;
   font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.76rem;
+  font-weight: 650;
+  line-height: 1.1;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
@@ -10623,11 +11202,11 @@ body.rv-overlay-open {
 .glass-input-container {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px;
-  border-radius: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
+  gap: 8px;
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.07);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -10644,9 +11223,9 @@ body.rv-overlay-open {
 .glass-message-input {
   flex: 1;
   min-width: 0;
-  padding: 12px 16px;
+  padding: 10px 12px;
   border: none;
-  border-radius: 20px;
+  border-radius: 12px;
   outline: none;
   font-size: 14px;
   background: transparent;
@@ -10661,8 +11240,8 @@ body.rv-overlay-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   flex: 0 0 auto;
   border: none;
   border-radius: 50%;
@@ -10685,8 +11264,8 @@ body.rv-overlay-open {
 
 .glass-message {
   display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 12px;
   animation: messageSlideIn 0.32s ease-out both;
 }
 
@@ -10709,20 +11288,21 @@ body.rv-overlay-open {
 }
 
 .glass-message-bubble {
-  max-width: 75%;
-  padding: 14px 18px;
-  border-radius: 20px 20px 20px 6px;
+  max-width: 82%;
+  padding: 11px 13px;
+  border-radius: 14px 14px 14px 5px;
   color: #fff;
   word-wrap: break-word;
   white-space: pre-wrap;
-  line-height: 1.5;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  line-height: 1.42;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: none;
+  font-size: 14px;
 }
 
 .user-message .glass-message-bubble {
-  border-radius: 20px 20px 6px 20px;
+  border-radius: 14px 14px 5px 14px;
   background: linear-gradient(135deg, var(--glass-theme-strong), var(--glass-theme));
   border: none;
   box-shadow: 0 4px 15px var(--glass-theme-shadow);
@@ -10797,39 +11377,90 @@ body.rv-overlay-open {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes onlineBadgePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.86); opacity: 0.82; }
+}
+
+.glass-ui-floating-button.is-active {
+  z-index: 1008 !important;
+}
+
+@media (min-width: 769px) {
+  .glass-ui-health-button,
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button,
+  .glass-ui-valyusha-button {
+    bottom: 20px !important;
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  .glass-ui-floating-button .glass-ui-floating-avatar {
+    width: 64px !important;
+    height: 64px !important;
+    z-index: 2 !important;
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button {
+    right: 20px !important;
+  }
+
+  .glass-ui-bro-cat-button {
+    right: 102px !important;
+  }
+
+  .glass-ui-valyusha-button {
+    right: 184px !important;
+    border-width: 1px !important;
+  }
+
+  .glass-ui-valyusha-button .glass-ui-floating-avatar {
+    width: 64px !important;
+    height: 64px !important;
+    border-width: 1px !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
+}
+
 @media (max-width: 768px) {
   .glass-ui-floating-button {
     right: 10px !important;
-    width: 48px !important;
-    height: 48px !important;
+    width: 58px !important;
+    height: 58px !important;
   }
 
   .glass-ui-floating-avatar {
-    width: 42px !important;
-    height: 42px !important;
+    width: 52px !important;
+    height: 52px !important;
+    z-index: 2 !important;
   }
 
   .glass-ui-notification-badge {
-    top: -3px;
-    right: -3px;
+    top: -2px;
+    right: -2px;
     width: 16px;
     height: 16px;
-    font-size: 10px;
-    line-height: 16px;
+    font-size: 0;
+    line-height: 1;
+    z-index: 5;
   }
 
+  .glass-ui-health-button,
   .glass-ui-hipych-button {
     bottom: 12px !important;
     right: 10px !important;
   }
 
   .glass-ui-bro-cat-button {
-    right: 66px !important;
+    right: 76px !important;
     bottom: 12px !important;
   }
 
   .glass-ui-valyusha-button {
-    right: 122px !important;
+    right: 142px !important;
     bottom: 12px !important;
   }
 
@@ -10853,27 +11484,28 @@ body.rv-overlay-open {
 @media (max-width: 480px) {
   .glass-ui-floating-button {
     right: 8px !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .glass-ui-floating-avatar {
     width: 44px !important;
     height: 44px !important;
   }
 
-  .glass-ui-floating-avatar {
-    width: 38px !important;
-    height: 38px !important;
-  }
-
+  .glass-ui-health-button,
   .glass-ui-hipych-button {
     bottom: 12px !important;
     right: 8px !important;
   }
 
   .glass-ui-bro-cat-button {
-    right: 60px !important;
+    right: 66px !important;
     bottom: 12px !important;
   }
 
   .glass-ui-valyusha-button {
-    right: 112px !important;
+    right: 124px !important;
     bottom: 12px !important;
   }
 
@@ -10887,6 +11519,226 @@ body.rv-overlay-open {
   .glass-messages-area,
   .glass-input-area {
     padding: 12px;
+  }
+}
+
+/* Compact agent avatar coins: final launcher override */
+.glass-ui-health-button,
+.glass-ui-hipych-button,
+.glass-ui-bro-cat-button,
+.glass-ui-valyusha-button {
+  --agent-bubble-size: 64px;
+  --agent-avatar-size: 60px;
+  --agent-badge-size: 12px;
+  position: fixed !important;
+  bottom: 20px !important;
+  width: var(--agent-bubble-size) !important;
+  height: var(--agent-bubble-size) !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+}
+
+.glass-ui-health-button {
+  right: 20px !important;
+  --agent-ring: conic-gradient(from 210deg, rgba(20, 184, 166, 0.98), rgba(255, 255, 255, 0.86), rgba(132, 204, 22, 0.95), rgba(20, 184, 166, 0.98));
+  --agent-ring-shadow: rgba(20, 184, 166, 0.42);
+}
+
+.glass-ui-hipych-button {
+  right: 20px !important;
+  --agent-ring: conic-gradient(from 210deg, rgba(59, 130, 246, 0.98), rgba(255, 255, 255, 0.86), rgba(96, 165, 250, 0.95), rgba(59, 130, 246, 0.98));
+  --agent-ring-shadow: rgba(59, 130, 246, 0.38);
+}
+
+.glass-ui-bro-cat-button {
+  right: 76px !important;
+  --agent-ring: conic-gradient(from 210deg, rgba(249, 115, 22, 0.98), rgba(255, 255, 255, 0.9), rgba(251, 191, 36, 0.95), rgba(249, 115, 22, 0.98));
+  --agent-ring-shadow: rgba(249, 115, 22, 0.42);
+}
+
+.glass-ui-valyusha-button {
+  right: 132px !important;
+  --agent-ring: conic-gradient(from 210deg, rgba(168, 85, 247, 0.98), rgba(255, 255, 255, 0.9), rgba(236, 72, 153, 0.95), rgba(168, 85, 247, 0.98));
+  --agent-ring-shadow: rgba(236, 72, 153, 0.42);
+}
+
+.glass-ui-health-button::before,
+.glass-ui-hipych-button::before,
+.glass-ui-bro-cat-button::before,
+.glass-ui-valyusha-button::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  border-radius: 50% !important;
+  background: var(--agent-ring) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 0 14px var(--agent-ring-shadow) !important;
+  opacity: 1 !important;
+  z-index: 0 !important;
+  animation: none !important;
+  filter: none !important;
+  pointer-events: none !important;
+}
+
+.glass-ui-floating-button-bg {
+  inset: 2px !important;
+  z-index: 1 !important;
+  border-radius: 50% !important;
+  background: rgba(5, 8, 12, 0.22) !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+}
+
+.glass-ui-health-button .glass-ui-floating-avatar,
+.glass-ui-hipych-button .glass-ui-floating-avatar,
+.glass-ui-bro-cat-button .glass-ui-floating-avatar,
+.glass-ui-valyusha-button .glass-ui-floating-avatar {
+  width: var(--agent-avatar-size) !important;
+  height: var(--agent-avatar-size) !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  position: relative !important;
+  z-index: 2 !important;
+  display: block !important;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.28) !important;
+}
+
+.glass-ui-health-button .glass-ui-notification-badge,
+.glass-ui-hipych-button .glass-ui-notification-badge,
+.glass-ui-bro-cat-button .glass-ui-notification-badge,
+.glass-ui-valyusha-button .glass-ui-notification-badge {
+  top: 0 !important;
+  right: 0 !important;
+  width: var(--agent-badge-size) !important;
+  height: var(--agent-badge-size) !important;
+  min-width: var(--agent-badge-size) !important;
+  min-height: var(--agent-badge-size) !important;
+  border: 2px solid rgba(5, 8, 12, 0.92) !important;
+  border-radius: 50% !important;
+  background: #22c55e !important;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.52) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: 0 !important;
+  overflow: hidden !important;
+  z-index: 4 !important;
+}
+
+.glass-ui-health-button::after,
+.glass-ui-hipych-button::after,
+.glass-ui-bro-cat-button::after,
+.glass-ui-valyusha-button::after {
+  content: attr(data-tooltip) !important;
+  position: absolute !important;
+  right: calc(var(--agent-bubble-size) + 12px) !important;
+  top: 50% !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  max-width: 220px !important;
+  padding: 8px 10px !important;
+  border-radius: 10px !important;
+  background: rgba(10, 10, 10, 0.9) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.16s ease, transform 0.16s ease !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
+  filter: none !important;
+  z-index: 5 !important;
+}
+
+.glass-ui-health-button:hover::after,
+.glass-ui-hipych-button:hover::after,
+.glass-ui-bro-cat-button:hover::after,
+.glass-ui-valyusha-button:hover::after {
+  opacity: 1 !important;
+  transform: translate(-4px, -50%) !important;
+}
+
+.glass-ui-health-button:hover,
+.glass-ui-hipych-button:hover,
+.glass-ui-bro-cat-button:hover,
+.glass-ui-valyusha-button:hover,
+.glass-ui-health-button.is-active,
+.glass-ui-hipych-button.is-active,
+.glass-ui-bro-cat-button.is-active,
+.glass-ui-valyusha-button.is-active {
+  transform: translateY(-2px) scale(1.025) !important;
+  filter: brightness(1.04) !important;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3) !important;
+}
+
+@media (max-width: 768px) {
+  .glass-ui-health-button,
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button,
+  .glass-ui-valyusha-button {
+    --agent-bubble-size: 54px;
+    --agent-avatar-size: 50px;
+    --agent-badge-size: 10px;
+    bottom: 12px !important;
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button {
+    right: 10px !important;
+  }
+
+  .glass-ui-bro-cat-button {
+    right: 58px !important;
+  }
+
+  .glass-ui-valyusha-button {
+    right: 106px !important;
+  }
+
+  .glass-ui-health-button::after,
+  .glass-ui-hipych-button::after,
+  .glass-ui-bro-cat-button::after,
+  .glass-ui-valyusha-button::after {
+    display: none !important;
+    content: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-ui-health-button,
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button,
+  .glass-ui-valyusha-button {
+    --agent-bubble-size: 48px;
+    --agent-avatar-size: 44px;
+    --agent-badge-size: 10px;
+    bottom: 12px !important;
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button {
+    right: 8px !important;
+  }
+
+  .glass-ui-bro-cat-button {
+    right: 50px !important;
+  }
+
+  .glass-ui-valyusha-button {
+    right: 92px !important;
   }
 }
 

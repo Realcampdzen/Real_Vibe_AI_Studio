@@ -328,9 +328,11 @@
     const video = createElement('video', {
       className: 'service-detail-media-video',
       attrs: {
-        src: item.src,
+        'data-managed-video': '',
+        'data-desktop-src': item.src,
+        'data-type': item.type || 'video/mp4',
         poster: isSafeAssetUrl(item.poster) ? item.poster : undefined,
-        preload: 'metadata',
+        preload: 'none',
         playsinline: '',
         controls: '',
         'data-autoplay-desktop': 'false',
@@ -579,6 +581,8 @@
   }
 
   function renderServiceDetail(service) {
+    document.body.dataset.serviceSlug = service.slug || '';
+
     renderHero(service);
     renderDetailMedia(service);
     renderRelatedServices(service);

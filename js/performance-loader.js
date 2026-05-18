@@ -108,7 +108,7 @@
     lazyImages();
     // video-optimizer.js загружается напрямую в index.html, не нужно загружать здесь
     schedule(() => {
-      loadScript('js/image-optimizer.js?v=20260512-hotfix');
+      loadScript('js/image-optimizer.js?v=20260518-wellness-bro-ui');
       loadScript('js/skeleton-loader.js');
     }, 120);
   }
@@ -124,7 +124,7 @@
 
     // Mobile helpers
     if (isMobile) {
-      schedule(() => loadScript('js/mobile-enhancements.js?v=20260512-productux'), 220);
+      schedule(() => loadScript('js/mobile-enhancements.js?v=20260518-wellness-bro-ui'), 220);
       schedule(() => loadScript('js/pull-to-refresh.js?v=20260512-productux'), 260);
       schedule(() => loadScript('js/haptic-feedback.js'), 300);
     }
@@ -136,12 +136,12 @@
         : loadScript('js/chat-client.js?v=20260512-productux');
 
       chatReady
-        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260512-productux'))
+        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260518-wellness-bro-ui'))
         .then(() =>
           Promise.all([
-            loadScript('js/glass-ui-hipych.js?v=20260512-productux'),
-            loadScript('js/glass-ui-bro-cat.js?v=20260512-productux'),
-            loadScript('js/glass-ui-valyusha.js?v=20260512-productux'),
+            loadScript('js/glass-ui-health.js?v=20260518-wellness-bro-ui'),
+            loadScript('js/glass-ui-bro-cat.js?v=20260518-wellness-bro-ui'),
+            loadScript('js/glass-ui-valyusha.js?v=20260518-wellness-bro-ui'),
           ])
         )
         .catch((err) => {

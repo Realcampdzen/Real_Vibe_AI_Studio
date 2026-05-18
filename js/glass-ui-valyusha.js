@@ -34,7 +34,7 @@ class GlassUIValyusha {
 
         this.floatingButton.appendChild(this.createButtonBackground());
         this.floatingButton.appendChild(this.createAvatarOrIcon());
-        this.floatingButton.appendChild(this.createBadge('✨'));
+        this.floatingButton.appendChild(this.createBadge());
 
         this.floatingButton.addEventListener('click', () => {
             this.toggleChat();
@@ -71,10 +71,11 @@ class GlassUIValyusha {
         return icon;
     }
 
-    createBadge(text) {
+    createBadge() {
         const badge = document.createElement('div');
-        badge.className = 'glass-ui-notification-badge glass-valyusha-notification-badge';
-        badge.textContent = text;
+        badge.className = 'glass-ui-notification-badge glass-online-badge glass-valyusha-notification-badge';
+        badge.setAttribute('aria-label', 'НейроVалюша на связи');
+        badge.title = 'На связи';
         return badge;
     }
 
@@ -83,9 +84,10 @@ class GlassUIValyusha {
             botName: this.name,
             botAvatar: this.avatar,
             themeClass: 'glass-theme-valyusha',
-            welcomeMessage: 'Привет! Я НейроВалюша, дружелюбная AI-вожатая Реального Лагеря. Помогаю говорить о развитии, 4К навыках и живых персона-ботах. 💜',
-            placeholder: 'Спроси НейроВалюшу про лагерь или AI...',
-            quickQuestions: ['Сколько стоит?', 'Что вы делаете?', 'Хочу заявку'],
+            statusText: 'AI-вожатая',
+            welcomeMessage: 'Привет! Я НейроВалюша 💜 Помогаю сообществам говорить живым голосом: поддержка, развитие, контент и тёплая коммуникация вокруг проекта.',
+            placeholder: 'Спросите про AI для сообщества...',
+            quickQuestions: ['Оживить сообщество', 'AI для лагеря', 'Контент-план', 'Оценить бота'],
             position: { bottom: '280px', right: '20px' },
             onSendMessage: this.handleMessage.bind(this),
             onClose: this.hideChat.bind(this)
@@ -149,6 +151,7 @@ class GlassUIValyusha {
 
     closeOtherChats() {
         if (window.glassUIBroCat?.isVisible) window.glassUIBroCat.hideChat();
+        if (window.glassUIHealth?.isVisible) window.glassUIHealth.hideChat();
         if (window.glassUIHipych?.isVisible) window.glassUIHipych.hideChat();
     }
 
