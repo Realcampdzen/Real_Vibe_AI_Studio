@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.40-20260518-service-funnel';
+const CACHE_VERSION = 'v1.42-20260518-social-preview';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -18,9 +18,10 @@ const STATIC_ASSETS = [
   withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
-  withBase('/css/style.css?v=20260518-service-funnel'),
-  withBase('/css/critical-fixes.css?v=20260518-service-funnel'),
-  withBase('/css/mobile-improvements.css?v=20260518-service-funnel'),
+  withBase('/public/og-real-vibe-ai-studio.jpg'),
+  withBase('/css/style.css?v=20260518-social-preview'),
+  withBase('/css/critical-fixes.css?v=20260518-social-preview'),
+  withBase('/css/mobile-improvements.css?v=20260518-social-preview'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
