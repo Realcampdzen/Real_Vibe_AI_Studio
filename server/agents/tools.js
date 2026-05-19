@@ -1,166 +1,167 @@
 /**
  * Данные студии — услуги, портфолио, цены.
- * Единый источник правды для function calling.
+ * Function calling берёт актуальный каталог из server/services/catalog.js.
  */
+import {
+  getCatalogService,
+  listCatalogOffers,
+  listCatalogServices,
+  searchCatalogServices,
+} from '../services/catalog.js';
 
-export const SERVICES = [
-  {
-    id: 'ai-video',
-    name: 'AI-видео',
-    emoji: '🎬',
-    description: 'Продающие рекламные ролики, сгенерированные нейросетями. Рилсы, шортсы, промо.',
-    priceFrom: 5000,
-    priceTo: 50000,
-    currency: 'RUB',
-    timeline: '3-7 дней',
-    examples: ['Промо-ролик для кофейни', 'Рилс для фитнес-клуба', 'Product-видео для маркетплейса'],
-  },
-  {
-    id: 'ai-photo',
-    name: 'AI-фото',
-    emoji: '📸',
-    description: 'Фотоконтент для брендов и соцсетей. Продуктовая съёмка, лайфстайл, обложки.',
-    priceFrom: 1700,
-    priceTo: 15000,
-    currency: 'RUB',
-    timeline: '1-3 дня',
-    examples: ['Продуктовые фото для каталога', 'Обложки для соцсетей', 'Баннеры для рекламы'],
-  },
-  {
-    id: 'ai-bots',
-    name: 'AI-боты (персона-боты)',
-    emoji: '🤖',
-    description: 'Telegram/VK боты с уникальным характером и AI под капотом. Автокомментирование, ответы, модерация.',
-    priceFrom: 12000,
-    priceTo: 80000,
-    currency: 'RUB',
-    timeline: '5-14 дней',
-    examples: ['Кот Бро — маскот для VK группы', 'Wellness Bro — безопасный health-ассистент', 'НейроВалюша — педагогический бот'],
-  },
-  {
-    id: 'custom-gpts',
-    name: 'Кастомные GPTs',
-    emoji: '🧠',
-    description: 'Персональные GPT-ассистенты под задачи бизнеса. Обученные на ваших данных.',
-    priceFrom: 7000,
-    priceTo: 35000,
-    currency: 'RUB',
-    timeline: '3-7 дней',
-    examples: ['GPT для анализа медданных', 'GPT-консультант по недвижимости', 'GPT для техподдержки'],
-  },
-  {
-    id: 'websites',
-    name: 'Создание сайтов',
-    emoji: '🌐',
-    description: 'Сайты с AI-функциями. Лендинги, витрины, веб-приложения. Вайбкодинг.',
-    priceFrom: 15000,
-    priceTo: 100000,
-    currency: 'RUB',
-    timeline: '7-21 день',
-    examples: ['Лендинг для студии', 'Сайт-визитка с AI-чатом', 'Веб-приложение с дашбордом'],
-  },
-  {
-    id: 'ai-animation',
-    name: 'AI-анимация',
-    emoji: '🎞',
-    description: 'Инфографика и анимация для e-commerce и соцсетей.',
-    priceFrom: 3000,
-    priceTo: 30000,
-    currency: 'RUB',
-    timeline: '3-7 дней',
-    examples: ['Анимированная инфографика', 'Motion-дизайн для рилс', 'Промо-анимация'],
-  },
-  {
-    id: 'ai-voice',
-    name: 'Озвучка и саунддизайн',
-    emoji: '🎤',
-    description: 'AI-озвучка, музыка, звуковое оформление для видео и подкастов.',
-    priceFrom: 2000,
-    priceTo: 20000,
-    currency: 'RUB',
-    timeline: '1-5 дней',
-    examples: ['Озвучка промо-ролика', 'Подкаст-озвучка', 'Звуковое оформление рилс'],
-  },
-  {
-    id: 'smm',
-    name: 'SMM с AI',
-    emoji: '📱',
-    description: 'Ведение соцсетей с AI-контентом. Планирование, генерация, публикация.',
-    priceFrom: 15000,
-    priceTo: 60000,
-    currency: 'RUB',
-    timeline: 'ежемесячно',
-    examples: ['Ведение Instagram', 'Контент для VK группы', 'TikTok-стратегия'],
-  },
-];
+const LEGACY_SERVICE_ALIASES = {
+  'ai-bots': 'bots',
+  'custom-gpts': 'ai-agents',
+  'ai-animation': 'ecom-animation',
+  'ai-voice': 'sound-design',
+  smm: 'smm-content',
+};
+
+const SERVICE_ID_HINT = [
+  'ai-video',
+  'agentic-ai-dev',
+  'smm-content',
+  'creative-production',
+  'music',
+  'sound-design',
+  'apps',
+  'bots',
+  'websites',
+  'ai-agents',
+  'ai-photo',
+  'ecom-animation',
+].join(', ');
 
 export const PORTFOLIO_ITEMS = [
-  { category: 'ai-bots', title: 'Кот Бро', description: 'Маскот VK-группы по аренде недвижимости. Автокомментирование, общение с подписчиками.', link: '#assistants' },
-  { category: 'ai-bots', title: 'Wellness Bro', description: 'Публичный health-ассистент: анализы, дневники, питание, напоминания и поддержка без диагнозов, назначений и хранения текста чатов.', link: '#assistants' },
-  { category: 'ai-bots', title: 'НейроВалюша', description: 'Педагогический бот для детского лагеря. VK + Telegram + приложение.', link: '#assistants' },
-  { category: 'ai-video', title: 'Промо-ролики', description: 'AI-сгенерированные рекламные видео для бизнеса.', link: '#projects-showreel' },
-  { category: 'ai-photo', title: 'AI-фотоконтент', description: 'Обложки, баннеры, продуктовые фото.', link: '#projects-showreel' },
-  { category: 'websites', title: 'Real Vibe Studio', description: 'Этот самый сайт — витрина с AI-чат-ботами.', link: '/' },
+  {
+    category: 'bots',
+    title: 'Кот Бро',
+    description: 'Маскот и персона-бот для VK-группы: комментирует посты, поддерживает вайб сообщества и демонстрирует брендовый AI-персонаж.',
+    link: '#assistants',
+  },
+  {
+    category: 'ai-agents',
+    title: 'Wellness Bro',
+    description: 'Публичный health-ассистент: анализы, дневники, питание, напоминания и поддержка без диагнозов, назначений и хранения текста чатов.',
+    link: '#assistants',
+  },
+  {
+    category: 'bots',
+    title: 'НейроВалюша',
+    description: 'Педагогический AI-бот для лагеря: общается с детьми, объясняет систему значков и оживляет соцсети.',
+    link: '#assistants',
+  },
+  {
+    category: 'ai-video',
+    title: 'AI-видео и рекламные рилсы',
+    description: 'Премиальные AI-ролики для рекламы, Reels, промо и запусков продукта.',
+    link: '/service-detail.html?id=0',
+  },
+  {
+    category: 'agentic-ai-dev',
+    title: 'Hermes / Agent OS',
+    description: 'Мультиагентная рабочая среда с задачами, ролями, workflow, библиотекой знаний и approval-gated процессами.',
+    link: '/service-detail.html?id=11',
+  },
+  {
+    category: 'websites',
+    title: 'Real Vibe Studio',
+    description: 'Этот сайт как витрина: сервисный каталог, AI-ассистенты, заявки, корзина и серверный API.',
+    link: '/',
+  },
 ];
 
+function normalizeServiceId(value) {
+  const key = String(value || '').trim().toLowerCase();
+  return LEGACY_SERVICE_ALIASES[key] || key;
+}
+
+function resolveCatalogService(serviceId) {
+  const normalized = normalizeServiceId(serviceId);
+  if (!normalized) return null;
+  return getCatalogService(normalized) || searchCatalogServices(normalized, { limit: 1 })[0] || null;
+}
+
 /**
- * Tool: Получить список услуг студии.
+ * Tool: получить список услуг студии.
  */
 export function getServices({ category } = {}) {
-  let services = SERVICES;
-  if (category) {
-    services = services.filter(s => s.id === category || s.name.toLowerCase().includes(category.toLowerCase()));
-  }
-  return services.map(s => ({
-    id: s.id,
-    name: `${s.emoji} ${s.name}`,
-    description: s.description,
-    price: `от ${s.priceFrom.toLocaleString('ru-RU')}₽`,
-    timeline: s.timeline,
+  const normalizedCategory = normalizeServiceId(category);
+  const services = normalizedCategory
+    ? searchCatalogServices(normalizedCategory)
+    : listCatalogServices();
+
+  return services.map((service) => ({
+    id: service.id,
+    slug: service.slug,
+    title: service.title,
+    description: service.summary,
+    price: service.priceLabel,
+    priceNote: service.priceNote,
+    url: service.url,
   }));
 }
 
 /**
- * Tool: Получить портфолио по категории.
+ * Tool: получить портфолио по категории.
  */
 export function getPortfolio({ category } = {}) {
+  const normalizedCategory = normalizeServiceId(category);
   let items = PORTFOLIO_ITEMS;
-  if (category) {
-    items = items.filter(p => p.category === category || p.title.toLowerCase().includes(category.toLowerCase()));
+
+  if (normalizedCategory) {
+    const query = normalizedCategory.toLowerCase();
+    items = items.filter((item) => (
+      item.category === query
+      || item.title.toLowerCase().includes(query)
+      || item.description.toLowerCase().includes(query)
+    ));
   }
+
   if (items.length === 0) {
-    return { message: 'Портфолио по этой категории пока нет. Но мы можем создать проект именно для вас!' };
+    return { message: 'Портфолио по этой категории пока нет в публичной витрине. Но можно обсудить проект под вашу задачу с @Stivanovv.' };
   }
   return items;
 }
 
 /**
- * Tool: Получить детальное ценообразование.
+ * Tool: получить ценообразование по конкретной услуге.
  */
 export function getPricing({ serviceId }) {
-  const service = SERVICES.find(s => s.id === serviceId);
+  const service = resolveCatalogService(serviceId);
   if (!service) {
-    return { error: 'Услуга не найдена', available: SERVICES.map(s => s.id) };
+    return {
+      error: 'Услуга не найдена',
+      available: listCatalogServices().map((item) => ({
+        id: item.id,
+        slug: item.slug,
+        title: item.title,
+        price: item.priceLabel,
+      })),
+    };
   }
+
   return {
-    name: `${service.emoji} ${service.name}`,
-    description: service.description,
-    priceRange: `${service.priceFrom.toLocaleString('ru-RU')}₽ – ${service.priceTo.toLocaleString('ru-RU')}₽`,
-    timeline: service.timeline,
-    examples: service.examples,
-    cta: 'Для точной оценки свяжитесь с @Stivanovv в Telegram',
+    id: service.id,
+    slug: service.slug,
+    title: service.title,
+    description: service.summary,
+    price: service.priceLabel,
+    priceNote: service.priceNote,
+    url: service.url,
+    offers: listCatalogOffers(service.slug),
+    cta: 'Для точной оценки напишите @Stivanovv в Telegram: финальная смета зависит от задачи, объёма, материалов, интеграций и сроков.',
   };
 }
 
 /**
- * Tool: Собрать заявку.
+ * Tool: собрать заявку.
  */
 export function submitLead({ name, task, contact }) {
-  // В будущем: отправка в TG через Bot API
   // Сейчас только подтверждаем: контактные данные не пишем в runtime-логи.
   return {
     status: 'success',
-    message: `Заявка принята! Степан (@Stivanovv) свяжется с вами в ближайшее время.`,
+    message: 'Заявка принята! Степан (@Stivanovv) свяжется с вами в ближайшее время.',
     data: { name, task, contact },
   };
 }
@@ -173,13 +174,13 @@ export const TOOL_DEFINITIONS = [
     type: 'function',
     function: {
       name: 'get_services',
-      description: 'Получить список услуг студии Реальный Вайб AI Studio. Используй когда пользователь спрашивает про услуги, что вы делаете, чем занимаетесь.',
+      description: 'Получить актуальный список услуг, товаров и публичных цен Real Vibe AI Studio. Используй, когда пользователь спрашивает, что делает студия, какие есть продукты, направления или услуги.',
       parameters: {
         type: 'object',
         properties: {
           category: {
             type: 'string',
-            description: 'Фильтр по категории: ai-video, ai-photo, ai-bots, custom-gpts, websites, ai-animation, ai-voice, smm. Не указывай для полного списка.',
+            description: `Необязательный фильтр по направлению, slug, номеру или обычной фразе пользователя. Актуальные slug: ${SERVICE_ID_HINT}.`,
           },
         },
         required: [],
@@ -190,13 +191,13 @@ export const TOOL_DEFINITIONS = [
     type: 'function',
     function: {
       name: 'get_portfolio',
-      description: 'Показать примеры работ / портфолио студии. Используй когда пользователь просит примеры, кейсы, работы.',
+      description: 'Показать примеры работ / портфолио студии. Используй, когда пользователь просит кейсы, примеры, работы или демонстрации.',
       parameters: {
         type: 'object',
         properties: {
           category: {
             type: 'string',
-            description: 'Фильтр по категории: ai-bots, ai-video, ai-photo, websites',
+            description: `Необязательный фильтр по направлению. Актуальные slug: ${SERVICE_ID_HINT}.`,
           },
         },
         required: [],
@@ -207,14 +208,13 @@ export const TOOL_DEFINITIONS = [
     type: 'function',
     function: {
       name: 'get_pricing',
-      description: 'Получить детальное ценообразование по конкретной услуге. Используй когда пользователь спрашивает про цены, стоимость, сколько стоит.',
+      description: 'Получить актуальную цену по конкретной услуге Real Vibe AI Studio. Используй, когда пользователь спрашивает стоимость, прайс, бюджет или сколько стоит.',
       parameters: {
         type: 'object',
         properties: {
           serviceId: {
             type: 'string',
-            enum: ['ai-video', 'ai-photo', 'ai-bots', 'custom-gpts', 'websites', 'ai-animation', 'ai-voice', 'smm'],
-            description: 'ID услуги для получения цен',
+            description: `Slug, номер услуги или фраза пользователя. Актуальные slug: ${SERVICE_ID_HINT}. Поддерживаются старые алиасы: ai-bots, custom-gpts, ai-animation, ai-voice, smm.`,
           },
         },
         required: ['serviceId'],
@@ -231,7 +231,7 @@ export const TOOL_DEFINITIONS = [
         properties: {
           name: { type: 'string', description: 'Имя клиента' },
           task: { type: 'string', description: 'Описание задачи / что хочет заказать' },
-          contact: { type: 'string', description: 'Контакт: телеграм, телефон или email' },
+          contact: { type: 'string', description: 'Контакт: Telegram, телефон или email' },
         },
         required: ['name', 'task', 'contact'],
       },

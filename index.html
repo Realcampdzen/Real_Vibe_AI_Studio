@@ -39,7 +39,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260519-music-polstan-hero-video" as="style">
+  <link rel="preload" href="css/style.css?v=20260519-performance-pass" as="style">
   <link rel="preload" href="css/mobile-improvements.css?v=20260519-ru-oauth" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +49,7 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260519-music-polstan-hero-video">
+  <link rel="stylesheet" href="css/style.css?v=20260519-performance-pass">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css?v=20260518-social-preview">
@@ -366,7 +366,7 @@
           </article>
 
           <article class="service-simple-card" data-service-id="10">
-            <img class="service-simple-bg-image" src="public/works/services/creative-production/dominia-key-visual.png" alt="CREATIVE DIRECTION + AI PRODUCTION" loading="lazy" fetchpriority="low" decoding="async">
+            <img class="service-simple-bg-image" src="public/works/services/creative-production/dominia-key-visual.webp" alt="CREATIVE DIRECTION + AI PRODUCTION" loading="lazy" fetchpriority="low" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">Визуальный мир, сайт, релиз, мерч и промо-материалы проекта</p>
@@ -386,12 +386,10 @@
               playsinline
               preload="metadata"
               poster="public/works/services/music/polstan-hero-poster-20260519.jpg"
-              data-desktop-src="public/works/services/music/polstan-hero-concert-20260519.mp4"
-              data-mobile-src="public/works/services/music/polstan-hero-concert-20260519.mp4"
+              data-desktop-src="public/works/services/music/polstan-hero-concert-desktop-20260519.mp4"
+              data-mobile-src="public/works/services/music/polstan-hero-concert-mobile-20260519.mp4"
               aria-hidden="true"
-            >
-              <source src="public/works/services/music/polstan-hero-concert-20260519.mp4" type="video/mp4">
-            </video>
+            ></video>
             <div class="service-simple-overlay"></div>
             <div class="service-polstan-hero-copy" aria-hidden="true">
               <span>PolStan</span>
@@ -675,7 +673,7 @@
       <div class="assistants-grid">
         <!-- Wellness Bro -->
         <div class="assistant-card" data-bot="health-assistant">
-          <img src="images/wellness-bro-avatar.png" alt="Wellness Bro" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
+          <img src="images/wellness-bro-avatar-384.webp" alt="Wellness Bro" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
           <div class="assistant-content">
             <div class="assistant-footer">🩺 Wellness Bro</div>
           </div>
@@ -806,14 +804,14 @@
   <script src="js/hero-reveal.js?v=20251216-reveal-force"></script>
   <!-- Core scripts (defer для оптимизации загрузки) -->
   <script src="js/scroll-manager.js?v=20251216-reveal-force" defer></script>
-  <script src="js/video-optimizer.js?v=20260512-hotfix" defer></script>
+  <script src="js/video-optimizer.js?v=20260519-performance-pass" defer></script>
   <script src="js/service-prices.js?v=20260518-market-prices" defer></script>
   <script src="js/service-price-bindings.js?v=20260518-market-prices" defer></script>
-  <script src="js/script.js?v=20260519-mobile-stability" defer></script>
+  <script src="js/script.js?v=20260519-performance-pass" defer></script>
   <script src="js/chat-client.js?v=20260512-productux" defer></script>
   <script src="js/auth-cart.js?v=20260519-ru-oauth" defer></script>
   <script src="js/services-carousel.js?v=20260511-stylecsp" defer></script>
-  <script src="js/performance-loader.js?v=20260519-mobile-stability" defer></script>
+  <script src="js/performance-loader.js?v=20260519-performance-pass" defer></script>
   
   <!-- Snow Effect JS removed (seasonal) -->
 

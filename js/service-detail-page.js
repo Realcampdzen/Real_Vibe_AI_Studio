@@ -118,7 +118,7 @@
     });
   }
 
-  function createHeroVideo(src, poster) {
+  function createHeroVideo(src, poster, options = {}) {
     if (!isSafeAssetUrl(src)) return null;
     const video = createElement('video', {
       className: 'hero-reel-video',
@@ -126,6 +126,9 @@
         'data-managed-video': '',
         preload: 'metadata',
         'data-desktop-src': src,
+        'data-mobile-src': isSafeAssetUrl(options.mobileSrc) ? options.mobileSrc : undefined,
+        'data-desktop-webm-src': isSafeAssetUrl(options.desktopWebmSrc) ? options.desktopWebmSrc : undefined,
+        'data-mobile-webm-src': isSafeAssetUrl(options.mobileWebmSrc) ? options.mobileWebmSrc : undefined,
         poster: isSafeAssetUrl(poster) ? poster : undefined,
       },
     });
@@ -191,7 +194,11 @@
     if (!heroReel) return;
 
     const media = service.heroVideo
-      ? createHeroVideo(service.heroVideo, service.heroPoster || service.backgroundImage)
+      ? createHeroVideo(service.heroVideo, service.heroPoster || service.backgroundImage, {
+        mobileSrc: service.heroMobileVideo,
+        desktopWebmSrc: service.heroDesktopWebm,
+        mobileWebmSrc: service.heroMobileWebm,
+      })
       : createHeroImage(service.backgroundImage, service.title || service.detailTitle || 'Service');
 
     const children = [
@@ -475,7 +482,11 @@
     const src = service.heroVideo || videoItem?.src || service.backgroundImage;
     const poster = service.heroPoster || videoItem?.poster || service.backgroundImage;
     const media = isVideoAsset({ src, type: service.heroVideo || videoItem ? 'video' : 'image' })
-      ? createHeroVideo(src, poster)
+      ? createHeroVideo(src, poster, {
+        mobileSrc: service.heroMobileVideo,
+        desktopWebmSrc: service.heroDesktopWebm,
+        mobileWebmSrc: service.heroMobileWebm,
+      })
       : createHeroImage(src, service.title || 'Медиа услуги');
 
     if (!media) {

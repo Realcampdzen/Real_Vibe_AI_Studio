@@ -12,6 +12,7 @@
     "audit:prod": "npm audit --omit=dev --json",
     "smoke:api": "node scripts/api-smoke.mjs",
     "smoke:auth-cart": "node scripts/auth-cart-smoke.mjs",
+    "smoke:audit": "node scripts/audit-smoke.mjs",
     "smoke:browser": "node scripts/browser-smoke.mjs",
     "smoke:prod": "node scripts/prod-smoke.mjs",
     "perf:desktop": "node scripts/perf-probe.mjs",

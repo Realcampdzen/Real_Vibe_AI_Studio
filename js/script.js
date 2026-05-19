@@ -202,11 +202,13 @@ function initCookieBanner() {
     const hideBanner = () => {
         banner.classList.remove('visible');
         banner.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('rv-cookie-banner-visible');
     };
 
     const showBanner = () => {
         banner.classList.add('visible');
         banner.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('rv-cookie-banner-visible');
     };
 
     const persistConsent = () => {
@@ -312,25 +314,33 @@ function initMobileMenu() {
   
   if (!mobileMenuBtn || !mobileNav) return;
 
-  if (document.body.classList.contains('detail-page')) {
-    mobileMenuBtn.addEventListener('click', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = 'index.html';
-      }
-    });
-    return;
-  }
-
   let scrollYBeforeOpen = 0;
   let lastFocusedElement = null;
+  let transitionTimer = 0;
+  let isTransitioning = false;
   const suppressedWidgetsSelector = '.glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget';
+  const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 360;
 
   const suppressWidgets = (shouldSuppress) => {
     document.querySelectorAll(suppressedWidgetsSelector).forEach((widget) => {
       widget.classList.toggle('is-suppressed', shouldSuppress);
     });
+  };
+
+  const markTransitioning = () => {
+    window.clearTimeout(transitionTimer);
+    isTransitioning = transitionMs > 0;
+    if (transitionMs > 0) {
+      transitionTimer = window.setTimeout(() => {
+        isTransitioning = false;
+      }, transitionMs);
+    }
+  };
+
+  const setButtonState = (isOpen) => {
+    mobileMenuBtn.classList.toggle('active', isOpen);
+    mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+    mobileMenuBtn.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
   };
 
   const lockScroll = () => {
@@ -350,33 +360,42 @@ function initMobileMenu() {
   };
   
   const openMenu = () => {
-    if (mobileNav.classList.contains('active')) return;
+    if (mobileNav.classList.contains('active') || isTransitioning) return;
     lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    mobileMenuBtn.classList.add('active');
+    mobileNav.classList.remove('rv-force-hidden');
+    setButtonState(true);
     mobileNav.classList.add('active');
     mobileNav.setAttribute('aria-hidden', 'false');
-    mobileMenuBtn.setAttribute('aria-expanded', 'true');
     lockScroll();
     suppressWidgets(true);
+    markTransitioning();
     requestAnimationFrame(() => {
       mobileNavClose?.focus({ preventScroll: true });
     });
   };
 
-  const closeMenu = () => {
+  const closeMenu = (options = {}) => {
+    const { immediate = false, restoreFocus = true, restoreScroll = true } = options;
     if (!mobileNav.classList.contains('active')) return;
-    mobileMenuBtn.classList.remove('active');
+    window.clearTimeout(transitionTimer);
+    isTransitioning = false;
+    setButtonState(false);
     mobileNav.classList.remove('active');
+    mobileNav.classList.toggle('rv-force-hidden', immediate);
     mobileNav.setAttribute('aria-hidden', 'true');
-    mobileMenuBtn.setAttribute('aria-expanded', 'false');
-    unlockScroll();
+    if (restoreScroll) unlockScroll();
     suppressWidgets(false);
-    if (lastFocusedElement?.isConnected) {
+    if (restoreFocus && lastFocusedElement?.isConnected) {
       lastFocusedElement.focus({ preventScroll: true });
+    }
+    if (immediate) {
+      window.setTimeout(() => mobileNav.classList.remove('rv-force-hidden'), 120);
+    } else {
+      markTransitioning();
     }
   };
 
-  mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  setButtonState(false);
   mobileNav.setAttribute('aria-hidden', 'true');
 
   window.RealVibeMobileNav = {
@@ -385,7 +404,7 @@ function initMobileMenu() {
     toggle: () => {
       if (mobileNav.classList.contains('active')) {
         closeMenu();
-      } else {
+      } else if (!isTransitioning) {
         openMenu();
       }
     },
@@ -410,6 +429,12 @@ function initMobileMenu() {
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && mobileNav.classList.contains('active')) {
       closeMenu();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900 && mobileNav.classList.contains('active')) {
+      closeMenu({ immediate: true, restoreFocus: false });
     }
   });
 }

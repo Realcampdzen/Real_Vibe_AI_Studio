@@ -14,6 +14,10 @@ const viewportSpecs = (process.env.PERF_PROBE_VIEWPORTS || '1440x900,1920x1080')
 const maxP95FrameGap = Number(process.env.PERF_PROBE_MAX_P95_FRAME_GAP_MS || 50);
 const maxLongTasks = Number(process.env.PERF_PROBE_MAX_LONG_TASKS || 20);
 
+function expectedHeroSource(viewport) {
+  return viewport.width <= 900 ? 'hero-reel-mobile.mp4' : 'hero-reel-desktop.webm';
+}
+
 function percentile(values, p) {
   if (!values.length) return 0;
   const sorted = [...values].sort((a, b) => a - b);
@@ -156,13 +160,17 @@ try {
 
 console.log(JSON.stringify({ baseUrl, results, consoleIssues }, null, 2));
 
-const failed = results.some((result) =>
-  result.p95FrameGapMs > maxP95FrameGap ||
-  result.longTasks > maxLongTasks ||
-  !result.hero ||
-  result.hero.paused ||
-  !String(result.hero.src).includes('hero-reel-desktop.webm')
-) || consoleIssues.length > 0;
+const failed = results.some((result) => {
+  const viewport = viewportSpecs.find((item) => item.label === result.viewport);
+  const expectedHero = viewport ? expectedHeroSource(viewport) : 'hero-reel-desktop.webm';
+  return (
+    result.p95FrameGapMs > maxP95FrameGap ||
+    result.longTasks > maxLongTasks ||
+    !result.hero ||
+    result.hero.paused ||
+    !String(result.hero.src).includes(expectedHero)
+  );
+}) || consoleIssues.length > 0;
 
 if (failed) {
   console.error('desktop performance probe failed thresholds');

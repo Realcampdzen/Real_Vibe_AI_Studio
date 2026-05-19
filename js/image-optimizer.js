@@ -237,7 +237,7 @@ class ImageOptimizer {
   preloadCriticalImages() {
     const criticalImages = [
       'images/bro-avatar.jpg',
-      'images/wellness-bro-avatar.png'
+      'images/wellness-bro-avatar-384.webp'
     ];
 
     criticalImages.forEach(src => {

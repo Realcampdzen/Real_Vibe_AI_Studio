@@ -232,13 +232,15 @@ class VideoOptimizer {
       '';
     const desktopWebm = video.dataset.desktopWebmSrc || '';
     const mobileMp4 = video.dataset.mobileSrc || '';
+    const mobileWebm = video.dataset.mobileWebmSrc || '';
 
-    if (!desktopMp4 && !desktopWebm && !mobileMp4) return null;
+    if (!desktopMp4 && !desktopWebm && !mobileMp4 && !mobileWebm) return null;
 
     return {
       desktopMp4: this.normalizeSrc(desktopMp4),
       desktopWebm: this.normalizeSrc(desktopWebm),
       mobileMp4: this.normalizeSrc(mobileMp4),
+      mobileWebm: this.normalizeSrc(mobileWebm),
     };
   }
 
@@ -249,7 +251,7 @@ class VideoOptimizer {
 
     const existingSrc = video.currentSrc || video.getAttribute('src') || '';
     const preferred = this.isMobile()
-      ? sources.mobileMp4 || sources.desktopMp4 || sources.desktopWebm
+      ? sources.mobileWebm || sources.mobileMp4 || sources.desktopWebm || sources.desktopMp4
       : sources.desktopWebm || sources.desktopMp4 || sources.mobileMp4;
 
     if (existingSrc && preferred && existingSrc.includes(preferred)) {
@@ -259,6 +261,15 @@ class VideoOptimizer {
 
     video.removeAttribute('src');
     video.querySelectorAll('source').forEach((source) => source.remove());
+
+    if (sources.mobileWebm) {
+      const mobileWebm = document.createElement('source');
+      mobileWebm.src = sources.mobileWebm;
+      mobileWebm.type = 'video/webm';
+      mobileWebm.media = '(max-width: 900px)';
+      mobileWebm.dataset.mobile = 'true';
+      video.appendChild(mobileWebm);
+    }
 
     if (sources.mobileMp4) {
       const mobile = document.createElement('source');

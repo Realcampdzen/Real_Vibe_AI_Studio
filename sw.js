@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.70-20260519-music-polstan-hero-video';
+const CACHE_VERSION = 'v1.71-20260519-performance-pass';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260519-music-polstan-hero-video'),
+  withBase('/css/style.css?v=20260519-performance-pass'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
   withBase('/css/mobile-improvements.css?v=20260519-ru-oauth'),
@@ -28,31 +28,30 @@ const STATIC_ASSETS = [
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
   withBase('/js/scroll-manager.js'),
-  withBase('/js/video-optimizer.js?v=20260512-hotfix'),
-  withBase('/js/script.js?v=20260519-mobile-stability'),
-  withBase('/js/page-common.js?v=20260519-mobile-stability'),
+  withBase('/js/video-optimizer.js?v=20260519-performance-pass'),
+  withBase('/js/script.js?v=20260519-performance-pass'),
+  withBase('/js/page-common.js?v=20260519-performance-pass'),
   withBase('/js/service-prices.js?v=20260518-market-prices'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260519-music-polstan-hero-video'),
-  withBase('/js/service-detail-page.js?v=20260519-music-polstan-hero-video'),
+  withBase('/js/service-data.js?v=20260519-performance-pass'),
+  withBase('/js/service-detail-page.js?v=20260519-performance-pass'),
   withBase('/js/admin-prices.js?v=20260518-market-prices'),
   withBase('/js/auth-cart.js?v=20260519-ru-oauth'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),
-  withBase('/js/performance-loader.js?v=20260519-mobile-stability'),
-  withBase('/js/image-optimizer.js?v=20260519-mobile-stability'),
+  withBase('/js/performance-loader.js?v=20260519-performance-pass'),
+  withBase('/js/image-optimizer.js?v=20260519-performance-pass'),
   withBase('/js/mobile-enhancements.js?v=20260519-mobile-stability'),
   withBase('/js/pull-to-refresh.js?v=20260512-productux'),
-  withBase('/js/glass-ui-health.js?v=20260518-wellness-bro-ui'),
+  withBase('/js/glass-ui-health.js?v=20260519-performance-pass'),
   withBase('/js/glass-ui-bro-cat.js?v=20260518-wellness-bro-ui'),
   withBase('/js/glass-ui-valyusha.js?v=20260518-wellness-bro-ui'),
   withBase('/chat-components/GlassUIWidget.js?v=20260518-wellness-bro-ui'),
-  withBase('/images/wellness-bro-avatar.png'),
+  withBase('/images/wellness-bro-avatar-384.webp'),
   withBase('/images/bro-avatar.jpg'),
   withBase('/images/neon-room.png'),
   withBase('/public/works/polstan/polstan-home-portal-20260519.jpg'),
-  withBase('/public/works/services/music/polstan-hero-concert-20260519.mp4'),
   withBase('/public/works/services/music/polstan-hero-poster-20260519.jpg')
 ];
 

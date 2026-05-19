@@ -113,11 +113,19 @@
     requestAnimationFrame(() => element.classList.add('is-open'));
   }
 
+  function hasOpenOverlay(exceptElement = null) {
+    return [refs.authModal, refs.cartDrawer, refs.accountDrawer].some((element) => {
+      return element && element !== exceptElement && element.classList.contains('is-open');
+    });
+  }
+
   function closeModal(element) {
     if (!element) return;
     element.classList.remove('is-open');
     element.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('rv-overlay-open');
+    if (!hasOpenOverlay(element)) {
+      document.body.classList.remove('rv-overlay-open');
+    }
     window.setTimeout(() => {
       if (!element.classList.contains('is-open')) element.hidden = true;
     }, 180);
@@ -172,11 +180,12 @@
   function closeMobileNav() {
     const nav = document.getElementById('mobile-nav');
     if (window.RealVibeMobileNav?.isOpen?.()) {
-      window.RealVibeMobileNav.close();
+      window.RealVibeMobileNav.close({ immediate: true, restoreFocus: false });
     } else {
       nav?.classList.remove('active');
       nav?.setAttribute('aria-hidden', 'true');
       document.getElementById('mobile-menu-btn')?.setAttribute('aria-expanded', 'false');
+      document.getElementById('mobile-menu-btn')?.setAttribute('aria-label', 'Открыть меню');
     }
     nav?.classList.add('rv-force-hidden');
     window.setTimeout(() => nav?.classList.remove('rv-force-hidden'), 360);
@@ -229,7 +238,7 @@
       }), [
         appendChildren(createElement('button', {
           className: 'rv-mobile-commerce-btn rv-mobile-account-btn',
-          attrs: { type: 'button', 'data-rv-auth-open': '' },
+          attrs: { type: 'button', 'data-rv-auth-open': '', 'aria-label': 'Войти в аккаунт' },
         }), [
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-icon' }), [makeIcon('fas fa-user')]),
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-copy' }), [
@@ -239,7 +248,7 @@
         ]),
         appendChildren(createElement('button', {
           className: 'rv-mobile-commerce-btn rv-mobile-cart-btn',
-          attrs: { type: 'button', 'data-rv-cart-open': '' },
+          attrs: { type: 'button', 'data-rv-cart-open': '', 'aria-label': 'Открыть корзину' },
         }), [
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-icon' }), [makeIcon('fas fa-bag-shopping')]),
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-copy' }), [

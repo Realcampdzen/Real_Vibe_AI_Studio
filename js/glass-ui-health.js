@@ -2,7 +2,7 @@
 class GlassUIHealth {
     constructor() {
         this.name = 'Wellness Bro';
-        this.avatar = 'images/wellness-bro-avatar.png';
+        this.avatar = 'images/wellness-bro-avatar-384.webp';
         this.isVisible = false;
         this.responses = [
             'Привет! Я Wellness Bro, ассистент по здоровью 🩺 Помогаю понимать анализы, вести дневники, готовить вопросы врачу и держать курс без паники. Я не врач и не назначаю лечение.',

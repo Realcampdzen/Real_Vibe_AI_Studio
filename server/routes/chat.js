@@ -16,6 +16,7 @@ import { streamAgentChat } from '../agents/stream-chat.js';
 import { consumeChatQuota } from '../services/chat-quota.js';
 import { callWellnessHealthAgent, isWellnessHealthAgentConfigured } from '../services/hermes-safe-agent.js';
 import { getDatabaseStatus } from '../services/db.js';
+import { formatCatalogForAgentPrompt } from '../services/catalog.js';
 
 const router = express.Router();
 const CHAT_BOT_ALIASES = {
@@ -41,6 +42,10 @@ function isOwnerRequest(req) {
 
 function normalizeChatBotId(botId) {
   return CHAT_BOT_ALIASES[botId] || botId;
+}
+
+function buildBotPrompt(bot) {
+  return `${bot.prompt}\n\n${formatCatalogForAgentPrompt()}`;
 }
 
 // Схема валидации
@@ -133,13 +138,14 @@ async function handleChat(req, res, botId) {
       }
     }
 
+    const botPrompt = buildBotPrompt(bot);
     if (!reply && isConnected()) {
       // Сначала пробуем агентный чат (с tools)
-      reply = await agentChat(bot.prompt, message);
+      reply = await agentChat(botPrompt, message);
 
       // Fallback на простой chatCompletion если агент не ответил
       if (!reply || reply.trim() === '') {
-        reply = await chatCompletion(bot.prompt, message);
+        reply = await chatCompletion(botPrompt, message);
       }
 
       if (!reply || reply.trim() === '') {
@@ -243,7 +249,7 @@ router.post('/api/chat/:botId/stream', async (req, res) => {
       outcome: 'stream_started',
     }));
   }
-  await streamAgentChat(res, bot.prompt, value.message);
+  await streamAgentChat(res, buildBotPrompt(bot), value.message);
 });
 
 // ────── Универсальный endpoint по botId ──────

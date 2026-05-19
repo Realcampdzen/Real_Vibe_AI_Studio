@@ -109,7 +109,7 @@
     lazyImages();
     // video-optimizer.js загружается напрямую в index.html, не нужно загружать здесь
     schedule(() => {
-      loadScript('js/image-optimizer.js?v=20260519-mobile-stability');
+      loadScript('js/image-optimizer.js?v=20260519-performance-pass');
       loadScript('js/skeleton-loader.js');
     }, 120);
   }
@@ -140,7 +140,7 @@
         .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260518-wellness-bro-ui'))
         .then(() =>
           Promise.all([
-            loadScript('js/glass-ui-health.js?v=20260518-wellness-bro-ui'),
+            loadScript('js/glass-ui-health.js?v=20260519-performance-pass'),
             loadScript('js/glass-ui-bro-cat.js?v=20260518-wellness-bro-ui'),
             loadScript('js/glass-ui-valyusha.js?v=20260518-wellness-bro-ui'),
           ])

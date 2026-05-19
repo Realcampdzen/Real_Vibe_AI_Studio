@@ -11,7 +11,7 @@ const BOT_REGISTRY = {
     name: '🐱 Кот Бро',
     route: '/chat',            // Также доступен через /api/chat/:botId
     prompt: PROMPTS['bro-cat'],
-    emergencyReply: 'Мяу! 😿 У меня лапки запутались... Но мой хозяин @Stivanovv всё исправит! Он делает крутые AI-боты от 12 000₽ 🤖',
+    emergencyReply: 'Мяу! 😿 У меня лапки запутались... Но @Stivanovv всё исправит! AI-боты от 10 000₽, AI-агенты от 25 000₽, вайбкодинг от 30 000₽ 🤖',
   },
   'valyusha': {
     id: 'valyusha',
