@@ -2517,3 +2517,110 @@ body.rv-overlay-open .glass-ui-widget {
     }
   }
 }
+
+/* ===== PWA / STANDALONE MOBILE CHROME PASS ===== */
+
+@media (max-width: 900px) {
+  html,
+  body {
+    min-height: var(--rv-mobile-viewport-height) !important;
+    background: var(--rv-app-bg, #050505) !important;
+  }
+
+  body::before,
+  .bg-animation,
+  .preloader {
+    inset: 0 !important;
+    width: auto !important;
+    height: var(--rv-mobile-overlay-height) !important;
+    min-height: var(--rv-mobile-overlay-height) !important;
+  }
+
+  .mobile-nav {
+    min-height: var(--rv-mobile-overlay-height) !important;
+    height: var(--rv-mobile-overlay-height) !important;
+    max-height: var(--rv-mobile-overlay-height) !important;
+    padding: var(--rv-safe-area-top, env(safe-area-inset-top, 0px)) 0 var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px)) !important;
+    background-color: var(--rv-app-bg, #050505) !important;
+  }
+
+  .mobile-chat-fullscreen,
+  .chat-container,
+  .hipych-widget,
+  .bro-cat-widget {
+    height: var(--rv-mobile-overlay-height) !important;
+    max-height: var(--rv-mobile-overlay-height) !important;
+  }
+
+  .chat-messages,
+  .hipych-messages,
+  .bro-cat-messages {
+    height: calc(var(--rv-mobile-overlay-height) - 180px) !important;
+    padding-bottom: max(1rem, calc(1rem + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px)))) !important;
+  }
+
+  .chat-input-container,
+  .hipych-input-container,
+  .bro-cat-input-container {
+    padding-bottom: max(1rem, calc(1rem + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px)))) !important;
+  }
+
+  .rv-modal-shell {
+    min-height: var(--rv-mobile-overlay-height) !important;
+    height: var(--rv-mobile-overlay-height) !important;
+    padding:
+      var(--rv-safe-area-top, env(safe-area-inset-top, 0px))
+      var(--rv-safe-area-right, env(safe-area-inset-right, 0px))
+      var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))
+      var(--rv-safe-area-left, env(safe-area-inset-left, 0px)) !important;
+  }
+
+  .rv-auth-panel {
+    max-height: calc(var(--rv-mobile-overlay-height) - 32px) !important;
+  }
+
+  .rv-cart-panel,
+  .rv-account-panel {
+    min-height: var(--rv-mobile-overlay-height) !important;
+    max-height: var(--rv-mobile-overlay-height) !important;
+    padding-bottom: max(28px, calc(28px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px)))) !important;
+  }
+
+  .cookie-banner {
+    bottom: calc(10px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))) !important;
+  }
+
+  .back-to-top {
+    bottom: calc(30px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))) !important;
+  }
+
+  .detail-home-link {
+    top: calc(92px + var(--rv-safe-area-top, env(safe-area-inset-top, 0px))) !important;
+  }
+
+  .glass-ui-widget {
+    max-height: calc(var(--rv-mobile-overlay-height) - 80px) !important;
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button {
+    bottom: calc(20px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))) !important;
+  }
+
+  .glass-ui-bro-cat-button {
+    bottom: calc(100px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))) !important;
+  }
+
+  .glass-ui-valyusha-button {
+    bottom: calc(180px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .glass-ui-health-button,
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button,
+  .glass-ui-valyusha-button {
+    bottom: calc(12px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))) !important;
+  }
+}

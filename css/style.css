@@ -80,6 +80,16 @@
   --section-space-compact: 3rem;
   --section-space-mobile: 2.75rem;
   --section-gap-tight: 1.75rem;
+
+  /* Mobile viewport / PWA chrome */
+  --rv-app-bg: #050505;
+  --rv-safe-area-top: env(safe-area-inset-top, 0px);
+  --rv-safe-area-right: env(safe-area-inset-right, 0px);
+  --rv-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --rv-safe-area-left: env(safe-area-inset-left, 0px);
+  --rv-mobile-viewport-height: 100svh;
+  --rv-mobile-overlay-height: 100svh;
+  --rv-fixed-bottom-gap: max(12px, var(--rv-safe-area-bottom));
 }
 
 /* Reset and Base */
@@ -93,6 +103,8 @@ html {
   scroll-behavior: smooth;
   /* На мобильных браузерах скролл-контейнер часто = html, поэтому фиксируем overflow-x тут тоже */
   overflow-x: hidden;
+  min-height: 100%;
+  background: var(--rv-app-bg);
 }
 
 .seo-structured-data {
@@ -106,7 +118,7 @@ html {
 
 body {
   font-family: var(--font-body);
-  background-color: #000000;
+  background-color: var(--rv-app-bg);
   background-image: none;
   background-size: auto;
   background-position: initial;
@@ -116,6 +128,20 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   position: relative;
+  min-height: 100%;
+  min-height: var(--rv-mobile-viewport-height);
+}
+
+@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+  :root {
+    --rv-mobile-viewport-height: 100dvh;
+    --rv-mobile-overlay-height: 100dvh;
+  }
+}
+
+html.rv-standalone {
+  --rv-mobile-viewport-height: 100dvh;
+  --rv-mobile-overlay-height: 100dvh;
 }
 
 button,
@@ -11955,10 +11981,10 @@ body.rv-overlay-open .glass-ui-widget {
 }
 
 .redirect-page {
-  min-height: 100vh;
+  min-height: var(--rv-mobile-viewport-height);
   display: grid;
   place-items: center;
-  background: #050505;
+  background: var(--rv-app-bg);
   color: #ffffff;
   font-family: Arial, sans-serif;
 }
@@ -13048,6 +13074,109 @@ body.mobile-nav-open .glass-ui-widget {
     box-shadow:
       0 8px 18px rgba(0, 0, 0, 0.36),
       0 0 18px rgba(255, 51, 255, 0.36) !important;
+  }
+}
+
+/* PWA / mobile browser chrome stability */
+@media (max-width: 900px) {
+  html,
+  body {
+    min-height: var(--rv-mobile-viewport-height);
+    background: var(--rv-app-bg);
+  }
+
+  body {
+    padding-left: var(--rv-safe-area-left);
+    padding-right: var(--rv-safe-area-right);
+  }
+
+  body::before,
+  .bg-animation,
+  .preloader {
+    inset: 0;
+    width: auto;
+    height: var(--rv-mobile-overlay-height);
+  }
+
+  .mobile-chat-fullscreen,
+  .chat-container,
+  .hipych-widget,
+  .bro-cat-widget {
+    height: var(--rv-mobile-overlay-height) !important;
+    max-height: var(--rv-mobile-overlay-height) !important;
+  }
+
+  .chat-messages,
+  .hipych-messages,
+  .bro-cat-messages {
+    height: calc(var(--rv-mobile-overlay-height) - 180px) !important;
+  }
+
+  .mobile-nav {
+    min-height: var(--rv-mobile-overlay-height) !important;
+    height: var(--rv-mobile-overlay-height) !important;
+    max-height: var(--rv-mobile-overlay-height) !important;
+    padding: var(--rv-safe-area-top) 0 var(--rv-safe-area-bottom) !important;
+    background-color: var(--rv-app-bg) !important;
+  }
+
+  .rv-modal-shell {
+    min-height: var(--rv-mobile-overlay-height);
+    height: var(--rv-mobile-overlay-height);
+    padding:
+      var(--rv-safe-area-top)
+      var(--rv-safe-area-right)
+      var(--rv-safe-area-bottom)
+      var(--rv-safe-area-left);
+  }
+
+  .rv-auth-panel {
+    max-height: calc(var(--rv-mobile-overlay-height) - 32px) !important;
+  }
+
+  .rv-cart-panel,
+  .rv-account-panel {
+    min-height: var(--rv-mobile-overlay-height) !important;
+    max-height: var(--rv-mobile-overlay-height) !important;
+    padding-bottom: max(28px, calc(28px + var(--rv-safe-area-bottom))) !important;
+  }
+
+  .cookie-banner {
+    bottom: calc(10px + var(--rv-safe-area-bottom)) !important;
+  }
+
+  .back-to-top {
+    bottom: calc(30px + var(--rv-safe-area-bottom)) !important;
+  }
+
+  .detail-home-link {
+    top: calc(92px + var(--rv-safe-area-top)) !important;
+  }
+
+  .glass-ui-widget {
+    max-height: calc(var(--rv-mobile-overlay-height) - 80px) !important;
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button {
+    bottom: calc(20px + var(--rv-safe-area-bottom)) !important;
+  }
+
+  .glass-ui-bro-cat-button {
+    bottom: calc(100px + var(--rv-safe-area-bottom)) !important;
+  }
+
+  .glass-ui-valyusha-button {
+    bottom: calc(180px + var(--rv-safe-area-bottom)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .glass-ui-health-button,
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button,
+  .glass-ui-valyusha-button {
+    bottom: calc(12px + var(--rv-safe-area-bottom)) !important;
   }
 }
 

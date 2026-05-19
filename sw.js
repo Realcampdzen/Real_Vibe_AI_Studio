@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.86-20260520-open-design';
+const CACHE_VERSION = 'v1.87-20260520-pwa-standalone';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -19,14 +19,22 @@ const STATIC_ASSETS = [
   withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
+  withBase('/manifest.json?v=20260520-pwa-standalone'),
+  withBase('/public/icons/icon-192.png'),
+  withBase('/public/icons/icon-192.png?v=20260520-pwa-standalone'),
+  withBase('/public/icons/icon-512.png'),
+  withBase('/public/icons/maskable-512.png'),
+  withBase('/public/icons/apple-touch-icon.png'),
+  withBase('/public/icons/apple-touch-icon.png?v=20260520-pwa-standalone'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260519-mobile-premium-recovery'),
+  withBase('/css/style.css?v=20260520-pwa-standalone'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
-  withBase('/css/mobile-improvements.css?v=20260519-mobile-premium-recovery'),
+  withBase('/css/mobile-improvements.css?v=20260520-pwa-standalone'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
+  withBase('/js/pwa-chrome.js?v=20260520-pwa-standalone'),
   withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/video-optimizer.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/script.js?v=20260519-mobile-premium-recovery'),
@@ -315,7 +323,7 @@ self.addEventListener('sync', (event) => {
 // Вспомогательные функции
 
 function isStaticAsset(url) {
-  const staticExtensions = ['.css', '.js', '.woff', '.woff2', '.ttf', '.eot'];
+  const staticExtensions = ['.css', '.js', '.json', '.woff', '.woff2', '.ttf', '.eot'];
   return staticExtensions.some(ext => url.includes(ext));
 }
 
