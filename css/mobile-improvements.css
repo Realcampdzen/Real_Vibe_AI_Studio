@@ -696,14 +696,18 @@
   .services-primary .service-simple-card.reveal-base,
   .services-primary .service-simple-card.reveal-base--left,
   .services-primary .service-simple-card.reveal-base--right {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
+    opacity: 0;
+    transform: translateY(18px) !important;
+    transition:
+      opacity 0.42s ease,
+      transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.18s ease,
+      box-shadow 0.18s ease !important;
   }
 
   .services-primary .service-simple-card.is-visible {
     opacity: 1 !important;
-    transform: none !important;
+    transform: translateY(0) !important;
   }
 
   .service-simple-bg-image,

@@ -1044,7 +1044,7 @@ function initScrollRevealV2(force = false) {
     }
 
     let revealQueue = [];
-    let revealTimer = null;
+    let revealFrame = 0;
 
     const observer = new IntersectionObserver((entries) => {
       let hasIntersecting = false;
@@ -1058,22 +1058,24 @@ function initScrollRevealV2(force = false) {
         }
       });
 
-      if (hasIntersecting && !revealTimer) {
-        revealTimer = requestAnimationFrame(() => {
-          // Sort queue by DOM order if needed, but array order usually matches DOM order
-          const stagger = window.innerWidth < 768 ? 50 : 100;
-          revealQueue.forEach((target, index) => {
+      if (hasIntersecting && !revealFrame) {
+        revealFrame = requestAnimationFrame(() => {
+          const queue = Array.from(new Set(revealQueue))
+            .filter((target) => target && target.dataset.scrollRevealed !== '1')
+            .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+          const stagger = window.innerWidth < 768 ? 28 : 48;
+          queue.forEach((target, index) => {
             setTimeout(() => {
               revealElement(target);
-            }, index * stagger);
+            }, Math.min(index, 3) * stagger);
           });
           revealQueue = [];
-          revealTimer = null;
+          revealFrame = 0;
         });
       }
     }, {
-      threshold: 0.1,
-      rootMargin: '0px'
+      threshold: 0.01,
+      rootMargin: '0px 0px 22% 0px'
     });
 
 
