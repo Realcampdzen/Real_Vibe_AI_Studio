@@ -169,6 +169,23 @@
     return createImage(src, alt, 'hero-reel-video service-hero-image');
   }
 
+  function createPolstanHeroCopy(extraClass = '') {
+    const copy = createElement('div', {
+      className: `service-polstan-hero-copy ${extraClass}`.trim(),
+      attrs: { 'aria-hidden': 'true' },
+    });
+    appendChildren(copy, [
+      createElement('span', { text: 'PolStan' }),
+      appendChildren(createElement('strong'), [
+        document.createTextNode('Stanislav'),
+        createElement('br'),
+        document.createTextNode('Polesko'),
+      ]),
+      createElement('small', { text: 'Grammy producer / composer / creative direction / AI production' }),
+    ]);
+    return copy;
+  }
+
   function renderHero(service) {
     const heroReel = document.getElementById('service-hero-reel');
     if (!heroReel) return;
@@ -177,11 +194,16 @@
       ? createHeroVideo(service.heroVideo, service.heroPoster || service.backgroundImage)
       : createHeroImage(service.backgroundImage, service.title || service.detailTitle || 'Service');
 
-    heroReel.replaceChildren(
+    const children = [
       media || createDefaultHeroVideo(),
       createElement('div', { className: 'hero-reel-overlay' }),
-      createElement('div', { className: 'hero-reel-content' }),
-    );
+    ];
+    if (service.slug === 'music') {
+      children.push(createPolstanHeroCopy('service-polstan-hero-copy--detail'));
+    }
+    children.push(createElement('div', { className: 'hero-reel-content' }));
+
+    heroReel.replaceChildren(...children);
     window.videoOptimizer?.refresh?.();
   }
 

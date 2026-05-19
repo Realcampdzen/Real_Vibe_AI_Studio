@@ -257,10 +257,10 @@ const SERVICES_DATA = [
       'Файлы и версии под площадки',
     ],
     price: 'от 20 000₽',
-    backgroundImage: serviceAsset('music', 'cover-polstan-app-20260519.jpg'),
+    backgroundImage: serviceAsset('music', 'polstan-hero-poster-20260519.jpg'),
     avatarImage: serviceAsset('music', 'detail-1.jpg'),
-    heroVideo: '',
-    heroPoster: serviceAsset('music', 'teaser-poster.jpg'),
+    heroVideo: serviceAsset('music', 'polstan-hero-concert-20260519.mp4'),
+    heroPoster: serviceAsset('music', 'polstan-hero-poster-20260519.jpg'),
     detailMedia: [
       imageMedia('music', 'detail-1.jpg', 'Композиторская студия', 'Рабочее место, где рождается музыкальная тема проекта.'),
       imageMedia('music', 'detail-2.jpg', 'Музыкальная атмосфера', 'Настроение и фактура будущего трека.'),

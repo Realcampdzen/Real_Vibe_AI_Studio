@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.68-20260519-polstan-preview-only';
+const CACHE_VERSION = 'v1.70-20260519-music-polstan-hero-video';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260519-polstan-preview-only'),
+  withBase('/css/style.css?v=20260519-music-polstan-hero-video'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
   withBase('/css/mobile-improvements.css?v=20260519-ru-oauth'),
@@ -33,8 +33,8 @@ const STATIC_ASSETS = [
   withBase('/js/page-common.js?v=20260519-mobile-stability'),
   withBase('/js/service-prices.js?v=20260518-market-prices'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260519-music-polstan-cover'),
-  withBase('/js/service-detail-page.js?v=20260518-market-prices'),
+  withBase('/js/service-data.js?v=20260519-music-polstan-hero-video'),
+  withBase('/js/service-detail-page.js?v=20260519-music-polstan-hero-video'),
   withBase('/js/admin-prices.js?v=20260518-market-prices'),
   withBase('/js/auth-cart.js?v=20260519-ru-oauth'),
   withBase('/js/chat-client.js?v=20260512-productux'),
@@ -52,7 +52,8 @@ const STATIC_ASSETS = [
   withBase('/images/bro-avatar.jpg'),
   withBase('/images/neon-room.png'),
   withBase('/public/works/polstan/polstan-home-portal-20260519.jpg'),
-  withBase('/public/works/services/music/cover-polstan-app-20260519.jpg')
+  withBase('/public/works/services/music/polstan-hero-concert-20260519.mp4'),
+  withBase('/public/works/services/music/polstan-hero-poster-20260519.jpg')
 ];
 
 // Установка Service Worker

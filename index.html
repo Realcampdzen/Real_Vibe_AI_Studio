@@ -39,7 +39,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260519-polstan-preview-only" as="style">
+  <link rel="preload" href="css/style.css?v=20260519-music-polstan-hero-video" as="style">
   <link rel="preload" href="css/mobile-improvements.css?v=20260519-ru-oauth" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +49,7 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260519-polstan-preview-only">
+  <link rel="stylesheet" href="css/style.css?v=20260519-music-polstan-hero-video">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css?v=20260518-social-preview">
@@ -376,9 +376,28 @@
         </div>
 
         <div class="service-row service-row-big-left">
-          <article class="service-simple-card" data-service-id="4">
-            <img class="service-simple-bg-image" src="public/works/services/music/cover-polstan-app-20260519.jpg" alt="СОЗДАНИЕ МУЗЫКИ" loading="lazy" fetchpriority="low" decoding="async">
+          <article class="service-simple-card service-card-music" data-service-id="4">
+            <video
+              class="service-simple-bg-video service-music-hero-video"
+              data-managed-video
+              loop
+              muted
+              autoplay
+              playsinline
+              preload="metadata"
+              poster="public/works/services/music/polstan-hero-poster-20260519.jpg"
+              data-desktop-src="public/works/services/music/polstan-hero-concert-20260519.mp4"
+              data-mobile-src="public/works/services/music/polstan-hero-concert-20260519.mp4"
+              aria-hidden="true"
+            >
+              <source src="public/works/services/music/polstan-hero-concert-20260519.mp4" type="video/mp4">
+            </video>
             <div class="service-simple-overlay"></div>
+            <div class="service-polstan-hero-copy" aria-hidden="true">
+              <span>PolStan</span>
+              <strong>Stanislav<br>Polesko</strong>
+              <small>Grammy producer / composer / creative direction / AI production</small>
+            </div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">Треки, темы, джинглы и музыкальная айдентика</p>
               <div class="service-simple-footer" data-contact-link="telegram">СОЗДАНИЕ МУЗЫКИ</div>
