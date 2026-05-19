@@ -2,6 +2,7 @@ import { chromium } from '@playwright/test';
 
 const baseUrl = (process.env.PERF_PROBE_BASE_URL || 'http://127.0.0.1:3000').replace(/\/$/, '');
 const channel = process.env.PERF_PROBE_CHANNEL || 'msedge';
+const perfStamp = '20260519-mobile-premium-recovery';
 const mockLocalAnalytics = /^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?$/i.test(baseUrl);
 const viewportSpecs = (process.env.PERF_PROBE_VIEWPORTS || '1440x900,1920x1080')
   .split(',')
@@ -11,8 +12,8 @@ const viewportSpecs = (process.env.PERF_PROBE_VIEWPORTS || '1440x900,1920x1080')
     const [width, height] = item.split('x').map((value) => Number(value));
     return { width, height, label: item };
   });
-const maxP95FrameGap = Number(process.env.PERF_PROBE_MAX_P95_FRAME_GAP_MS || 50);
-const maxLongTasks = Number(process.env.PERF_PROBE_MAX_LONG_TASKS || 20);
+const maxP95FrameGap = Number(process.env.PERF_PROBE_MAX_P95_FRAME_GAP_MS || 32);
+const maxLongTasks = Number(process.env.PERF_PROBE_MAX_LONG_TASKS || 4);
 
 function expectedHeroSource(viewport) {
   return viewport.width <= 900 ? 'hero-reel-mobile.mp4' : 'hero-reel-desktop.webm';
@@ -39,8 +40,10 @@ async function installObservers(page) {
   await page.addInitScript(() => {
     window.__rvPerfProbe = {
       frameGaps: [],
+      scrollFrameGaps: [],
       longTasks: [],
       startedAt: 0,
+      isScrolling: false,
     };
 
     try {
@@ -59,7 +62,11 @@ async function installObservers(page) {
     let previousFrame = 0;
     function tick(now) {
       if (previousFrame) {
-        window.__rvPerfProbe.frameGaps.push(now - previousFrame);
+        const gap = now - previousFrame;
+        window.__rvPerfProbe.frameGaps.push(gap);
+        if (window.__rvPerfProbe.isScrolling) {
+          window.__rvPerfProbe.scrollFrameGaps.push(gap);
+        }
       }
       previousFrame = now;
       requestAnimationFrame(tick);
@@ -71,6 +78,8 @@ async function installObservers(page) {
 async function runScroll(page) {
   await page.evaluate(async () => {
     window.__rvPerfProbe.startedAt = performance.now();
+    window.__rvPerfProbe.scrollFrameGaps = [];
+    window.__rvPerfProbe.isScrolling = true;
     const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     const duration = 9000;
     const start = performance.now();
@@ -89,6 +98,7 @@ async function runScroll(page) {
           requestAnimationFrame(step);
         } else {
           window.scrollTo(0, 0);
+          window.__rvPerfProbe.isScrolling = false;
           resolve();
         }
       }
@@ -121,15 +131,19 @@ try {
         body: '',
       }));
     }
+    await page.addInitScript(() => {
+      localStorage.setItem('rv-cookie-consent', 'true');
+    });
     await installObservers(page);
-    await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.goto(`${baseUrl}/index.html?v=${perfStamp}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await page.waitForLoadState('networkidle', { timeout: 30_000 }).catch(() => {});
     await page.waitForTimeout(1500);
     await runScroll(page);
     const metrics = await page.evaluate(() => {
       const data = window.__rvPerfProbe;
       const longTasks = data.longTasks.filter((entry) => entry.startTime >= data.startedAt);
-      const frameGaps = data.frameGaps.slice(-700).filter((gap) => Number.isFinite(gap));
+      const sourceFrameGaps = data.scrollFrameGaps?.length ? data.scrollFrameGaps : data.frameGaps;
+      const frameGaps = sourceFrameGaps.slice(-700).filter((gap) => Number.isFinite(gap));
       const heroVideo = document.querySelector('.hero-video video, video[data-managed-video], video');
       return {
         longTasks,
@@ -173,8 +187,8 @@ const failed = results.some((result) => {
 }) || consoleIssues.length > 0;
 
 if (failed) {
-  console.error('desktop performance probe failed thresholds');
+  console.error('performance probe failed thresholds');
   process.exit(1);
 }
 
-console.log('desktop performance probe passed');
+console.log('performance probe passed');

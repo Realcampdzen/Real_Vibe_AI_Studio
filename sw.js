@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.83-20260519-auth-cart-sheet';
+const CACHE_VERSION = 'v1.85-20260519-mobile-premium-recovery';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -20,17 +20,18 @@ const STATIC_ASSETS = [
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260519-mobile-auth-polish'),
+  withBase('/css/style.css?v=20260519-mobile-premium-recovery'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
-  withBase('/css/mobile-improvements.css?v=20260519-auth-cart-sheet'),
+  withBase('/css/mobile-improvements.css?v=20260519-mobile-premium-recovery'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
-  withBase('/js/scroll-manager.js'),
-  withBase('/js/video-optimizer.js?v=20260519-performance-pass'),
-  withBase('/js/script.js?v=20260519-reveal-stability'),
-  withBase('/js/page-common.js?v=20260519-performance-pass'),
+  withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
+  withBase('/js/video-optimizer.js?v=20260519-mobile-premium-recovery'),
+  withBase('/js/script.js?v=20260519-mobile-premium-recovery'),
+  withBase('/js/page-common.js?v=20260519-mobile-premium-recovery'),
+  withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260518-market-prices'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
   withBase('/js/service-data.js?v=20260519-performance-pass'),
@@ -40,9 +41,9 @@ const STATIC_ASSETS = [
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),
-  withBase('/js/performance-loader.js?v=20260519-performance-pass'),
+  withBase('/js/performance-loader.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/image-optimizer.js?v=20260519-performance-pass'),
-  withBase('/js/mobile-enhancements.js?v=20260519-mobile-stability'),
+  withBase('/js/mobile-enhancements.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/pull-to-refresh.js?v=20260512-productux'),
   withBase('/js/glass-ui-health.js?v=20260519-performance-pass'),
   withBase('/js/glass-ui-bro-cat.js?v=20260518-wellness-bro-ui'),

@@ -17,6 +17,8 @@ class VideoOptimizer {
     this.states = new WeakMap();
     this.heroVideo = document.getElementById('hero-reel-video');
     this.heroOffscreenPauseDelayMs = 1200;
+    this.heroScrollActive = false;
+    this.heroScrollIdleTimer = null;
     this.resumeAttemptMinGapMs = 700;
     this.viewportRefreshQueued = false;
     this.init();
@@ -47,6 +49,26 @@ class VideoOptimizer {
 
   isPrimaryHero(video) {
     return video?.id === 'hero-reel-video';
+  }
+
+  isServiceBackgroundVideo(video) {
+    return Boolean(video?.classList?.contains('service-simple-bg-video'));
+  }
+
+  isMusicCardVideo(video) {
+    return Boolean(video?.closest?.('.service-card-music'));
+  }
+
+  setCardVideoState(video, stateName) {
+    const card = video?.closest?.('.service-simple-card');
+    if (!card) return;
+    card.classList.remove('rv-video-loading', 'rv-video-ready', 'rv-video-error');
+    if (stateName) {
+      card.classList.add(`rv-video-${stateName}`);
+      card.dataset.videoState = stateName;
+    } else {
+      delete card.dataset.videoState;
+    }
   }
 
   isElementVisible(element, threshold = 0.15) {
@@ -89,6 +111,7 @@ class VideoOptimizer {
     if (!video || !state) return false;
     if (!state.shouldAutoplay || state.userPaused) return false;
     if (document.visibilityState !== 'visible' || video.error) return false;
+    if (this.isPrimaryHero(video) && this.heroScrollActive) return false;
 
     const threshold = this.isPrimaryHero(video) ? 0.1 : 0.15;
     if (!state.visible && !this.isElementVisible(video, threshold)) return false;
@@ -147,6 +170,7 @@ class VideoOptimizer {
 
   setupViewportPlaybackRefresh() {
     const schedule = () => {
+      this.handleActiveScrollPlayback();
       if (this.viewportRefreshQueued) return;
       this.viewportRefreshQueued = true;
       requestAnimationFrame(() => {
@@ -157,6 +181,27 @@ class VideoOptimizer {
 
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
+  }
+
+  handleActiveScrollPlayback() {
+    const hero = this.heroVideo || document.getElementById('hero-reel-video');
+    const state = hero ? this.states.get(hero) : null;
+    if (!hero || !state || state.userPaused || !state.shouldAutoplay) return;
+
+    this.heroScrollActive = true;
+    if (!hero.paused) {
+      this.pauseVideoInternally(hero);
+    }
+
+    if (this.heroScrollIdleTimer) {
+      clearTimeout(this.heroScrollIdleTimer);
+    }
+
+    this.heroScrollIdleTimer = setTimeout(() => {
+      this.heroScrollActive = false;
+      this.heroScrollIdleTimer = null;
+      this.refreshVisiblePlayback({ refreshDom: false });
+    }, 220);
   }
 
   prepareLazyVideoSource(video) {
@@ -341,6 +386,10 @@ class VideoOptimizer {
       video.removeAttribute('autoplay');
     }
 
+    if (this.isServiceBackgroundVideo(video)) {
+      this.setCardVideoState(video, 'loading');
+    }
+
     this.setupManagedVideoEvents(video);
     this.observeVideoVisibility(video);
 
@@ -355,6 +404,9 @@ class VideoOptimizer {
       if (state) {
         state.userPaused = false;
         state.controllerPaused = false;
+      }
+      if (video.readyState >= 2) {
+        this.setCardVideoState(video, 'ready');
       }
       this.hideLoadingIndicator(video);
     });
@@ -377,16 +429,38 @@ class VideoOptimizer {
       }
     });
 
-    video.addEventListener('waiting', () => this.showLoadingIndicator(video));
-    video.addEventListener('stalled', () => this.showLoadingIndicator(video));
+    video.addEventListener('waiting', () => {
+      if (this.isServiceBackgroundVideo(video) && video.readyState < 2) {
+        this.setCardVideoState(video, 'loading');
+      }
+      this.showLoadingIndicator(video);
+    });
+    video.addEventListener('stalled', () => {
+      if (this.isServiceBackgroundVideo(video) && video.readyState < 2) {
+        this.setCardVideoState(video, 'loading');
+      }
+      this.showLoadingIndicator(video);
+    });
+    video.addEventListener('loadeddata', () => {
+      this.setCardVideoState(video, 'ready');
+      this.hideLoadingIndicator(video);
+    });
     video.addEventListener('canplay', () => {
+      this.setCardVideoState(video, 'ready');
       this.hideLoadingIndicator(video);
       const state = this.states.get(video);
       if (state?.visible && state.shouldAutoplay && !state.userPaused) {
         this.scheduleGuardedResume(video, 'canplay');
       }
     });
-    video.addEventListener('playing', () => this.hideLoadingIndicator(video));
+    video.addEventListener('playing', () => {
+      this.setCardVideoState(video, 'ready');
+      this.hideLoadingIndicator(video);
+    });
+    video.addEventListener('error', () => {
+      this.setCardVideoState(video, 'error');
+      this.hideLoadingIndicator(video);
+    });
   }
 
   observeVideoVisibility(video) {
@@ -397,6 +471,12 @@ class VideoOptimizer {
 
     const state = this.states.get(video);
     const isHero = video.id === 'hero-reel-video';
+    const isMusicCardVideo = this.isMusicCardVideo(video) && this.isServiceBackgroundVideo(video);
+    const rootMargin = isHero || state?.shouldAutoplay === false
+      ? '0px'
+      : isMusicCardVideo
+        ? (this.isMobile() ? '1100px 0px' : '300px 0px')
+        : '200px 0px';
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -405,7 +485,7 @@ class VideoOptimizer {
       },
       {
         threshold: isHero ? 0.25 : 0.15,
-        rootMargin: isHero || state?.shouldAutoplay === false ? '0px' : '200px 0px',
+        rootMargin,
       }
     );
 
@@ -788,6 +868,10 @@ class VideoOptimizer {
   }
 
   showLoadingIndicator(video) {
+    if (this.isServiceBackgroundVideo(video)) {
+      this.setCardVideoState(video, 'loading');
+      return;
+    }
     if (!video.parentNode || video.parentNode.querySelector('.video-loading')) return;
     const indicator = document.createElement('div');
     indicator.className = 'video-loading';

@@ -246,6 +246,7 @@ function initCookieBanner() {
 function scrollToSection(sectionId) {
   const element = document.getElementById(sectionId);
   if (element) {
+    window.RealVibeHaptics?.markProgrammaticScroll?.(900);
     if (window.scrollManager) {
       window.scrollManager.scrollToElement(element, { block: 'start' });
     } else {
@@ -483,6 +484,110 @@ function initBackToTop() {
       });
     }
   });
+}
+
+function initMobileFloatingChromePolicy() {
+  if (window.__rvMobileFloatingChromePolicyInitialized) return;
+  window.__rvMobileFloatingChromePolicyInitialized = true;
+
+  const mobileQuery = window.matchMedia('(max-width: 900px)');
+  const denseSelectors = [
+    '.service-simple-card',
+    '.service-detail-hero',
+    '.service-detail-media-card',
+    '.service-detail-card',
+    '.service-detail-card-matte',
+    '.service-detail-content-section',
+    '.service-detail-cta-section',
+    '.polstan-portal-section',
+    '.process-step',
+    '.benefit-card',
+    '.assistants-section',
+    '.cta-section'
+  ].join(',');
+  let scrollIdleTimer = 0;
+  let denseObserver = null;
+  const denseTargets = new Set();
+
+  const hasOpenWidget = () => Boolean(document.querySelector('.glass-ui-widget.is-visible'));
+  const hasBlockingLayer = () => (
+    document.body.classList.contains('mobile-nav-open') ||
+    document.body.classList.contains('rv-overlay-open') ||
+    document.body.classList.contains('rv-cookie-banner-visible') ||
+    document.documentElement.classList.contains('mobile-nav-open')
+  );
+
+  const setScrolling = (isScrolling) => {
+    if (!mobileQuery.matches || hasBlockingLayer()) {
+      document.body.classList.remove('rv-mobile-scroll-chrome-hidden');
+      return;
+    }
+    document.body.classList.toggle('rv-mobile-scroll-chrome-hidden', isScrolling && !hasOpenWidget());
+  };
+
+  const syncDenseZone = () => {
+    if (!mobileQuery.matches || hasBlockingLayer()) {
+      document.body.classList.remove('rv-mobile-dense-zone');
+      return;
+    }
+    document.body.classList.toggle('rv-mobile-dense-zone', denseTargets.size > 0 && !hasOpenWidget());
+  };
+
+  const teardownDenseObserver = () => {
+    if (denseObserver) {
+      denseObserver.disconnect();
+      denseObserver = null;
+    }
+    denseTargets.clear();
+    document.body.classList.remove('rv-mobile-dense-zone');
+  };
+
+  const setupDenseObserver = () => {
+    teardownDenseObserver();
+    if (!mobileQuery.matches || !('IntersectionObserver' in window)) return;
+
+    denseObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          denseTargets.add(entry.target);
+        } else {
+          denseTargets.delete(entry.target);
+        }
+      });
+      syncDenseZone();
+    }, {
+      threshold: 0.01,
+      rootMargin: '-8% 0px -26% 0px'
+    });
+
+    document.querySelectorAll(denseSelectors).forEach((element) => denseObserver.observe(element));
+  };
+
+  const handleScroll = () => {
+    if (!mobileQuery.matches) return;
+    window.clearTimeout(scrollIdleTimer);
+    setScrolling(true);
+    scrollIdleTimer = window.setTimeout(() => {
+      setScrolling(false);
+      syncDenseZone();
+    }, 520);
+  };
+
+  const handleResize = () => {
+    window.clearTimeout(scrollIdleTimer);
+    document.body.classList.remove('rv-mobile-scroll-chrome-hidden');
+    if (mobileQuery.matches) {
+      setupDenseObserver();
+      syncDenseZone();
+    } else {
+      teardownDenseObserver();
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleResize, { passive: true });
+  mobileQuery.addEventListener?.('change', handleResize);
+  setupDenseObserver();
 }
 
 // Tilt Effect for Cards
@@ -789,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Initialize back to top button
   initBackToTop();
+  initMobileFloatingChromePolicy();
   
   // Initialize tilt effect
   if (!isDetailPage) {
@@ -921,7 +1027,9 @@ function initScrollRevealV2(force = false) {
     // NOTE: We do NOT fully disable scroll-reveal when prefers-reduced-motion is enabled.
     // In real-world setups this led to "no animations anywhere except process section".
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isDesktop = window.matchMedia('(min-width: 901px)').matches;
+    const isMobile = window.matchMedia('(max-width: 900px)').matches;
+    const isDesktop = !isMobile;
+    const hasHashAnchor = Boolean(window.location.hash);
     const selectors = [
       '[data-animate]',
       '.animate-on-scroll',
@@ -993,6 +1101,7 @@ function initScrollRevealV2(force = false) {
     const revealElement = (el) => {
       if (!el || el.dataset.scrollRevealed === '1') return;
       el.dataset.scrollRevealed = '1';
+      el.dataset.scrollRevealAt = String(Math.round(performance.now()));
       el.classList.add('is-visible');
       el.classList.remove(
         'section-hidden',
@@ -1029,12 +1138,16 @@ function initScrollRevealV2(force = false) {
     };
 
     const showVisibleImmediately = () => {
-      prepared.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          // Ensure initial (hidden) styles are applied before revealing
-          requestAnimationFrame(() => revealElement(el));
-        }
+      const visible = prepared
+        .filter((el) => {
+          const rect = el.getBoundingClientRect();
+          return rect.top < window.innerHeight && rect.bottom > 0;
+        })
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+      const stagger = isMobile ? 48 : 46;
+      const baseDelay = isMobile && hasHashAnchor ? 90 : 0;
+      visible.forEach((el, index) => {
+        setTimeout(() => revealElement(el), baseDelay + Math.min(index, 4) * stagger);
       });
     };
 
@@ -1063,11 +1176,11 @@ function initScrollRevealV2(force = false) {
           const queue = Array.from(new Set(revealQueue))
             .filter((target) => target && target.dataset.scrollRevealed !== '1')
             .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-          const stagger = window.innerWidth < 768 ? 28 : 48;
+          const stagger = isMobile ? 48 : 48;
           queue.forEach((target, index) => {
             setTimeout(() => {
               revealElement(target);
-            }, Math.min(index, 3) * stagger);
+            }, Math.min(index, 4) * stagger);
           });
           revealQueue = [];
           revealFrame = 0;
@@ -1075,7 +1188,7 @@ function initScrollRevealV2(force = false) {
       }
     }, {
       threshold: 0.01,
-      rootMargin: '0px 0px 22% 0px'
+      rootMargin: isMobile ? '0px 0px 14% 0px' : '0px 0px 18% 0px'
     });
 
 
@@ -1156,6 +1269,7 @@ function initProcessScrollAnimation() {
   if (!steps.length) {
     return;
   }
+  const isMobile = window.matchMedia('(max-width: 900px)').matches;
 
   // Чередуем лево/право
   steps.forEach((step, index) => {
@@ -1169,7 +1283,7 @@ function initProcessScrollAnimation() {
 
       const step = entry.target;
       const index = Array.from(steps).indexOf(step);
-      const delay = index * 100; // 0.1s
+      const delay = Math.min(index, 3) * (isMobile ? 45 : 80);
 
 
 
@@ -1180,7 +1294,8 @@ function initProcessScrollAnimation() {
       observer.unobserve(step);
     });
   }, {
-    threshold: 0.01  // Упрощённый threshold для более раннего срабатывания
+    threshold: 0.01,
+    rootMargin: isMobile ? '0px 0px 22% 0px' : '0px 0px 12% 0px'
   });
 
   steps.forEach((step) => observer.observe(step));

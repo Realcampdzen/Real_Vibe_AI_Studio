@@ -2392,3 +2392,128 @@ body.rv-overlay-open .glass-ui-widget {
     min-height: 42px !important;
   }
 }
+
+/* ===== MOBILE FRONTEND STABILITY PASS ===== */
+
+@media (max-width: 900px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  section[id],
+  #services,
+  #polstan-portal,
+  #benefits,
+  #process,
+  #assistants {
+    scroll-margin-top: 96px;
+  }
+
+  .reveal-base,
+  .reveal-base--left,
+  .reveal-base--right {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) !important;
+    transition:
+      opacity 0.46s ease,
+      transform 0.46s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    will-change: opacity, transform;
+  }
+
+  .reveal-base.is-visible,
+  .reveal-base--left.is-visible,
+  .reveal-base--right.is-visible {
+    opacity: 1 !important;
+    transform: translate3d(0, 0, 0) !important;
+    will-change: auto;
+  }
+
+  .process-step,
+  .process-step--left,
+  .process-step--right {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) !important;
+    transition:
+      opacity 0.46s ease,
+      transform 0.46s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.28s ease,
+      border-color 0.24s ease !important;
+  }
+
+  .process-step.is-visible,
+  .process-step--left.is-visible,
+  .process-step--right.is-visible {
+    opacity: 1 !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  .process-step:hover {
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  .rv-modal-shell {
+    overflow-x: hidden !important;
+    padding-inline: 0 !important;
+  }
+
+  .rv-auth-panel,
+  .rv-cart-panel,
+  .rv-account-panel {
+    box-sizing: border-box !important;
+    width: min(100%, 100dvw) !important;
+    max-width: 100dvw !important;
+    inset-inline: 0 !important;
+    margin-inline: 0 !important;
+    transform: translate3d(0, 18px, 0) scale(0.99) !important;
+  }
+
+  .rv-modal-shell.is-open .rv-auth-panel,
+  .rv-modal-shell.is-open .rv-cart-panel,
+  .rv-modal-shell.is-open .rv-account-panel {
+    transform: translate3d(0, 0, 0) scale(1) !important;
+  }
+
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-floating-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-health-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-hipych-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-bro-cat-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-valyusha-button,
+  body.rv-mobile-scroll-chrome-hidden .back-to-top,
+  body.rv-mobile-dense-zone .glass-ui-floating-button,
+  body.rv-mobile-dense-zone .glass-ui-health-button,
+  body.rv-mobile-dense-zone .glass-ui-hipych-button,
+  body.rv-mobile-dense-zone .glass-ui-bro-cat-button,
+  body.rv-mobile-dense-zone .glass-ui-valyusha-button,
+  body.rv-mobile-dense-zone .back-to-top,
+  html.mobile-nav-open .back-to-top,
+  body.mobile-nav-open .back-to-top,
+  body.rv-overlay-open .back-to-top,
+  body.rv-cookie-banner-visible .back-to-top {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-widget.is-visible,
+  body.rv-mobile-dense-zone .glass-ui-widget.is-visible {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
+
+@supports not (overflow: clip) {
+  @media (max-width: 900px) {
+    html,
+    body {
+      overflow-x: hidden;
+    }
+  }
+}

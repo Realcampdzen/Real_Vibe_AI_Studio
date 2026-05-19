@@ -3568,6 +3568,27 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   filter: saturate(0.94) contrast(1.12) brightness(0.72);
 }
 
+.service-card-music {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) 48%, rgba(0, 0, 0, 0.58)),
+    url("../public/works/services/music/polstan-hero-poster-20260519.jpg") center / cover no-repeat,
+    #07080b;
+}
+
+.service-card-music.rv-video-loading .video-loading,
+.service-card-music.rv-video-error .video-loading {
+  display: none !important;
+}
+
+.service-card-music.rv-video-ready .service-music-hero-video {
+  animation: musicVideoReadyFade 0.42s ease both;
+}
+
+@keyframes musicVideoReadyFade {
+  from { opacity: 0.72; }
+  to { opacity: 1; }
+}
+
 .service-card-music .service-simple-overlay {
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.28) 48%, rgba(0, 0, 0, 0.56)),
@@ -12967,5 +12988,66 @@ body.mobile-nav-open .glass-ui-widget {
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+@media (min-width: 901px) {
+  .service-simple-card,
+  .benefit-card,
+  .process-step,
+  .assistant-card,
+  .agentic-dev-proof,
+  .polstan-portal-preview {
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+  }
+
+  .service-simple-card:hover,
+  .benefit-card:hover,
+  .process-step:hover,
+  .assistant-card:hover,
+  .polstan-portal-preview:hover,
+  .polstan-portal-preview:focus-visible {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.42),
+      0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .hero-reel,
+  .cta-panel,
+  .value-card,
+  .testimonial-card,
+  .rv-account-panel,
+  .rv-cart-panel,
+  .rv-auth-panel,
+  .cookie-banner,
+  .glass-ui-widget {
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+  }
+
+  .service-simple-footer,
+  .step-footer,
+  .assistant-footer,
+  .glass-ui-floating-button {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
+  }
+
+  .btn-primary,
+  .hero-cta-submit {
+    box-shadow: 0 6px 16px rgba(255, 155, 74, 0.22) !important;
+  }
+
+  .btn-secondary,
+  .hero-secondary-btn {
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .nav-cta {
+    box-shadow:
+      0 8px 18px rgba(0, 0, 0, 0.36),
+      0 0 18px rgba(255, 51, 255, 0.36) !important;
+  }
 }
 

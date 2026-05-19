@@ -95,6 +95,7 @@ class ScrollManager {
    */
   scrollToElement(element, options = {}) {
     if (!element) return;
+    window.RealVibeHaptics?.markProgrammaticScroll?.(900);
 
     const defaultOptions = {
       behavior: 'smooth',
@@ -109,6 +110,7 @@ class ScrollManager {
    * Плавная прокрутка к позиции
    */
   scrollToPosition(y, behavior = 'smooth') {
+    window.RealVibeHaptics?.markProgrammaticScroll?.(900);
     window.scrollTo({
       top: y,
       behavior: behavior
