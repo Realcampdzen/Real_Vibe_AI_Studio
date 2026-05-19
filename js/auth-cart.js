@@ -274,8 +274,8 @@
         }), [
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-icon' }), [makeIcon('fas fa-user')]),
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-copy' }), [
-            createElement('span', { className: 'rv-mobile-commerce-title', text: 'Войти' }),
-            createElement('span', { className: 'rv-mobile-commerce-subtitle', text: 'Для финального шага' }),
+            createElement('span', { className: 'rv-mobile-commerce-title', text: 'Вход' }),
+            createElement('span', { className: 'rv-mobile-commerce-subtitle', text: 'Аккаунт' }),
           ]),
         ]),
         appendChildren(createElement('button', {
@@ -395,9 +395,9 @@
     const header = appendChildren(createElement('div', { className: 'rv-panel-header' }), [
       appendChildren(createElement('span', { className: 'rv-panel-icon' }), [makeIcon('fas fa-user-check')]),
       appendChildren(createElement('div', { className: 'rv-panel-heading' }), [
-        createElement('p', { className: 'rv-panel-kicker', text: 'Личный кабинет' }),
-        createElement('h2', { className: 'rv-panel-title', text: 'Аккаунт и корзина', attrs: { id: 'rv-auth-title' } }),
-        createElement('p', { className: 'rv-panel-desc', text: 'Вход нужен на финальном шаге, чтобы сохранить заявку и историю обращений.' }),
+        createElement('p', { className: 'rv-panel-kicker', text: 'Аккаунт' }),
+        createElement('h2', { className: 'rv-panel-title', text: 'Кабинет', attrs: { id: 'rv-auth-title' } }),
+        createElement('p', { className: 'rv-panel-desc', text: 'Сохраним заявку и историю обращений после входа.' }),
       ]),
     ]);
 
@@ -468,9 +468,9 @@
       const navLabel = button.querySelector('.rv-nav-action-label');
       if (navLabel) navLabel.textContent = state.user ? 'Аккаунт' : 'Вход';
       const mobileTitle = button.querySelector('.rv-mobile-commerce-title');
-      if (mobileTitle) mobileTitle.textContent = state.user ? 'Аккаунт' : 'Войти';
+      if (mobileTitle) mobileTitle.textContent = state.user ? 'Аккаунт' : 'Вход';
       const mobileSubtitle = button.querySelector('.rv-mobile-commerce-subtitle');
-      if (mobileSubtitle) mobileSubtitle.textContent = state.user ? label : 'Для финального шага';
+      if (mobileSubtitle) mobileSubtitle.textContent = state.user ? label : 'Аккаунт';
     });
 
     if (!refs.authContent) return;
@@ -680,7 +680,7 @@
       appendChildren(createElement('span', { className: 'rv-panel-icon' }), [makeIcon('fas fa-bag-shopping')]),
       appendChildren(createElement('div', { className: 'rv-panel-heading' }), [
         createElement('p', { className: 'rv-panel-kicker', text: 'Корзина' }),
-        createElement('h2', { className: 'rv-panel-title', text: 'Корзина услуг', attrs: { id: 'rv-cart-title' } }),
+        createElement('h2', { className: 'rv-panel-title', text: 'Корзина', attrs: { id: 'rv-cart-title' } }),
         refs.cartSummary,
       ]),
     ]);

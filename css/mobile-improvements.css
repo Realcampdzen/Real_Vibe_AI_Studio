@@ -2081,3 +2081,314 @@ body.rv-overlay-open .glass-ui-widget {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* Mobile auth/cart modal recovery */
+@media (max-width: 900px) {
+  html.mobile-nav-open .cookie-banner,
+  body.mobile-nav-open .cookie-banner,
+  body.rv-overlay-open .cookie-banner {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translate(-50%, 120%) !important;
+  }
+
+  html.mobile-nav-open .detail-home-link,
+  body.mobile-nav-open .detail-home-link,
+  body.rv-overlay-open .detail-home-link {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .rv-mobile-commerce {
+    width: min(calc(100% - 28px), 680px) !important;
+    margin: 4px auto 12px !important;
+    padding: 4px !important;
+    gap: 4px !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(255, 255, 255, 0.045) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+  }
+
+  .rv-mobile-commerce-btn {
+    min-height: 52px !important;
+    grid-template-columns: 30px minmax(0, 1fr) !important;
+    gap: 8px !important;
+    padding: 9px 10px !important;
+    border: 1px solid transparent !important;
+    border-radius: 12px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  .rv-mobile-commerce-btn::before {
+    display: none !important;
+  }
+
+  .rv-mobile-commerce-btn:active {
+    background: rgba(255, 255, 255, 0.075) !important;
+    transform: translateY(1px) !important;
+  }
+
+  .rv-mobile-account-btn {
+    background: linear-gradient(135deg, rgba(255, 157, 74, 0.2), rgba(255, 91, 64, 0.08)) !important;
+    border-color: rgba(255, 157, 74, 0.2) !important;
+  }
+
+  .rv-mobile-cart-btn {
+    background: rgba(51, 245, 200, 0.075) !important;
+    border-color: rgba(51, 245, 200, 0.16) !important;
+  }
+
+  .rv-mobile-commerce-icon {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 9px !important;
+    font-size: 13px !important;
+    background: rgba(51, 245, 200, 0.12) !important;
+  }
+
+  .rv-mobile-account-btn .rv-mobile-commerce-icon {
+    background: rgba(255, 157, 74, 0.16) !important;
+    color: #ffb86c !important;
+  }
+
+  .rv-mobile-commerce-title {
+    font-size: 13px !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .rv-mobile-commerce-subtitle {
+    font-size: 10.5px !important;
+    line-height: 1.2 !important;
+    color: rgba(245, 242, 235, 0.68) !important;
+  }
+
+  .rv-mobile-cart-btn .rv-cart-count {
+    top: 5px !important;
+    right: 6px !important;
+  }
+
+  .rv-modal-shell {
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 12px 10px max(10px, env(safe-area-inset-bottom)) !important;
+    background: rgba(3, 4, 7, 0.72) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    transition: opacity 0.18s ease !important;
+  }
+
+  .rv-auth-panel,
+  .rv-cart-panel {
+    width: min(460px, calc(100vw - 20px)) !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: calc(100dvh - 22px) !important;
+    overflow: auto !important;
+    padding: 18px 16px max(16px, env(safe-area-inset-bottom)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 18px !important;
+    background:
+      radial-gradient(circle at 16% 0%, rgba(51, 245, 200, 0.14), transparent 34%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.022)),
+      rgba(8, 9, 12, 0.97) !important;
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.68) !important;
+    transform: translate3d(0, 24px, 0) !important;
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  .rv-modal-shell.is-open .rv-auth-panel,
+  .rv-modal-shell.is-open .rv-cart-panel {
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  .rv-auth-panel .rv-panel-header,
+  .rv-cart-panel .rv-panel-header {
+    grid-template-columns: 36px minmax(0, 1fr) !important;
+    gap: 10px !important;
+    margin-bottom: 14px !important;
+    padding-right: 44px !important;
+  }
+
+  .rv-auth-panel .rv-panel-icon,
+  .rv-cart-panel .rv-panel-icon {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+  }
+
+  .rv-icon-close {
+    top: 16px !important;
+    right: 14px !important;
+    width: 38px !important;
+    height: 38px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .rv-auth-panel .rv-panel-kicker,
+  .rv-cart-panel .rv-panel-kicker {
+    margin: 0 0 4px !important;
+    font-size: 10px !important;
+    letter-spacing: 0.06em !important;
+  }
+
+  .rv-auth-panel .rv-panel-title,
+  .rv-cart-panel .rv-panel-title {
+    margin: 0 !important;
+    font-size: clamp(25px, 7.1vw, 30px) !important;
+    line-height: 1.02 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .rv-auth-panel .rv-panel-title {
+    font-size: clamp(22px, 6.2vw, 26px) !important;
+    line-height: 1.08 !important;
+  }
+
+  .rv-auth-panel .rv-panel-desc,
+  .rv-cart-panel .rv-cart-summary {
+    margin-top: 7px !important;
+    font-size: 12.5px !important;
+    line-height: 1.38 !important;
+  }
+
+  .rv-auth-tabs {
+    gap: 4px !important;
+    margin-bottom: 14px !important;
+    padding: 4px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .rv-auth-tab {
+    height: 42px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+    font-size: 13px !important;
+  }
+
+  .rv-auth-tab.is-active {
+    background: linear-gradient(135deg, #ffb25d, #ff7047) !important;
+    color: #08090b !important;
+    box-shadow: 0 8px 22px rgba(255, 112, 71, 0.24) !important;
+  }
+
+  .rv-auth-form,
+  .rv-social-auth {
+    gap: 10px !important;
+  }
+
+  .rv-field-wrap {
+    gap: 6px !important;
+  }
+
+  .rv-field {
+    min-height: 46px !important;
+    border-radius: 12px !important;
+  }
+
+  .rv-auth-submit {
+    min-height: 50px !important;
+    border-radius: 14px !important;
+    font-size: 14px !important;
+  }
+
+  .rv-social-auth {
+    margin-top: 14px !important;
+    padding-top: 14px !important;
+  }
+
+  .rv-social-auth .rv-muted {
+    font-size: 12.5px !important;
+  }
+
+  .rv-oauth-btn {
+    min-height: 44px !important;
+    border-radius: 13px !important;
+    font-size: 13px !important;
+  }
+
+  .rv-telegram-login {
+    display: none !important;
+  }
+
+  .rv-cart-steps {
+    gap: 5px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .rv-cart-step {
+    min-height: 30px !important;
+    font-size: 10.5px !important;
+  }
+
+  .rv-empty-state,
+  .rv-login-required,
+  .rv-order-success {
+    gap: 10px !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.045) !important;
+  }
+
+  .rv-empty-icon,
+  .rv-login-icon,
+  .rv-success-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+  }
+
+  .rv-empty-title,
+  .rv-login-title,
+  .rv-success-title {
+    font-size: 18px !important;
+    line-height: 1.18 !important;
+  }
+
+  .rv-empty-link {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 48px !important;
+    border-radius: 14px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .rv-modal-shell {
+    padding-inline: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .rv-auth-panel,
+  .rv-cart-panel {
+    width: 100vw !important;
+    max-height: calc(100dvh - 10px) !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    border-left: 0 !important;
+    border-radius: 18px 18px 0 0 !important;
+  }
+}
+
+@media (max-height: 760px) and (max-width: 520px) {
+  .rv-auth-panel .rv-panel-desc {
+    display: none !important;
+  }
+
+  .rv-auth-panel,
+  .rv-cart-panel {
+    padding-top: 16px !important;
+  }
+
+  .rv-oauth-btn {
+    min-height: 42px !important;
+  }
+}
