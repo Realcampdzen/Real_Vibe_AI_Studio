@@ -318,7 +318,7 @@ function initMobileMenu() {
   let lastFocusedElement = null;
   let transitionTimer = 0;
   let isTransitioning = false;
-  const suppressedWidgetsSelector = '.glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget';
+  const suppressedWidgetsSelector = '.glass-ui-floating-button, .glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget';
   const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 360;
 
   const suppressWidgets = (shouldSuppress) => {

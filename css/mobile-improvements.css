@@ -1848,3 +1848,232 @@ img[data-src]::before {
     transform: translateX(0);
   }
 }
+
+/* Mobile menu/auth-cart polish override */
+@media (max-width: 900px) {
+  .nav-left .nav-pill-group,
+  .nav-links,
+  .nav-center,
+  .nav-right .nav-lang-toggle,
+  .nav-right .rv-nav-cluster {
+    display: none !important;
+  }
+
+  .site-header .nav-container {
+    min-height: 64px !important;
+    padding: 0 14px !important;
+    gap: 8px !important;
+  }
+
+  .site-header .nav-logo .logo-image {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .site-header .nav-right {
+    min-width: 0 !important;
+    gap: 6px !important;
+    justify-content: flex-end !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .site-header .nav-right .nav-icon-btn[data-contact-link="whatsapp"],
+  .site-header .nav-right .nav-icon-btn[data-contact-link="telegram"] {
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+    margin-left: 0 !important;
+    font-size: 20px !important;
+  }
+
+  .site-header .nav-right .nav-cta {
+    min-width: 0 !important;
+    min-height: 40px !important;
+    width: auto !important;
+    padding: 0 12px !important;
+    margin-left: 0 !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  body .nav-right .mobile-menu-btn {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    flex: 0 0 48px !important;
+    display: inline-flex !important;
+    gap: 5px !important;
+    padding: 0 !important;
+    margin-left: 0 !important;
+    border-radius: 999px !important;
+  }
+
+  body .nav-right .mobile-menu-btn span {
+    width: 24px !important;
+    height: 2px !important;
+    margin: 0 !important;
+  }
+
+  body .nav-right .mobile-menu-btn.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg) !important;
+  }
+
+  body .nav-right .mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0 !important;
+    transform: scaleX(0.2) !important;
+  }
+
+  body .nav-right .mobile-menu-btn.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg) !important;
+  }
+
+  .mobile-nav {
+    z-index: 11000 !important;
+    transform: translate3d(0, -12px, 0) scale(0.99) !important;
+    transition:
+      opacity 0.24s ease,
+      transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 0.34s !important;
+  }
+
+  .mobile-nav.active {
+    transform: translate3d(0, 0, 0) scale(1) !important;
+  }
+
+  .mobile-nav-header,
+  .mobile-nav-links,
+  .mobile-nav-meta {
+    width: min(100%, 720px) !important;
+  }
+
+  .mobile-nav-header {
+    padding: 14px 18px 12px !important;
+  }
+
+  .mobile-nav-links {
+    padding: 6px 0 10px !important;
+  }
+
+  .mobile-nav-link {
+    min-height: 48px !important;
+    padding: 13px 22px !important;
+    font-size: 16px !important;
+  }
+
+  .mobile-nav-meta {
+    padding: 18px 18px max(18px, calc(14px + env(safe-area-inset-bottom))) !important;
+  }
+
+  .rv-mobile-commerce {
+    width: min(calc(100% - 32px), 720px) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    margin: 10px auto 8px !important;
+    padding: 8px !important;
+    gap: 8px !important;
+    border-radius: 8px !important;
+  }
+
+  .rv-mobile-commerce-btn {
+    min-height: 64px !important;
+    grid-template-columns: 40px minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    touch-action: manipulation;
+  }
+
+  .rv-mobile-commerce-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .rv-mobile-commerce-title {
+    font-size: 14px !important;
+    line-height: 1.15 !important;
+  }
+
+  .rv-mobile-commerce-subtitle {
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-header .nav-container {
+    min-height: 58px !important;
+    padding: 0 10px !important;
+  }
+
+  .site-header .nav-right {
+    gap: 5px !important;
+  }
+
+  .site-header .nav-right .nav-icon-btn[data-contact-link="whatsapp"],
+  .site-header .nav-right .nav-icon-btn[data-contact-link="telegram"] {
+    width: 38px !important;
+    height: 38px !important;
+    flex-basis: 38px !important;
+    font-size: 18px !important;
+  }
+
+  .site-header .nav-right .nav-cta {
+    min-height: 36px !important;
+    padding: 0 9px !important;
+    font-size: 11px !important;
+  }
+
+  body .nav-right .mobile-menu-btn {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    flex-basis: 44px !important;
+  }
+
+  body .nav-right .mobile-menu-btn span {
+    width: 22px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .site-header .nav-right .nav-icon-btn[data-contact-link="whatsapp"] {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu-btn,
+  .mobile-menu-btn span,
+  .mobile-nav,
+  .mobile-nav-link,
+  .rv-mobile-commerce,
+  .rv-mobile-commerce-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+html.mobile-nav-open .glass-ui-floating-button,
+html.mobile-nav-open .glass-ui-health-button,
+html.mobile-nav-open .glass-ui-hipych-button,
+html.mobile-nav-open .glass-ui-bro-cat-button,
+html.mobile-nav-open .glass-ui-valyusha-button,
+html.mobile-nav-open .glass-ui-widget,
+body.mobile-nav-open .glass-ui-floating-button,
+body.mobile-nav-open .glass-ui-health-button,
+body.mobile-nav-open .glass-ui-hipych-button,
+body.mobile-nav-open .glass-ui-bro-cat-button,
+body.mobile-nav-open .glass-ui-valyusha-button,
+body.mobile-nav-open .glass-ui-widget,
+body.rv-overlay-open .glass-ui-floating-button,
+body.rv-overlay-open .glass-ui-health-button,
+body.rv-overlay-open .glass-ui-hipych-button,
+body.rv-overlay-open .glass-ui-bro-cat-button,
+body.rv-overlay-open .glass-ui-valyusha-button,
+body.rv-overlay-open .glass-ui-widget {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

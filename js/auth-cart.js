@@ -8,6 +8,7 @@
     activeAuthTab: 'login',
     returnToCart: false,
     lastOrder: null,
+    cartBusy: false,
     orders: [],
     ordersLoaded: false,
     activeOrderId: null,
@@ -175,6 +176,37 @@
     const icon = createElement('i');
     className.split(/\s+/).filter(Boolean).forEach((part) => icon.classList.add(part));
     return icon;
+  }
+
+  function serviceWord(count) {
+    const value = Math.abs(Number(count) || 0);
+    const lastTwo = value % 100;
+    const last = value % 10;
+    if (lastTwo >= 11 && lastTwo <= 14) return 'услуг';
+    if (last === 1) return 'услуга';
+    if (last >= 2 && last <= 4) return 'услуги';
+    return 'услуг';
+  }
+
+  function setCartBusy(busy) {
+    state.cartBusy = Boolean(busy);
+    refs.cartPanel?.classList.toggle('is-busy', state.cartBusy);
+    refs.cartPanel?.querySelectorAll('[data-cart-inc], [data-cart-dec], [data-cart-remove], [data-cart-clear], [data-cart-notes]')
+      .forEach((control) => {
+        control.disabled = state.cartBusy;
+      });
+  }
+
+  function continueShopping() {
+    closeOverlays();
+    if (window.location.pathname.endsWith('service-detail.html') || window.location.pathname.endsWith('ai-photo-detail.html')) {
+      window.location.href = 'index.html#services';
+      return;
+    }
+    document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!window.location.hash || window.location.hash !== '#services') {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#services`);
+    }
   }
 
   function closeMobileNav() {
@@ -637,6 +669,7 @@
     }), [makeIcon('fas fa-times')]);
     refs.cartList = createElement('div', { className: 'rv-cart-list' });
     refs.cartCheckout = createElement('div', { className: 'rv-cart-checkout' });
+    refs.cartToolbar = createElement('div', { className: 'rv-cart-toolbar' });
     refs.cartSummary = createElement('p', { className: 'rv-cart-summary', text: 'Выберите услуги, чтобы собрать корзину.' });
     refs.cartSteps = appendChildren(createElement('div', { className: 'rv-cart-steps', attrs: { 'aria-label': 'Этапы оформления' } }), [
       createElement('span', { className: 'rv-cart-step', text: 'Услуги', attrs: { 'data-cart-step': 'items' } }),
@@ -647,7 +680,7 @@
       appendChildren(createElement('span', { className: 'rv-panel-icon' }), [makeIcon('fas fa-bag-shopping')]),
       appendChildren(createElement('div', { className: 'rv-panel-heading' }), [
         createElement('p', { className: 'rv-panel-kicker', text: 'Корзина' }),
-        createElement('h2', { className: 'rv-panel-title', text: 'Выбранные услуги', attrs: { id: 'rv-cart-title' } }),
+        createElement('h2', { className: 'rv-panel-title', text: 'Корзина услуг', attrs: { id: 'rv-cart-title' } }),
         refs.cartSummary,
       ]),
     ]);
@@ -656,6 +689,7 @@
       close,
       header,
       refs.cartSteps,
+      refs.cartToolbar,
       refs.cartList,
       refs.cartCheckout,
     ]);
@@ -664,22 +698,61 @@
   }
 
   function createCartItem(item) {
-    const card = createElement('article', { className: 'rv-cart-item' });
+    const isMax = item.quantity >= 9;
+    const card = createElement('article', { className: 'rv-cart-item', attrs: { 'data-cart-item': item.id } });
     const copy = appendChildren(createElement('div', { className: 'rv-cart-item-copy' }), [
       createElement('a', {
         className: 'rv-cart-item-title',
         text: item.title,
         attrs: { href: item.url || '#' },
       }),
-      createElement('span', { className: 'rv-cart-item-price', text: item.priceLabel }),
+      appendChildren(createElement('div', { className: 'rv-cart-item-meta' }), [
+        createElement('span', { className: 'rv-cart-item-price', text: item.priceLabel }),
+        createElement('span', { className: 'rv-cart-item-qty-label', text: `${item.quantity} ${serviceWord(item.quantity)}` }),
+      ]),
     ]);
     const actions = appendChildren(createElement('div', { className: 'rv-cart-item-actions' }), [
-      appendChildren(createElement('button', { className: 'rv-stepper-btn', attrs: { type: 'button', 'data-cart-dec': item.id, 'aria-label': 'Уменьшить' } }), [makeIcon('fas fa-minus')]),
+      appendChildren(createElement('button', {
+        className: 'rv-stepper-btn',
+        attrs: {
+          type: 'button',
+          'data-cart-dec': item.id,
+          'aria-label': item.quantity <= 1 ? 'Удалить позицию' : 'Уменьшить количество',
+          disabled: state.cartBusy ? 'disabled' : undefined,
+        },
+      }), [makeIcon('fas fa-minus')]),
       createElement('span', { className: 'rv-cart-qty', text: item.quantity }),
-      appendChildren(createElement('button', { className: 'rv-stepper-btn', attrs: { type: 'button', 'data-cart-inc': item.id, 'aria-label': 'Увеличить' } }), [makeIcon('fas fa-plus')]),
-      appendChildren(createElement('button', { className: 'rv-remove-btn', attrs: { type: 'button', 'data-cart-remove': item.id, 'aria-label': 'Удалить' } }), [makeIcon('fas fa-trash')]),
+      appendChildren(createElement('button', {
+        className: 'rv-stepper-btn',
+        attrs: {
+          type: 'button',
+          'data-cart-inc': item.id,
+          'aria-label': isMax ? 'Максимум 9' : 'Увеличить количество',
+          title: isMax ? 'Максимум 9' : 'Увеличить',
+          disabled: state.cartBusy || isMax ? 'disabled' : undefined,
+        },
+      }), [makeIcon('fas fa-plus')]),
+      appendChildren(createElement('button', {
+        className: 'rv-remove-btn',
+        attrs: { type: 'button', 'data-cart-remove': item.id, 'aria-label': 'Удалить позицию', disabled: state.cartBusy ? 'disabled' : undefined },
+      }), [makeIcon('fas fa-trash')]),
     ]);
-    return appendChildren(card, [copy, actions]);
+    const notes = createElement('textarea', {
+      className: 'rv-field rv-cart-note',
+      attrs: {
+        'data-cart-notes': item.id,
+        placeholder: 'Комментарий к этой услуге',
+        maxlength: '500',
+        rows: '2',
+        disabled: state.cartBusy ? 'disabled' : undefined,
+      },
+    });
+    notes.value = item.notes || '';
+    const noteWrap = appendChildren(createElement('label', { className: 'rv-cart-note-wrap' }), [
+      createElement('span', { className: 'rv-field-label', text: 'Комментарий к услуге' }),
+      notes,
+    ]);
+    return appendChildren(card, [copy, actions, noteWrap]);
   }
 
   function createCheckoutForm() {
@@ -718,7 +791,7 @@
       appendChildren(createElement('span', { className: 'rv-empty-icon' }), [makeIcon('fas fa-bag-shopping')]),
       createElement('h3', { className: 'rv-empty-title', text: 'Корзина пока пустая' }),
       createElement('p', { className: 'rv-muted', text: 'Добавьте одну или несколько услуг, а потом отправьте brief без оплаты.' }),
-      createElement('a', { className: 'btn-secondary rv-empty-link', text: 'К услугам', attrs: { href: 'index.html#services' } }),
+      createElement('button', { className: 'btn-secondary rv-empty-link', text: 'К услугам', attrs: { type: 'button', 'data-rv-continue-shopping': '' } }),
     ]);
   }
 
@@ -733,8 +806,10 @@
           ? 'Уведомление уже ушло в Telegram. Мы свяжемся по указанному контакту.'
           : 'Заявка сохранена в базе. Если уведомление не дошло, она всё равно останется в истории.',
       }),
-      createElement('button', { className: 'btn-secondary rv-empty-link', text: 'История заявок', attrs: { type: 'button', 'data-rv-auth-open': '' } }),
-      createElement('a', { className: 'btn-secondary rv-empty-link', text: 'Добавить еще услуги', attrs: { href: 'index.html#services' } }),
+      appendChildren(createElement('div', { className: 'rv-cart-success-actions' }), [
+        createElement('button', { className: 'btn-secondary rv-empty-link', text: 'История заявок', attrs: { type: 'button', 'data-rv-auth-open': '' } }),
+        createElement('button', { className: 'btn-secondary rv-empty-link', text: 'Добавить услуги', attrs: { type: 'button', 'data-rv-continue-shopping': '' } }),
+      ]),
     ]);
   }
 
@@ -756,6 +831,7 @@
     if (!refs.cartList || !refs.cartCheckout) return;
     refs.cartList.replaceChildren();
     refs.cartCheckout.replaceChildren();
+    refs.cartToolbar?.replaceChildren();
 
     if (!state.apiAvailable) {
       refs.cartList.appendChild(createElement('p', { className: 'rv-muted', text: 'Корзина временно недоступна.' }));
@@ -772,8 +848,32 @@
     });
     if (refs.cartSummary) {
       refs.cartSummary.textContent = hasItems
-        ? `${state.cart.itemCount} ${state.cart.itemCount === 1 ? 'услуга' : 'услуги'} в корзине`
+        ? `${state.cart.itemCount} ${serviceWord(state.cart.itemCount)} в корзине`
         : 'Выберите услуги, чтобы собрать корзину.';
+    }
+
+    if (hasItems && refs.cartToolbar) {
+      appendChildren(refs.cartToolbar, [
+        appendChildren(createElement('div', { className: 'rv-cart-mini-summary' }), [
+          appendChildren(createElement('span', { className: 'rv-cart-mini-icon' }), [makeIcon('fas fa-list-check')]),
+          appendChildren(createElement('div'), [
+            createElement('strong', { text: `${state.cart.itemCount} ${serviceWord(state.cart.itemCount)}` }),
+            createElement('span', { text: 'Заявка без оплаты, стоимость уточняем после брифа' }),
+          ]),
+        ]),
+        appendChildren(createElement('div', { className: 'rv-cart-toolbar-actions' }), [
+          createElement('button', {
+            className: 'btn-secondary rv-cart-soft-btn',
+            text: 'Добавить услуги',
+            attrs: { type: 'button', 'data-rv-continue-shopping': '' },
+          }),
+          createElement('button', {
+            className: 'btn-secondary rv-cart-soft-btn rv-cart-clear-btn',
+            text: 'Очистить',
+            attrs: { type: 'button', 'data-cart-clear': '', disabled: state.cartBusy ? 'disabled' : undefined },
+          }),
+        ]),
+      ]);
     }
 
     if (items.length === 0) {
@@ -789,7 +889,10 @@
         appendChildren(createElement('span', { className: 'rv-login-icon' }), [makeIcon('fas fa-lock')]),
         createElement('h3', { className: 'rv-login-title', text: 'Войдите, чтобы отправить заявку' }),
         createElement('p', { className: 'rv-muted', text: 'Корзина сохранится, после входа вы вернетесь к оформлению.' }),
-        createElement('button', { className: 'btn-secondary', text: 'Войти и продолжить', attrs: { type: 'button', 'data-rv-auth-open': '' } }),
+        appendChildren(createElement('div', { className: 'rv-cart-login-actions' }), [
+          createElement('button', { className: 'btn-secondary', text: 'Войти и продолжить', attrs: { type: 'button', 'data-rv-auth-open': '' } }),
+          createElement('button', { className: 'btn-secondary rv-cart-soft-btn', text: 'Добавить услуги', attrs: { type: 'button', 'data-rv-continue-shopping': '' } }),
+        ]),
       ]));
     }
   }
@@ -850,7 +953,6 @@
       state.cart = payload.cart;
       renderCart();
       openCart();
-      showToast('Услуга добавлена в корзину');
     } catch (error) {
       if (error.status === 403) {
         await loadSession();
@@ -929,6 +1031,7 @@
   }
 
   async function updateItem(itemId, patch) {
+    setCartBusy(true);
     try {
       const payload = await apiFetch(`/api/cart/items/${encodeURIComponent(itemId)}`, {
         method: 'PATCH',
@@ -939,10 +1042,13 @@
       renderCart();
     } catch (error) {
       showToast(error.message || 'Не удалось обновить корзину');
+    } finally {
+      setCartBusy(false);
     }
   }
 
   async function removeItem(itemId) {
+    setCartBusy(true);
     try {
       const payload = await apiFetch(`/api/cart/items/${encodeURIComponent(itemId)}`, {
         method: 'DELETE',
@@ -952,6 +1058,23 @@
       renderCart();
     } catch (error) {
       showToast(error.message || 'Не удалось удалить позицию');
+    } finally {
+      setCartBusy(false);
+    }
+  }
+
+  async function clearCart() {
+    if (!state.cart?.items?.length || state.cartBusy) return;
+    setCartBusy(true);
+    try {
+      const payload = await apiFetch('/api/cart/items', { method: 'DELETE' });
+      state.cart = payload.cart;
+      state.lastOrder = null;
+      renderCart();
+    } catch (error) {
+      showToast(error.message || 'Не удалось очистить корзину');
+    } finally {
+      setCartBusy(false);
     }
   }
 
@@ -1030,6 +1153,13 @@
         return;
       }
 
+      const continueCart = event.target.closest('[data-rv-continue-shopping]');
+      if (continueCart) {
+        event.preventDefault();
+        continueShopping();
+        return;
+      }
+
       const add = event.target.closest('[data-cart-service-id]');
       if (add) {
         event.preventDefault();
@@ -1079,6 +1209,11 @@
         return;
       }
 
+      if (event.target.closest('[data-cart-clear]')) {
+        clearCart();
+        return;
+      }
+
       const orderToggle = event.target.closest('[data-order-toggle]');
       if (orderToggle) {
         const orderId = orderToggle.getAttribute('data-order-toggle');
@@ -1113,6 +1248,16 @@
         event.preventDefault();
         submitCheckout(checkoutForm);
       }
+    });
+
+    document.addEventListener('change', (event) => {
+      const notes = event.target.closest('[data-cart-notes]');
+      if (!notes) return;
+      const itemId = notes.getAttribute('data-cart-notes');
+      const item = findCartItem(itemId);
+      const nextNotes = String(notes.value || '').trim();
+      if (!item || nextNotes === (item.notes || '')) return;
+      updateItem(item.id, { notes: nextNotes });
     });
 
     document.addEventListener('keydown', (event) => {

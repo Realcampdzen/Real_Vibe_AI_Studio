@@ -164,6 +164,15 @@ export async function removeCartItem({ sessionId, userId, itemId }) {
   });
 }
 
+export async function clearCart({ sessionId, userId }) {
+  return withTransaction(async (client) => {
+    const cart = await getOrCreateActiveCart({ sessionId, userId }, client);
+    await run(client, 'DELETE FROM rv_cart_items WHERE cart_id = $1', [cart.id]);
+    await run(client, 'UPDATE rv_carts SET updated_at = now() WHERE id = $1', [cart.id]);
+    return mapCart(cart, await getCartItems(cart.id, client));
+  });
+}
+
 export async function mergeSessionCartToUser(sessionId, userId) {
   if (!sessionId || !userId) return;
 

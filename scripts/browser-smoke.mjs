@@ -66,6 +66,10 @@ async function exerciseAuthCartUi(browser) {
     repeatOpenedCart: false,
     mobileCommerce: false,
     mobileWidgetsHidden: false,
+    tabletCommerce: false,
+    tabletHamburgerState: false,
+    tabletAuthModal: false,
+    tabletMenuClosedForAuth: false,
   };
 
   try {
@@ -139,6 +143,37 @@ async function exerciseAuthCartUi(browser) {
     result.mobileWidgetsHidden = await mobile.locator('.glass-ui-floating-button:visible, .glass-ui-widget:visible').count() === 0;
   } finally {
     await mobileContext.close();
+  }
+
+  const tabletContext = await browser.newContext({
+    viewport: { width: 768, height: 1024 },
+    isMobile: true,
+    hasTouch: true,
+    serviceWorkers: 'block',
+  });
+  await tabletContext.addInitScript(() => {
+    window.localStorage?.setItem('rv-cookie-consent', 'true');
+  });
+  const tablet = await tabletContext.newPage();
+  try {
+    await tablet.goto(`${baseUrl}/service-detail.html?id=0`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await tablet.waitForSelector('#mobile-menu-btn', { timeout: 30_000 });
+    await tablet.locator('#mobile-menu-btn').click();
+    await tablet.waitForSelector('.mobile-nav.active .rv-mobile-commerce', { timeout: 30_000 });
+    result.tabletCommerce = await tablet.locator('.rv-mobile-commerce-btn').count() >= 2;
+    result.tabletHamburgerState = await tablet.locator('#mobile-menu-btn.active[aria-expanded="true"]').isVisible();
+    await tablet.locator('.rv-mobile-account-btn[data-rv-auth-open]').click();
+    await tablet.waitForSelector('.rv-auth-modal.is-open', { timeout: 30_000 });
+    result.tabletAuthModal = await tablet.locator('.rv-auth-modal .rv-auth-form').isVisible();
+    result.tabletMenuClosedForAuth = await tablet.evaluate(() => {
+      const nav = document.getElementById('mobile-nav');
+      const button = document.getElementById('mobile-menu-btn');
+      return !nav?.classList.contains('active')
+        && nav?.getAttribute('aria-hidden') === 'true'
+        && button?.getAttribute('aria-expanded') === 'false';
+    });
+  } finally {
+    await tabletContext.close();
   }
 
   return result;

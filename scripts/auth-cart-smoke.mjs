@@ -98,6 +98,17 @@ const guestCart = await request(jar, '/api/cart/items', {
 });
 if (guestCart.cart.itemCount !== 1) fail('Guest cart add failed', guestCart);
 
+const guestItem = guestCart.cart.items?.[0];
+if (!guestItem?.id) fail('Guest cart item missing id', guestCart);
+const notedGuestCart = await request(jar, `/api/cart/items/${guestItem.id}`, {
+  method: 'PATCH',
+  headers: { 'X-RV-CSRF': initial.csrfToken },
+  body: { notes: 'Smoke note for cart item' },
+});
+if (notedGuestCart.cart.items?.[0]?.notes !== 'Smoke note for cart item') {
+  fail('Cart item notes were not saved', notedGuestCart);
+}
+
 const email = `smoke-${Date.now()}@example.com`;
 const registered = await request(jar, '/api/auth/register', {
   method: 'POST',
@@ -146,6 +157,12 @@ const repeated = await request(jar, `/api/orders/${order.order.id}/repeat`, {
 if (!repeated.addedCount || repeated.cart.itemCount !== createdOrder.items.reduce((sum, item) => sum + item.quantity, 0)) {
   fail('Repeat order did not add items to cart', repeated);
 }
+
+const cleared = await request(jar, '/api/cart/items', {
+  method: 'DELETE',
+  headers: { 'X-RV-CSRF': savedContactSession.csrfToken || registered.csrfToken || initial.csrfToken },
+});
+if (cleared.cart.itemCount !== 0) fail('Clear cart failed', cleared);
 
 await request(jar, '/api/auth/logout', {
   method: 'POST',

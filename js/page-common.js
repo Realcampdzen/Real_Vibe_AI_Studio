@@ -243,7 +243,14 @@
     let lastFocusedElement = null;
     let transitionTimer = 0;
     let isTransitioning = false;
+    const suppressedWidgetsSelector = '.glass-ui-floating-button, .glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget';
     const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 360;
+
+    const suppressWidgets = (shouldSuppress) => {
+      document.querySelectorAll(suppressedWidgetsSelector).forEach((widget) => {
+        widget.classList.toggle('is-suppressed', shouldSuppress);
+      });
+    };
 
     const markTransitioning = () => {
       window.clearTimeout(transitionTimer);
@@ -283,6 +290,7 @@
       mobileNav.classList.add('active');
       mobileNav.setAttribute('aria-hidden', 'false');
       lockScroll();
+      suppressWidgets(true);
       markTransitioning();
       requestAnimationFrame(() => {
         mobileNavClose?.focus({ preventScroll: true });
@@ -299,6 +307,7 @@
       mobileNav.classList.toggle('rv-force-hidden', immediate);
       mobileNav.setAttribute('aria-hidden', 'true');
       if (restoreScroll) unlockScroll();
+      suppressWidgets(false);
       if (restoreFocus && lastFocusedElement?.isConnected) {
         lastFocusedElement.focus({ preventScroll: true });
       }

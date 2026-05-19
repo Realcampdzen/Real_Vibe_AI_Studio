@@ -4,6 +4,7 @@ import { ensureSession, requireAuth, requireCsrf } from '../services/auth.js';
 import {
   addCartItem,
   checkoutCart,
+  clearCart,
   getCart,
   listUserOrders,
   markOrderNotification,
@@ -83,6 +84,15 @@ router.patch('/cart/items/:itemId', ensureSession, requireCsrf, async (req, res,
     if (error) return res.status(400).json({ error: 'Проверьте параметры позиции' });
 
     const cart = await updateCartItem({ ...context(req), itemId: req.params.itemId, ...value });
+    res.json({ cart });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/cart/items', ensureSession, requireCsrf, async (req, res, next) => {
+  try {
+    const cart = await clearCart(context(req));
     res.json({ cart });
   } catch (error) {
     next(error);
