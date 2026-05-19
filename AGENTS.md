@@ -10,13 +10,14 @@ Primary positioning:
 
 - AI-video, SMM, music, voice/sound, and creative direction for content production.
 - Agentic full-stack development: MVP, SaaS, Telegram Mini Apps, AI bots, sites, custom GPTs, and stabilization of AI-generated code.
+- Frontend/design quality loop: Open Design with Codex and GPT Pro for fast design-system based prototypes, sandbox previews, and cleaner design-to-code handoff.
 - The public site is a sales funnel, a portfolio, and a live demo of AI assistants.
 
 Key person:
 
 - Stepan Ivanov
 - Agentic Full-Stack Developer / Vibe Coder
-- Stack: TypeScript, React, Next.js, Python FastAPI/Django, Node.js, PostgreSQL, Supabase, Vercel, Docker, OpenAI API, Telegram Bot API.
+- Stack: TypeScript, React, Next.js, Python FastAPI/Django, Node.js, PostgreSQL, Supabase, Vercel, Docker, OpenAI API, Telegram Bot API, Open Design, Codex, GPT Pro.
 
 Primary docs:
 
