@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.87-20260520-pwa-standalone';
+const CACHE_VERSION = 'v1.88-20260520-mobile-commerce';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -30,7 +30,7 @@ const STATIC_ASSETS = [
   withBase('/css/style.css?v=20260520-pwa-standalone'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
-  withBase('/css/mobile-improvements.css?v=20260520-pwa-standalone'),
+  withBase('/css/mobile-improvements.css?v=20260520-mobile-commerce'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
@@ -45,7 +45,7 @@ const STATIC_ASSETS = [
   withBase('/js/service-data.js?v=20260520-open-design'),
   withBase('/js/service-detail-page.js?v=20260519-performance-pass'),
   withBase('/js/admin-prices.js?v=20260518-market-prices'),
-  withBase('/js/auth-cart.js?v=20260519-auth-cart-sheet'),
+  withBase('/js/auth-cart.js?v=20260520-mobile-commerce'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),

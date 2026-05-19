@@ -2624,3 +2624,162 @@ body.rv-overlay-open .glass-ui-widget {
     bottom: calc(12px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))) !important;
   }
 }
+
+/* Final mobile nav commerce pass */
+@media (max-width: 900px) {
+  .mobile-nav {
+    --rv-menu-gutter: clamp(20px, 5.5vw, 32px);
+  }
+
+  .rv-mobile-commerce {
+    width: min(calc(100% - (var(--rv-menu-gutter) * 2)), 680px) !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    margin: 6px auto 18px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .rv-mobile-commerce-btn {
+    position: relative !important;
+    isolation: isolate !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    display: grid !important;
+    grid-template-columns: 26px minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding: 10px 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.055) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 252, 245, 0.95) !important;
+    overflow: hidden !important;
+  }
+
+  .rv-mobile-commerce-btn::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.18s ease !important;
+    z-index: -1 !important;
+  }
+
+  .rv-mobile-account-btn::before {
+    background: linear-gradient(135deg, rgba(255, 184, 108, 0.18), transparent 68%) !important;
+  }
+
+  .rv-mobile-cart-btn::before {
+    background: linear-gradient(135deg, rgba(51, 245, 200, 0.16), transparent 68%) !important;
+  }
+
+  .rv-mobile-commerce-btn:active {
+    transform: translateY(1px) !important;
+    background: rgba(255, 255, 255, 0.075) !important;
+  }
+
+  .rv-mobile-commerce-btn:active::before {
+    opacity: 1 !important;
+  }
+
+  .rv-mobile-commerce-icon {
+    width: 26px !important;
+    height: 26px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 14px !important;
+  }
+
+  .rv-mobile-account-btn .rv-mobile-commerce-icon {
+    background: transparent !important;
+    color: #ffb86c !important;
+  }
+
+  .rv-mobile-cart-btn .rv-mobile-commerce-icon {
+    background: transparent !important;
+    color: #33f5c8 !important;
+  }
+
+  .rv-mobile-commerce-copy {
+    min-width: 0 !important;
+    gap: 1px !important;
+  }
+
+  .rv-mobile-commerce-title,
+  .rv-mobile-commerce-subtitle {
+    display: block !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    letter-spacing: 0 !important;
+  }
+
+  .rv-mobile-commerce-title {
+    font-size: 13px !important;
+    line-height: 1.05 !important;
+    font-weight: 700 !important;
+  }
+
+  .rv-mobile-commerce-subtitle {
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+    font-weight: 600 !important;
+    color: rgba(245, 242, 235, 0.5) !important;
+  }
+
+  .rv-mobile-cart-btn .rv-mobile-commerce-subtitle {
+    color: rgba(245, 242, 235, 0.5) !important;
+  }
+
+  .rv-mobile-cart-btn .rv-cart-count {
+    position: static !important;
+    place-self: center end !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    padding: 0 5px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(51, 245, 200, 0.18) !important;
+    color: #33f5c8 !important;
+    font-size: 10px !important;
+    line-height: 18px !important;
+    box-shadow: none !important;
+  }
+
+  .rv-mobile-cart-btn .rv-cart-count.is-empty {
+    display: none !important;
+  }
+
+  .mobile-nav-links {
+    padding-top: 2px !important;
+  }
+
+  .mobile-nav-meta {
+    padding-inline: var(--rv-menu-gutter) !important;
+  }
+
+  .mobile-nav-actions {
+    gap: 10px !important;
+  }
+
+  .mobile-nav-chip {
+    min-height: 50px !important;
+    padding: 0 14px !important;
+    border-radius: 16px !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    background: rgba(255, 255, 255, 0.045) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+    font-size: 14px !important;
+  }
+}

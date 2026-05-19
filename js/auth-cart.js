@@ -274,8 +274,8 @@
         }), [
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-icon' }), [makeIcon('fas fa-user')]),
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-copy' }), [
-            createElement('span', { className: 'rv-mobile-commerce-title', text: 'Вход' }),
-            createElement('span', { className: 'rv-mobile-commerce-subtitle', text: 'Аккаунт' }),
+            createElement('span', { className: 'rv-mobile-commerce-title', text: 'Войти' }),
+            createElement('span', { className: 'rv-mobile-commerce-subtitle', text: 'Профиль' }),
           ]),
         ]),
         appendChildren(createElement('button', {
@@ -285,7 +285,7 @@
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-icon' }), [makeIcon('fas fa-bag-shopping')]),
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-copy' }), [
             createElement('span', { className: 'rv-mobile-commerce-title', text: 'Корзина' }),
-            createElement('span', { className: 'rv-mobile-commerce-subtitle', text: 'Пока пусто' }),
+            createElement('span', { className: 'rv-mobile-commerce-subtitle', text: 'Пусто' }),
           ]),
           createElement('span', { className: 'rv-cart-count is-empty', text: '0', attrs: { 'aria-hidden': 'true' } }),
         ]),
@@ -463,14 +463,14 @@
     document.querySelectorAll('[data-rv-auth-open]').forEach((button) => {
       const label = state.user ? (state.user.name || state.user.email || 'Аккаунт') : 'Войти';
       button.setAttribute('aria-label', state.user ? `Аккаунт: ${label}` : 'Войти');
-      button.setAttribute('title', state.user ? 'Аккаунт' : 'Вход');
+      button.setAttribute('title', state.user ? 'Аккаунт' : 'Войти');
       button.classList.toggle('is-authenticated', Boolean(state.user));
       const navLabel = button.querySelector('.rv-nav-action-label');
       if (navLabel) navLabel.textContent = state.user ? 'Аккаунт' : 'Вход';
       const mobileTitle = button.querySelector('.rv-mobile-commerce-title');
-      if (mobileTitle) mobileTitle.textContent = state.user ? 'Аккаунт' : 'Вход';
+      if (mobileTitle) mobileTitle.textContent = state.user ? 'Аккаунт' : 'Войти';
       const mobileSubtitle = button.querySelector('.rv-mobile-commerce-subtitle');
-      if (mobileSubtitle) mobileSubtitle.textContent = state.user ? label : 'Аккаунт';
+      if (mobileSubtitle) mobileSubtitle.textContent = state.user ? label : 'Профиль';
     });
 
     if (!refs.authContent) return;
@@ -825,7 +825,7 @@
       button.setAttribute('aria-label', count ? `Открыть корзину, услуг: ${count}` : 'Открыть корзину');
       button.setAttribute('title', count ? `Корзина: ${count}` : 'Корзина');
       const subtitle = button.querySelector('.rv-mobile-commerce-subtitle');
-      if (subtitle) subtitle.textContent = count ? `${count} ${count === 1 ? 'услуга' : 'услуги'} выбрано` : 'Пока пусто';
+      if (subtitle) subtitle.textContent = count ? `${count} ${count === 1 ? 'услуга' : 'услуги'} выбрано` : 'Пусто';
     });
 
     if (!refs.cartList || !refs.cartCheckout) return;
