@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.80-20260519-cart-polish3';
+const CACHE_VERSION = 'v1.82-20260519-mobile-auth-polish';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -20,16 +20,16 @@ const STATIC_ASSETS = [
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260519-cart-polish3'),
+  withBase('/css/style.css?v=20260519-mobile-auth-polish'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
-  withBase('/css/mobile-improvements.css?v=20260519-menu-commerce'),
+  withBase('/css/mobile-improvements.css?v=20260519-reveal-stability'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
   withBase('/js/scroll-manager.js'),
   withBase('/js/video-optimizer.js?v=20260519-performance-pass'),
-  withBase('/js/script.js?v=20260519-performance-pass'),
+  withBase('/js/script.js?v=20260519-reveal-stability'),
   withBase('/js/page-common.js?v=20260519-performance-pass'),
   withBase('/js/service-prices.js?v=20260518-market-prices'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),

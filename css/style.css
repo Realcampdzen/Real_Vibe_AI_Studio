@@ -9928,21 +9928,6 @@ body.new-year-page {
   will-change: auto;
 }
 
-.services,
-.benefits-section,
-.value-highlight,
-.projects-banner-section,
-.cta-section,
-.process-section,
-.assistants-section,
-.testimonials,
-.contact,
-.footer,
-.service-detail-section {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 900px;
-}
-
 /* Desktop performance: keep the visual language, but avoid persistent blur/filter
    layers that make long scrolls repaint-heavy on Chrome/Edge/Yandex. */
 .nav-cta::after,
@@ -11855,6 +11840,38 @@ body.rv-overlay-open .glass-ui-widget {
 }
 
 @media (max-width: 520px) {
+  .rv-auth-panel .rv-panel-header {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 10px;
+    padding-right: 48px;
+  }
+
+  .rv-auth-panel .rv-panel-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .rv-auth-panel .rv-panel-title {
+    max-width: 10.5em;
+    font-size: clamp(25px, 7.6vw, 30px);
+    line-height: 1.02;
+  }
+
+  .rv-auth-panel .rv-panel-desc {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .rv-auth-panel .rv-auth-tabs {
+    gap: 6px;
+  }
+
+  .rv-auth-panel .rv-auth-tab {
+    min-width: 0;
+    font-size: 12px;
+  }
+
   .site-header .nav-container {
     min-height: 58px;
     padding: 0 10px;
