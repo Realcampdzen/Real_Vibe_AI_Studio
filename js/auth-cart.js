@@ -172,8 +172,59 @@
     closeModal(refs.accountDrawer);
   }
 
+  function makeSvgIcon(name, children) {
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('class', `rv-inline-icon rv-inline-icon-${name}`);
+    icon.setAttribute('viewBox', '0 0 24 24');
+    icon.setAttribute('width', '1em');
+    icon.setAttribute('height', '1em');
+    icon.setAttribute('fill', 'none');
+    icon.setAttribute('stroke', 'currentColor');
+    icon.setAttribute('stroke-width', '2');
+    icon.setAttribute('stroke-linecap', 'round');
+    icon.setAttribute('stroke-linejoin', 'round');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.setAttribute('focusable', 'false');
+
+    children.forEach((child) => icon.appendChild(child));
+    return icon;
+  }
+
+  function svgPath(d) {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    return path;
+  }
+
+  function svgCircle(attrs) {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    Object.entries(attrs).forEach(([key, value]) => circle.setAttribute(key, value));
+    return circle;
+  }
+
+  function makeInlineIcon(className) {
+    const iconSet = new Set(className.split(/\s+/).filter(Boolean));
+    if (iconSet.has('fa-user')) {
+      return makeSvgIcon('user', [
+        svgCircle({ cx: '12', cy: '8', r: '4' }),
+        svgPath('M4 21a8 8 0 0 1 16 0'),
+      ]);
+    }
+    if (iconSet.has('fa-bag-shopping')) {
+      return makeSvgIcon('bag', [
+        svgPath('M6 7h12l-1 14H7L6 7Z'),
+        svgPath('M9 7a3 3 0 0 1 6 0'),
+      ]);
+    }
+    return null;
+  }
+
   function makeIcon(className) {
+    const inlineIcon = makeInlineIcon(className);
+    if (inlineIcon) return inlineIcon;
+
     const icon = createElement('i');
+    icon.setAttribute('aria-hidden', 'true');
     className.split(/\s+/).filter(Boolean).forEach((part) => icon.classList.add(part));
     return icon;
   }
