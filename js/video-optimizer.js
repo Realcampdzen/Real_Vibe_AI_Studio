@@ -21,7 +21,7 @@ class VideoOptimizer {
     this.heroScrollIdleTimer = null;
     this.resumeAttemptMinGapMs = 700;
     this.viewportRefreshQueued = false;
-    this.mobileHeroWarmupDelayMs = 5000;
+    this.mobileHeroWarmupDelayMs = 1200;
     this.init();
   }
 
@@ -254,6 +254,16 @@ class VideoOptimizer {
       video.load();
     }
     video.dataset.mobileHeroWarmup = reason;
+
+    if (
+      state.visible &&
+      state.shouldAutoplay &&
+      !state.userPaused &&
+      !this.prefersReducedMotion &&
+      document.visibilityState === 'visible'
+    ) {
+      this.scheduleGuardedResume(video, `mobile-hero-${reason}`, 120);
+    }
   }
 
   scheduleMobileHeroWarmup(video, reason = 'idle') {
@@ -478,7 +488,9 @@ class VideoOptimizer {
     if (video.id === 'hero-reel-video') this.heroVideo = video;
 
     const mobileHeroDeferred = this.shouldDeferMobileHero(video);
-    const shouldAutoplay = !mobileHeroDeferred && video.dataset.autoplayDesktop !== 'false';
+    const shouldAutoplay = mobileHeroDeferred
+      ? video.dataset.autoplayMobile !== 'false'
+      : video.dataset.autoplayDesktop !== 'false';
     const state = {
       visible: false,
       userPaused: !shouldAutoplay,
@@ -658,7 +670,7 @@ class VideoOptimizer {
     state.wasPlayingBeforeHidden = false;
 
     if (state.mobileHeroDeferred && !state.mobileHeroReady) {
-      this.scheduleMobileHeroWarmup(video, 'visible');
+      this.warmMobileHero(video, 'visible');
       return;
     }
 

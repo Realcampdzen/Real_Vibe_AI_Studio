@@ -1,5 +1,5 @@
 (function initRealVibePwaChrome() {
-  const HOTFIX_VERSION = '20260520-ai-video-sequence-4';
+  const HOTFIX_VERSION = '20260520-mobile-hero-video-hotfix';
   const SW_URL = `sw.js?v=${HOTFIX_VERSION}`;
   const CACHE_RESET_KEY = `rv-cache-reset-${HOTFIX_VERSION}`;
   const CONTROLLER_RELOAD_KEY = `rv-sw-controller-reload-${HOTFIX_VERSION}`;

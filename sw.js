@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.00-20260520-ai-video-sequence-4';
+const CACHE_VERSION = 'v2.01-20260520-mobile-hero-video-hotfix';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -35,9 +35,9 @@ const STATIC_ASSETS = [
   withBase('/css/mobile-improvements.css?v=20260520-mobile-rail-hotfix'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
-  withBase('/js/pwa-chrome.js?v=20260520-ai-video-sequence-4'),
+  withBase('/js/pwa-chrome.js?v=20260520-mobile-hero-video-hotfix'),
   withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
-  withBase('/js/video-optimizer.js?v=20260520-ai-video-sequence-4'),
+  withBase('/js/video-optimizer.js?v=20260520-mobile-hero-video-hotfix'),
   withBase('/js/script.js?v=20260520-mobile-rail-hotfix'),
   withBase('/js/page-common.js?v=20260520-mobile-rail-hotfix'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
