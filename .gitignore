@@ -58,6 +58,9 @@ tasks/
 deploy-ready/
 files-to-upload.txt
 
+# Local source screen recordings. Optimized web loops live under public/works/services/.
+public/Запись*.mp4
+
 # Cloudflare API (local work only)
 cf-api/
 

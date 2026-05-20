@@ -42,8 +42,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260520-pwa-standalone" as="style">
-  <link rel="preload" href="css/mobile-improvements.css?v=20260520-mobile-commerce" as="style" media="(max-width: 900px)">
+  <link rel="preload" href="css/style.css?v=20260520-android-hotfix" as="style">
+  <link rel="preload" href="css/mobile-improvements.css?v=20260520-android-hotfix" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,13 +52,13 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260520-pwa-standalone">
+  <link rel="stylesheet" href="css/style.css?v=20260520-android-hotfix">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css?v=20260518-social-preview">
   
   <!-- Mobile optimizations -->
-  <link rel="stylesheet" href="css/mobile-improvements.css?v=20260520-mobile-commerce" media="(max-width: 900px)">
+  <link rel="stylesheet" href="css/mobile-improvements.css?v=20260520-android-hotfix" media="(max-width: 900px)">
   
   <!-- Mobile advanced features -->
   <link rel="stylesheet" href="css/mobile-advanced.css" media="(max-width: 900px)">
@@ -66,7 +66,7 @@
   <!-- Snow Effect CSS removed (seasonal, not needed in May+) -->
   
   <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json?v=20260520-pwa-standalone">
+  <link rel="manifest" href="manifest.json?v=20260520-android-hotfix">
   
   <!-- PWA Meta Tags -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -79,7 +79,7 @@
   
   <!-- Apple Touch Icons -->
   <!-- <link rel="mask-icon" href="images/safari-pinned-tab.svg" color="#6366f1"> -->
-  <script src="js/pwa-chrome.js?v=20260520-pwa-standalone" defer></script>
+  <script src="js/pwa-chrome.js?v=20260520-android-hotfix" defer></script>
 </head>
 
 <body class="home-page">
@@ -236,7 +236,6 @@
           data-managed-video
           loop
           muted
-          autoplay
           playsinline
           preload="metadata"
           poster="public/works/hero-poster.jpg"
@@ -244,11 +243,7 @@
           data-desktop-webm-src="public/works/hero-reel-desktop.webm"
           data-desktop-src="public/works/hero-reel-desktop.mp4"
           data-mobile-src="public/works/hero-reel-mobile.mp4"
-        >
-          <source src="public/works/hero-reel-mobile.mp4" type="video/mp4" media="(max-width: 900px)">
-          <source src="public/works/hero-reel-desktop.webm" type="video/webm">
-          <source src="public/works/hero-reel-desktop.mp4" type="video/mp4">
-        </video>
+        ></video>
         <p class="hero-video-tagline" aria-hidden="true">AI контент, шоурил 2026</p>
       </div>
       <div class="hero-reel-overlay"></div>
@@ -346,7 +341,19 @@
           </article>
 
           <article class="service-simple-card service-card-agentic" data-service-id="11">
-            <img class="service-simple-bg-image" src="public/works/services/agentic-ai-dev/cover-hermes-product-2026.jpg" alt="ВАЙБКОДИНГ И AGENTIC AI DEV" loading="eager" fetchpriority="high" decoding="async" data-critical="true">
+            <video
+              class="service-simple-bg-video service-agentic-office-video"
+              data-managed-video
+              loop
+              muted
+              autoplay
+              playsinline
+              preload="metadata"
+              poster="public/works/services/agentic-ai-dev/cover-hermes-office-2026.jpg"
+              data-desktop-src="public/works/services/agentic-ai-dev/agent-office-loop.mp4"
+              data-mobile-src="public/works/services/agentic-ai-dev/agent-office-loop-mobile.mp4"
+              aria-hidden="true"
+            ></video>
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">MVP, SaaS, TMA и frontend через Open Design, Codex и GPT Pro</p>
@@ -633,7 +640,7 @@
       
       <div class="process-grid">
         <div class="process-step">
-          <img src="public/согласование.jpg" alt="Общение с клиентом" class="step-image" loading="eager" fetchpriority="low" decoding="async">
+          <img src="public/согласование.jpg" alt="Общение с клиентом" class="step-image" loading="lazy" fetchpriority="low" decoding="async">
           <div class="step-overlay"></div>
           <div class="step-content">
             <div class="step-footer">Общение с клиентом, согласование сроков и цены</div>
@@ -641,7 +648,7 @@
         </div>
         
         <div class="process-step">
-          <img src="public/работа.jpg" alt="Создание контента специалистами" class="step-image" loading="eager" fetchpriority="low" decoding="async">
+          <img src="public/работа.jpg" alt="Создание контента специалистами" class="step-image" loading="lazy" fetchpriority="low" decoding="async">
           <div class="step-overlay"></div>
           <div class="step-content">
             <div class="step-footer">Создание контента специалистами ИИ-студии</div>
@@ -649,7 +656,7 @@
         </div>
         
         <div class="process-step">
-          <img src="public/process-result-approval-2026.jpg" alt="Согласование результатов с заказчиком" class="step-image" loading="eager" fetchpriority="low" decoding="async">
+          <img src="public/process-result-approval-2026.jpg" alt="Согласование результатов с заказчиком" class="step-image" loading="lazy" fetchpriority="low" decoding="async">
           <div class="step-overlay"></div>
           <div class="step-content">
             <div class="step-footer">Согласование результатов с довольным заказчиком</div>
@@ -673,7 +680,7 @@
       <div class="assistants-grid">
         <!-- Wellness Bro -->
         <div class="assistant-card" data-bot="health-assistant">
-          <img src="images/wellness-bro-avatar-384.webp" alt="Wellness Bro" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
+          <img src="images/wellness-bro-avatar-384.webp" alt="Wellness Bro" class="assistant-bg-image" loading="lazy" fetchpriority="low" decoding="async">
           <div class="assistant-content">
             <div class="assistant-footer">🩺 Wellness Bro</div>
           </div>
@@ -681,7 +688,7 @@
 
         <!-- Кот Бро (в центре) -->
         <div class="assistant-card featured-bot" data-bot="bro-cat">
-          <img src="public/works/Кот Бро карточка.jpg" alt="Кот Бро" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
+          <img src="public/works/Кот Бро карточка.jpg" alt="Кот Бро" class="assistant-bg-image" loading="lazy" fetchpriority="low" decoding="async">
           <div class="assistant-content">
             <div class="assistant-footer">🐱 Кот Бро</div>
           </div>
@@ -689,7 +696,7 @@
 
         <!-- НейроVалюша -->
         <div class="assistant-card" data-bot="valyusha">
-          <img src="public/works/Нейровалюша.jpg" alt="НейроVалюша" class="assistant-bg-image" loading="eager" fetchpriority="low" decoding="async">
+          <img src="public/works/Нейровалюша.jpg" alt="НейроVалюша" class="assistant-bg-image" loading="lazy" fetchpriority="low" decoding="async">
           <div class="assistant-content">
             <div class="assistant-footer">💜 НейроVалюша</div>
           </div>
@@ -804,13 +811,13 @@
   <script src="js/hero-reveal.js?v=20251216-reveal-force"></script>
   <!-- Core scripts (defer для оптимизации загрузки) -->
   <script src="js/scroll-manager.js?v=20260519-mobile-premium-recovery" defer></script>
-  <script src="js/video-optimizer.js?v=20260519-mobile-premium-recovery" defer></script>
+  <script src="js/video-optimizer.js?v=20260520-android-hotfix" defer></script>
   <script src="js/service-prices.js?v=20260518-market-prices" defer></script>
   <script src="js/service-price-bindings.js?v=20260518-market-prices" defer></script>
   <script src="js/script.js?v=20260519-mobile-premium-recovery" defer></script>
   <script src="js/haptic-feedback.js?v=20260519-mobile-premium-recovery" defer></script>
   <script src="js/chat-client.js?v=20260512-productux" defer></script>
-  <script src="js/auth-cart.js?v=20260520-mobile-commerce" defer></script>
+  <script src="js/auth-cart.js?v=20260520-android-hotfix" defer></script>
   <script src="js/services-carousel.js?v=20260511-stylecsp" defer></script>
   <script src="js/performance-loader.js?v=20260519-mobile-premium-recovery" defer></script>
   

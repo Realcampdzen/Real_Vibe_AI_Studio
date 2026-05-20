@@ -3580,7 +3580,8 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   box-shadow: var(--btn-shadow-primary-active);
 }
 
-.service-card-agentic .service-simple-bg-image {
+.service-card-agentic .service-simple-bg-image,
+.service-card-agentic .service-simple-bg-video {
   object-position: 50% center;
   filter: saturate(1.06) contrast(1.03) brightness(1.08);
 }
