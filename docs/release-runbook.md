@@ -1,5 +1,7 @@
 # Real Vibe Studio Release Runbook
 
+Last updated: 2026-05-20
+
 ## Preflight
 
 ```bash
@@ -89,6 +91,8 @@ The app must bind to `127.0.0.1:4300`; Nginx owns public TLS/host routing.
 npm run smoke:prod
 BROWSER_SMOKE_BASE_URL=https://vps.real-vibe.studio npm run smoke:browser
 PERF_PROBE_BASE_URL=https://vps.real-vibe.studio npm run perf:desktop
+curl -s https://real-vibe.studio/ | grep -E 'interactive-widget|android-keyboard|mobile'
+curl -s https://real-vibe.studio/sw.js | grep -E 'CACHE_VERSION|android-keyboard|mobile'
 ssh root@89.223.126.190 "readlink -f /srv/real-vibe-studio/current"
 ssh root@89.223.126.190 "docker ps --filter name=real-vibe-web --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}'"
 ssh root@89.223.126.190 "docker image ls current-real-vibe-web --format 'table {{.Repository}}\t{{.Tag}}\t{{.Size}}'"
@@ -106,8 +110,33 @@ Enforced CSP must include `script-src 'self'`, `style-src-attr 'none'`, and no `
 - Service cards navigate to detail pages.
 - `service-detail.html?id=0..7` and `ai-photo-detail.html` render without console errors.
 - Chat widgets open, send invalid/limited requests gracefully, and stay visually usable.
+- Mobile chat widgets on Android-sized viewports open without autofocus; after focusing `.glass-message-input`, `rv-chat-keyboard-open` is set, the input stays inside the reduced viewport, and the bottom rail/cookie/banner/floating buttons are hidden.
+- Installed Android PWA launches with `display-mode: standalone`; a normal Chrome tab may still show browser UI, but the page must not create a white bottom gap or resize flicker around it.
 - CSP report-only violations can be sampled in logs, but they must not include raw request bodies, cookies, tokens, full URLs with query strings, or user messages.
 - Detail CTA blocks expose working Telegram, phone, and email links.
+
+## Mobile PWA / Android Keyboard Smoke
+
+Use this additional smoke for releases touching `manifest.json`, `sw.js`, mobile CSS, `js/pwa-chrome.js`, `js/performance-loader.js`, or `chat-components/GlassUIWidget.js`.
+
+Expected behavior:
+
+- `meta viewport` includes `viewport-fit=cover` and `interactive-widget=resizes-content`.
+- `manifest.json` remains installable with `display: "standalone"`, dark theme/background colors, and 192/512/maskable icons.
+- `sw.js` and all HTML entry points use the same current cache-buster.
+- Opening a mobile chat widget does not focus the input immediately.
+- Focusing the input toggles `rv-chat-keyboard-open` on `<html>` and `<body>`.
+- With a reduced viewport such as `390x560`, the active chat widget stays fully visible; horizontal overflow remains `0`.
+- The bottom rail pseudo-element, cookie banner, back-to-top button, and floating bot dock are hidden while the keyboard is open.
+- The service worker controller URL contains the current `sw.js?v=<cache-buster>`.
+
+Useful manual production checks:
+
+```bash
+curl -I https://real-vibe.studio/
+curl -s https://real-vibe.studio/manifest.json | grep -E 'standalone|display_override|theme_color|background_color'
+curl -s https://real-vibe.studio/sw.js | grep -E 'CACHE_VERSION'
+```
 
 ## CI Gate
 

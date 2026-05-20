@@ -1,6 +1,6 @@
 # Real Vibe AI Studio - Technical Operations Guide
 
-Last updated: 2026-05-18
+Last updated: 2026-05-20
 
 This guide is for AI agents and developers maintaining the Real Vibe AI Studio repository.
 
@@ -27,6 +27,7 @@ The repository contains:
 | Service media | `public/works/services/<slug>/` |
 | Social preview | versioned `public/og-real-vibe-ai-studio-YYYYMMDD.jpg`, OG/Twitter meta in `index.html` |
 | PWA/cache | `sw.js`, `manifest.json` |
+| Mobile/PWA runtime | viewport meta in `index.html`, `service-detail.html`, `ai-photo-detail.html`; `js/pwa-chrome.js`; mobile overrides in `css/mobile-improvements.css` |
 | Chat widgets | `chat-components/GlassUIWidget.js`, `js/glass-ui-*.js`, `js/performance-loader.js` |
 | Server/API | `server/index.js`, `server/routes`, `server/services`, `server/bots` |
 | Deploy | `scripts/deploy-vps-patch.mjs`, `Dockerfile`, `docker-compose.yml` |
@@ -224,6 +225,40 @@ bump:
 
 HTML navigation in `sw.js` should stay network-first. Do not change it to cache-first unless explicitly required.
 
+## Android PWA And Mobile Keyboard
+
+The Android target is a PWA-first mobile app surface. A normal Chrome tab cannot programmatically hide the browser UI, so the production fallback is:
+
+- make the site installable and launchable as a standalone PWA;
+- keep the normal mobile tab visually stable when Chrome's bottom bar moves;
+- prevent chat input focus from dragging the bottom rail, cookies, bots, or page content with the soft keyboard.
+
+Current implementation files:
+
+- `manifest.json` - `display: "standalone"` with `display_override` for standalone/fullscreen-capable Android launches, dark theme/background, and installable icons.
+- `index.html`, `service-detail.html`, `ai-photo-detail.html` - viewport must include `viewport-fit=cover` and `interactive-widget=resizes-content`.
+- `js/pwa-chrome.js` - registers the versioned `sw.js`, sets standalone classes, and handles one-time cache cleanup/update flows.
+- `css/mobile-improvements.css` - owns the mobile bottom rail, safe-area spacing, mobile fixed overlays, and keyboard-mode overrides.
+- `chat-components/GlassUIWidget.js` - owns chat focus behavior, visualViewport variables, and keyboard-mode class toggles.
+- `js/performance-loader.js` - lazy-loads the current versioned chat widget bundle.
+
+Mobile chat keyboard rules:
+
+- On mobile, opening a chat widget must not auto-focus `.glass-message-input`. Desktop can keep autofocus.
+- Input focus adds `rv-chat-keyboard-open` to `<html>` and `<body>` and `is-keyboard-active` to the active `.glass-ui-widget`.
+- While `rv-chat-keyboard-open` is active, hide the mobile bottom rail (`body::after`), `.back-to-top`, cookie banner, and `.glass-ui-floating-button` elements.
+- The visible chat widget should be fixed inside the visual viewport using `--rv-visual-viewport-height`, `--rv-visual-viewport-offset-top`, and safe-area variables.
+- Do not tie bottom dock/rail position to `visualViewport` resize events. Keyboard mode may read the visual viewport; the rail must stay stable or be hidden while the keyboard is open.
+- Chat inputs should use `font-size: 16px` on mobile to avoid browser zoom/focus jumps.
+
+Release checklist for PWA/mobile changes:
+
+1. Bump query strings for changed CSS/JS/manifest paths in all three HTML entry points.
+2. Bump the matching `CACHE_VERSION` and precache paths in `sw.js`.
+3. If `GlassUIWidget.js` changes, bump its lazy-load query in `js/performance-loader.js`.
+4. If `js/pwa-chrome.js` changes, bump `HOTFIX_VERSION` and the script query in HTML.
+5. Verify installed-PWA behavior separately from normal Chrome tab behavior; only installed PWA can remove browser chrome.
+
 ## Backend and Bots
 
 Express server entry:
@@ -322,6 +357,15 @@ Recommended browser checks for UI/media work:
 - mobile and desktop viewports when changing layout;
 - broken image/video scan.
 
+Mobile PWA/chat checks for Android work:
+
+- homepage at `390x844` and `412x915`;
+- tap a floating bot button and confirm the chat opens without autofocus;
+- focus `.glass-message-input`, then emulate keyboard shrink around `390x560`;
+- confirm one visible widget, input inside viewport, no horizontal overflow, no console errors;
+- confirm `.glass-ui-floating-button`, `.back-to-top`, cookie banner, and `body::after` are hidden while keyboard mode is active;
+- confirm service worker controller URL contains the current `sw.js?v=<cache-buster>`.
+
 Known allowed noise:
 
 - `/api/auth/session` may return 404 in some local browser checks if auth-cart work is mid-flight.
@@ -354,6 +398,8 @@ After deploy:
 ```bash
 curl -I https://real-vibe.studio/
 curl -I https://real-vibe.studio/sw.js
+curl -s https://real-vibe.studio/ | grep -E 'interactive-widget|android-keyboard|mobile'
+curl -s https://real-vibe.studio/sw.js | grep -E 'CACHE_VERSION|android-keyboard|mobile'
 curl -I https://real-vibe.studio/public/og-real-vibe-ai-studio-YYYYMMDD.jpg
 ```
 
