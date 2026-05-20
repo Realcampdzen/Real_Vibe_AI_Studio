@@ -302,7 +302,11 @@ class VideoOptimizer {
   }
 
   getSourceConfig(video) {
+    const playlistSources = this.getPlaylistSources(video);
+    const playlistIndex = Number(video.dataset.playlistIndex || 0);
+    const playlistSrc = playlistSources[playlistIndex] || playlistSources[0] || '';
     const desktopMp4 =
+      playlistSrc ||
       video.dataset.desktopSrc ||
       video.querySelector('source[type="video/mp4"]:not([media])')?.getAttribute('src') ||
       video.querySelector('source[type="video/mp4"]')?.getAttribute('src') ||
@@ -320,6 +324,88 @@ class VideoOptimizer {
       mobileMp4: this.normalizeSrc(mobileMp4),
       mobileWebm: this.normalizeSrc(mobileWebm),
     };
+  }
+
+  getPlaylistSources(video) {
+    const raw = video?.dataset?.playlistSrcs || '';
+    if (!raw) return [];
+    return raw
+      .split('|')
+      .map((src) => this.normalizeSrc(src.trim()))
+      .filter(Boolean);
+  }
+
+  createMp4Source(src) {
+    const source = document.createElement('source');
+    source.src = src;
+    source.type = 'video/mp4';
+    source.dataset.playlist = 'true';
+    return source;
+  }
+
+  preloadVideoSource(src) {
+    if (!src || !document.body) return;
+    const exists = [...document.querySelectorAll('[data-rv-video-preload]')]
+      .some((element) => element.dataset.rvVideoPreload === src);
+    if (exists) return;
+
+    const video = document.createElement('video');
+    video.dataset.rvVideoPreload = src;
+    video.dataset.videoOptimizerReady = '1';
+    video.preload = 'auto';
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('aria-hidden', 'true');
+    video.tabIndex = -1;
+    video.src = src;
+    video.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:auto;';
+    document.body.appendChild(video);
+    video.load();
+  }
+
+  preloadNextPlaylistSource(video) {
+    const state = this.states.get(video);
+    if (!state?.playlistSources?.length) return;
+    const nextIndex = (state.playlistIndex + 1) % state.playlistSources.length;
+    this.preloadVideoSource(state.playlistSources[nextIndex]);
+  }
+
+  applyPlaylistSource(video, index, { load = true } = {}) {
+    const state = this.states.get(video);
+    if (!state?.playlistSources?.length) return false;
+
+    const nextIndex = (index + state.playlistSources.length) % state.playlistSources.length;
+    const src = state.playlistSources[nextIndex];
+    state.playlistIndex = nextIndex;
+    video.dataset.playlistIndex = String(nextIndex);
+    video.dataset.desktopSrc = src;
+    video.dataset.sourcesApplied = '1';
+    video.removeAttribute('src');
+    video.querySelectorAll('source').forEach((source) => source.remove());
+    video.appendChild(this.createMp4Source(src));
+    this.preloadNextPlaylistSource(video);
+
+    if (load) {
+      this.suppressInternalPause(video);
+      video.load();
+    }
+
+    return true;
+  }
+
+  advancePlaylist(video) {
+    const state = this.states.get(video);
+    if (!state?.playlistSources || state.playlistSources.length < 2) return false;
+
+    this.setCardVideoState(video, 'loading');
+    this.applyPlaylistSource(video, state.playlistIndex + 1);
+    const playPromise = video.play?.();
+    if (playPromise?.catch) {
+      playPromise.catch(() => {
+        this.setCardVideoState(video, video.error ? 'error' : null);
+      });
+    }
+    return true;
   }
 
   applySources(video, { load = true } = {}) {
@@ -375,6 +461,7 @@ class VideoOptimizer {
     }
 
     video.dataset.sourcesApplied = '1';
+    this.preloadNextPlaylistSource(video);
     if (load) {
       this.suppressInternalPause(video);
       video.load();
@@ -403,8 +490,17 @@ class VideoOptimizer {
       resumeTimer: null,
       lastResumeAttempt: 0,
       controllerPaused: false,
+      playlistSources: this.getPlaylistSources(video),
+      playlistIndex: Number(video.dataset.playlistIndex || 0),
     };
     this.states.set(video, state);
+
+    if (state.playlistSources.length > 1) {
+      video.loop = false;
+      video.removeAttribute('loop');
+      video.dataset.playlistIndex = String(state.playlistIndex);
+      video.dataset.desktopSrc = state.playlistSources[state.playlistIndex] || state.playlistSources[0];
+    }
 
     video.preload = mobileHeroDeferred ? 'none' : 'metadata';
     video.setAttribute('preload', mobileHeroDeferred ? 'none' : 'metadata');
@@ -510,6 +606,9 @@ class VideoOptimizer {
     video.addEventListener('error', () => {
       this.setCardVideoState(video, 'error');
       this.hideLoadingIndicator(video);
+    });
+    video.addEventListener('ended', () => {
+      this.advancePlaylist(video);
     });
   }
 

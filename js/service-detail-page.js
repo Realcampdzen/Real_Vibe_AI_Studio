@@ -118,22 +118,30 @@
     });
   }
 
+  function createPlaylistAttr(sources) {
+    if (!Array.isArray(sources)) return undefined;
+    const safeSources = sources.filter((src) => isSafeAssetUrl(src));
+    return safeSources.length > 1 ? safeSources.join('|') : undefined;
+  }
+
   function createHeroVideo(src, poster, options = {}) {
     if (!isSafeAssetUrl(src)) return null;
+    const playlist = createPlaylistAttr(options.playlist);
     const video = createElement('video', {
       className: 'hero-reel-video',
       attrs: {
-        'data-managed-video': '',
+        'data-managed-video': 'true',
         preload: 'metadata',
         'data-desktop-src': src,
         'data-mobile-src': isSafeAssetUrl(options.mobileSrc) ? options.mobileSrc : undefined,
         'data-desktop-webm-src': isSafeAssetUrl(options.desktopWebmSrc) ? options.desktopWebmSrc : undefined,
         'data-mobile-webm-src': isSafeAssetUrl(options.mobileWebmSrc) ? options.mobileWebmSrc : undefined,
+        'data-playlist-srcs': playlist,
         poster: isSafeAssetUrl(poster) ? poster : undefined,
       },
     });
     video.autoplay = true;
-    video.loop = true;
+    video.loop = !playlist;
     video.muted = true;
     video.playsInline = true;
     return video;
@@ -143,7 +151,7 @@
     const video = createElement('video', {
       className: 'hero-reel-video',
       attrs: {
-        'data-managed-video': '',
+        'data-managed-video': 'true',
         preload: 'metadata',
         'data-desktop-webm-src': FALLBACK_HERO_WEBM,
         'data-desktop-src': FALLBACK_HERO_VIDEO,
@@ -198,6 +206,7 @@
         mobileSrc: service.heroMobileVideo,
         desktopWebmSrc: service.heroDesktopWebm,
         mobileWebmSrc: service.heroMobileWebm,
+        playlist: service.heroVideoPlaylist,
       })
       : createHeroImage(service.backgroundImage, service.title || service.detailTitle || 'Service');
 
@@ -354,12 +363,14 @@
 
   function createDetailMediaVideo(item) {
     if (!isSafeAssetUrl(item.src)) return null;
+    const playlist = createPlaylistAttr(item.playlist);
     const video = createElement('video', {
       className: 'service-detail-media-video',
       attrs: {
-        'data-managed-video': '',
+        'data-managed-video': 'true',
         'data-desktop-src': item.src,
         'data-type': item.type || 'video/mp4',
+        'data-playlist-srcs': playlist,
         poster: isSafeAssetUrl(item.poster) ? item.poster : undefined,
         preload: 'none',
         playsinline: '',
@@ -368,7 +379,7 @@
       },
     });
     video.controls = true;
-    video.loop = true;
+    video.loop = !playlist;
     video.muted = true;
     video.playsInline = true;
     return video;
@@ -486,6 +497,7 @@
         mobileSrc: service.heroMobileVideo,
         desktopWebmSrc: service.heroDesktopWebm,
         mobileWebmSrc: service.heroMobileWebm,
+        playlist: service.heroVideoPlaylist,
       })
       : createHeroImage(src, service.title || 'Медиа услуги');
 

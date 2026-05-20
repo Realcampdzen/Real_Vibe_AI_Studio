@@ -18,18 +18,27 @@ function imageMedia(slug, fileName, title, description) {
   };
 }
 
-function videoMedia(slug, fileName, posterName, title, description) {
-  return {
+function videoMedia(slug, fileName, posterName, title, description, playlist = []) {
+  const media = {
     type: 'video',
     src: serviceAsset(slug, fileName),
     poster: posterName ? serviceAsset(slug, posterName) : '',
     title,
     description,
   };
+  if (Array.isArray(playlist) && playlist.length > 1) {
+    media.playlist = playlist;
+  }
+  return media;
 }
 
 const AI_VIDEO_SEEDANCE_FILE = 'seedance2_Video_20260520_050120.mp4';
+const AI_VIDEO_SEEDANCE_PART2_FILE = 'seedance2_Video_20260520_050120-part2.mp4';
 const AI_VIDEO_SEEDANCE_POSTER = 'seedance2_Video_20260520_050120-poster.jpg';
+const AI_VIDEO_SEEDANCE_SEQUENCE = [
+  serviceAsset('ai-video', AI_VIDEO_SEEDANCE_FILE),
+  serviceAsset('ai-video', AI_VIDEO_SEEDANCE_PART2_FILE),
+];
 
 const commonStart = [
   {
@@ -68,9 +77,10 @@ const SERVICES_DATA = [
     backgroundImage: serviceAsset('ai-video', AI_VIDEO_SEEDANCE_POSTER),
     avatarImage: serviceAsset('ai-video', 'detail-1.jpg'),
     heroVideo: serviceAsset('ai-video', AI_VIDEO_SEEDANCE_FILE),
+    heroVideoPlaylist: AI_VIDEO_SEEDANCE_SEQUENCE,
     heroPoster: serviceAsset('ai-video', AI_VIDEO_SEEDANCE_POSTER),
     detailMedia: [
-      videoMedia('ai-video', AI_VIDEO_SEEDANCE_FILE, AI_VIDEO_SEEDANCE_POSTER, 'AI-видео', 'Новый короткий ролик для первого впечатления и презентации возможностей AI-продакшна.'),
+      videoMedia('ai-video', AI_VIDEO_SEEDANCE_FILE, AI_VIDEO_SEEDANCE_POSTER, 'AI-видео', 'Два последовательных куска одной сцены для первого впечатления и презентации возможностей AI-продакшна.', AI_VIDEO_SEEDANCE_SEQUENCE),
       imageMedia('ai-video', 'detail-2.jpg', 'Кадры под рекламу', 'Визуалы для промо, digital-кампаний и посадочных страниц.'),
       imageMedia('ai-video', 'detail-3.jpg', 'Бренд-визуал', 'Запоминающийся кадр, который можно использовать как постер или баннер.'),
     ],
