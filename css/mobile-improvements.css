@@ -3152,7 +3152,7 @@ body.rv-overlay-open .glass-ui-widget {
   }
 }
 
-/* Mobile chrome bugfix: header actions, back-to-top and reveal stability */
+/* Mobile chrome bugfix r2: header actions, back-to-top and reveal stability */
 @media (max-width: 900px) {
   .site-header .nav-container {
     min-height: 64px !important;

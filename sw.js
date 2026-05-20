@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.95-20260520-ai-video-seedance';
+const CACHE_VERSION = 'v1.96-20260520-mobile-ui-bugs-r2';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -32,11 +32,11 @@ const STATIC_ASSETS = [
   withBase('/css/style.css?v=20260520-vps-launchpad'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
-  withBase('/css/mobile-improvements.css?v=20260520-mobile-ui-bugs'),
+  withBase('/css/mobile-improvements.css?v=20260520-mobile-ui-bugs-r2'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
-  withBase('/js/pwa-chrome.js?v=20260520-mobile-ui-bugs'),
+  withBase('/js/pwa-chrome.js?v=20260520-mobile-ui-bugs-r2'),
   withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/video-optimizer.js?v=20260520-android-hotfix'),
   withBase('/js/script.js?v=20260520-mobile-bottom-dock'),
