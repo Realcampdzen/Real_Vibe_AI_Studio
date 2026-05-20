@@ -3346,3 +3346,177 @@ body.rv-overlay-open .glass-ui-widget {
     flex-basis: 40px !important;
   }
 }
+
+/* Mobile rail hotfix: fixed bottom strip, one back-to-top control, no hero curtain */
+@media (max-width: 900px) {
+  :root {
+    --rv-mobile-dock-size: clamp(48px, 12.5vw, 54px);
+    --rv-mobile-dock-avatar: calc(var(--rv-mobile-dock-size) - 4px);
+    --rv-mobile-dock-gap: 6px;
+    --rv-mobile-dock-edge: max(10px, var(--rv-safe-area-right, env(safe-area-inset-right, 0px)));
+    --rv-mobile-dock-bottom: calc(10px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px)));
+    --rv-mobile-bottom-rail-height: calc(var(--rv-mobile-dock-size) + 20px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px)));
+  }
+
+  body {
+    padding-bottom: var(--rv-mobile-bottom-rail-height) !important;
+  }
+
+  body::after {
+    content: "" !important;
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: var(--rv-mobile-bottom-rail-height) !important;
+    display: block !important;
+    pointer-events: none !important;
+    z-index: 940 !important;
+    background:
+      linear-gradient(180deg, rgba(7, 8, 10, 0.78), rgba(3, 3, 5, 0.98)),
+      var(--rv-app-bg, #050505) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  html.mobile-nav-open body::after,
+  body.mobile-nav-open::after,
+  body.rv-overlay-open::after,
+  body:has(.glass-ui-widget.is-visible)::after {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  .hero-reel-video,
+  #hero-reel-video {
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+    animation: none !important;
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button,
+  .glass-ui-valyusha-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-floating-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-health-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-hipych-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-bro-cat-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-valyusha-button,
+  body.rv-mobile-dense-zone .glass-ui-floating-button,
+  body.rv-mobile-dense-zone .glass-ui-health-button,
+  body.rv-mobile-dense-zone .glass-ui-hipych-button,
+  body.rv-mobile-dense-zone .glass-ui-bro-cat-button,
+  body.rv-mobile-dense-zone .glass-ui-valyusha-button,
+  body.rv-cookie-banner-visible .glass-ui-floating-button,
+  body.rv-cookie-banner-visible .glass-ui-health-button,
+  body.rv-cookie-banner-visible .glass-ui-hipych-button,
+  body.rv-cookie-banner-visible .glass-ui-bro-cat-button,
+  body.rv-cookie-banner-visible .glass-ui-valyusha-button {
+    bottom: var(--rv-mobile-dock-bottom) !important;
+    z-index: 1002 !important;
+    box-shadow: none !important;
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button {
+    right: var(--rv-mobile-dock-edge) !important;
+  }
+
+  .glass-ui-bro-cat-button {
+    right: calc(var(--rv-mobile-dock-edge) + (var(--rv-mobile-dock-size) + var(--rv-mobile-dock-gap))) !important;
+  }
+
+  .glass-ui-valyusha-button {
+    right: calc(var(--rv-mobile-dock-edge) + ((var(--rv-mobile-dock-size) + var(--rv-mobile-dock-gap)) * 2)) !important;
+  }
+
+  html.mobile-nav-open .glass-ui-floating-button,
+  body.mobile-nav-open .glass-ui-floating-button,
+  body.rv-overlay-open .glass-ui-floating-button,
+  body:has(.glass-ui-widget.is-visible) .glass-ui-floating-button {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: none !important;
+  }
+
+  .back-to-top {
+    left: calc(10px + var(--rv-safe-area-left, env(safe-area-inset-left, 0px))) !important;
+    right: auto !important;
+    bottom: var(--rv-mobile-dock-bottom) !important;
+    width: var(--rv-mobile-dock-size) !important;
+    height: var(--rv-mobile-dock-size) !important;
+    min-width: var(--rv-mobile-dock-size) !important;
+    min-height: var(--rv-mobile-dock-size) !important;
+    z-index: 1001 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    background: rgba(7, 8, 10, 0.86) !important;
+    color: rgba(255, 252, 245, 0.96) !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    transform: translate3d(0, 8px, 0) !important;
+    transition: opacity 0.14s ease, transform 0.14s ease, visibility 0.14s ease, background-color 0.14s ease !important;
+  }
+
+  .back-to-top:not(#back-to-top) {
+    display: none !important;
+  }
+
+  .back-to-top i,
+  .back-to-top svg {
+    display: none !important;
+  }
+
+  .back-to-top::before {
+    content: "\2191" !important;
+    display: block !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+  }
+
+  body.rv-cookie-banner-visible .back-to-top.visible,
+  .back-to-top.visible {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  html.mobile-nav-open .back-to-top,
+  html.mobile-nav-open .back-to-top.visible,
+  body.mobile-nav-open .back-to-top,
+  body.mobile-nav-open .back-to-top.visible,
+  body.rv-overlay-open .back-to-top,
+  body.rv-overlay-open .back-to-top.visible,
+  body.rv-cookie-banner-visible.rv-overlay-open .back-to-top,
+  body.rv-cookie-banner-visible.rv-overlay-open .back-to-top.visible,
+  body:has(.glass-ui-widget.is-visible) .back-to-top,
+  body:has(.glass-ui-widget.is-visible) .back-to-top.visible {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: none !important;
+  }
+
+  .cookie-banner {
+    bottom: calc(var(--rv-mobile-bottom-rail-height) + 10px) !important;
+    box-shadow: none !important;
+  }
+
+  .glass-ui-widget {
+    max-height: min(520px, calc(var(--rv-mobile-overlay-height) - var(--rv-mobile-bottom-rail-height) - 24px)) !important;
+  }
+}

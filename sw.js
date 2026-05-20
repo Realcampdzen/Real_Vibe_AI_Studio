@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.98-20260520-ai-video-sequence-3';
+const CACHE_VERSION = 'v1.99-20260520-mobile-rail-hotfix';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -19,7 +19,7 @@ const STATIC_ASSETS = [
   withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
-  withBase('/manifest.json?v=20260520-mobile-bottom-dock'),
+  withBase('/manifest.json?v=20260520-mobile-rail-hotfix'),
   withBase('/public/icons/icon-192.png'),
   withBase('/public/icons/icon-192.png?v=20260520-android-hotfix'),
   withBase('/public/icons/icon-512.png'),
@@ -29,18 +29,17 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260520-vps-launchpad'),
+  withBase('/css/style.css?v=20260520-mobile-rail-hotfix'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
-  withBase('/css/mobile-improvements.css?v=20260520-mobile-ui-bugs-r2'),
+  withBase('/css/mobile-improvements.css?v=20260520-mobile-rail-hotfix'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
-  withBase('/js/hero-reveal.js'),
-  withBase('/js/pwa-chrome.js?v=20260520-ai-video-sequence-3'),
+  withBase('/js/pwa-chrome.js?v=20260520-mobile-rail-hotfix'),
   withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/video-optimizer.js?v=20260520-ai-video-sequence-3'),
-  withBase('/js/script.js?v=20260520-mobile-bottom-dock'),
-  withBase('/js/page-common.js?v=20260520-mobile-bottom-dock'),
+  withBase('/js/script.js?v=20260520-mobile-rail-hotfix'),
+  withBase('/js/page-common.js?v=20260520-mobile-rail-hotfix'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260520-vps-launchpad'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),

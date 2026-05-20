@@ -1406,9 +1406,13 @@ body::before {
   display: none;
 }
 
-/* --- Hero background clip reveal --- */
-/* Clip-path reveal is handled by JavaScript (hero-reveal.js) */
-/* Initial state will be set by JavaScript */
+/* Hero video must render immediately; the old clip reveal is disabled. */
+.hero-reel-video,
+#hero-reel-video {
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+  animation: none !important;
+}
 
 /* Убеждаемся, что overlay не обрезается и остаётся поверх видео */
 .hero-reel-overlay {
@@ -5330,6 +5334,20 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
+}
+
+.back-to-top i,
+.back-to-top svg {
+  display: none !important;
+}
+
+.back-to-top::before {
+  content: "\2191";
+  display: inline-block;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .back-to-top.visible {

@@ -364,8 +364,19 @@
   }
 
   function initBackToTop() {
-    const backToTopBtn = document.getElementById('back-to-top');
+    const backToTopButtons = Array.from(document.querySelectorAll('#back-to-top, .back-to-top'));
+    const backToTopBtn = document.getElementById('back-to-top') || backToTopButtons[0];
     if (!backToTopBtn) return;
+
+    backToTopButtons.forEach((button) => {
+      if (button === backToTopBtn) return;
+      button.remove();
+    });
+
+    backToTopBtn.id = 'back-to-top';
+    backToTopBtn.classList.add('back-to-top');
+    backToTopBtn.setAttribute('aria-label', backToTopBtn.getAttribute('aria-label') || 'Наверх');
+    backToTopBtn.setAttribute('type', backToTopBtn.getAttribute('type') || 'button');
 
     const updateButton = (scrollY) => {
       backToTopBtn.classList.toggle('visible', scrollY > 300);
