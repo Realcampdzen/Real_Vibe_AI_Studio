@@ -3151,3 +3151,198 @@ body.rv-overlay-open .glass-ui-widget {
     max-height: min(500px, calc(var(--rv-mobile-overlay-height) - var(--rv-mobile-dock-size) - 42px)) !important;
   }
 }
+
+/* Mobile chrome bugfix: header actions, back-to-top and reveal stability */
+@media (max-width: 900px) {
+  .site-header .nav-container {
+    min-height: 64px !important;
+    padding-inline: 10px !important;
+  }
+
+  .site-header .nav-right {
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    min-width: 0 !important;
+    gap: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .site-header .nav-right .nav-icon-btn[data-contact-link="whatsapp"],
+  .site-header .nav-right .nav-icon-btn[data-contact-link="telegram"] {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    flex: 0 0 38px !important;
+    display: inline-flex !important;
+    margin: 0 !important;
+    font-size: 18px !important;
+    order: 1;
+  }
+
+  .site-header .nav-right .nav-icon-btn[data-contact-link="telegram"] {
+    order: 2;
+  }
+
+  .site-header .nav-right .nav-cta,
+  .site-header .nav-right .nav-icon-btn[data-contact-link="phone"],
+  .site-header .nav-right .nav-lang-toggle {
+    display: none !important;
+  }
+
+  .site-header .nav-right .rv-nav-cluster {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    order: 3 !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    height: 38px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .site-header .nav-right .rv-nav-action {
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 38px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 999px !important;
+    background: rgba(7, 8, 10, 0.62) !important;
+    color: rgba(255, 252, 245, 0.96) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
+  }
+
+  .site-header .nav-right .rv-nav-action-label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+  }
+
+  .site-header .nav-right .rv-nav-action-icon {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 15px !important;
+  }
+
+  .site-header .nav-right .rv-cart-count {
+    top: -3px !important;
+    right: -3px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    padding: 0 4px !important;
+    font-size: 10px !important;
+  }
+
+  body .site-header .nav-right .mobile-menu-btn {
+    order: 4 !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+    margin: 0 !important;
+  }
+
+  .back-to-top {
+    left: calc(12px + var(--rv-safe-area-left, env(safe-area-inset-left, 0px))) !important;
+    right: auto !important;
+    bottom: var(--rv-mobile-dock-bottom) !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    border-radius: 999px !important;
+    background: rgba(7, 8, 10, 0.74) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: rgba(255, 252, 245, 0.96) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    transform: translate3d(0, 8px, 0) !important;
+    transition: opacity 0.14s ease, transform 0.14s ease, visibility 0.14s ease !important;
+  }
+
+  body.rv-cookie-banner-visible .back-to-top.visible,
+  body.rv-mobile-scroll-chrome-hidden .back-to-top.visible,
+  body.rv-mobile-dense-zone .back-to-top.visible,
+  .back-to-top.visible {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  .back-to-top:not(.visible) {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  html.mobile-nav-open .back-to-top,
+  body.mobile-nav-open .back-to-top,
+  body.rv-overlay-open .back-to-top,
+  body:has(.glass-ui-widget.is-visible) .back-to-top {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .reveal-base,
+  .reveal-base--left,
+  .reveal-base--right,
+  .service-simple-card.reveal-base,
+  .service-simple-card.reveal-base--left,
+  .service-simple-card.reveal-base--right,
+  .process-step,
+  .process-step--left,
+  .process-step--right,
+  .section-title.reveal-base,
+  .section-subtitle.reveal-base,
+  .section-description.reveal-base {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .site-header .nav-right {
+    gap: 4px !important;
+  }
+
+  .site-header .nav-right .nav-icon-btn[data-contact-link="whatsapp"],
+  .site-header .nav-right .nav-icon-btn[data-contact-link="telegram"],
+  .site-header .nav-right .rv-nav-action {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    flex-basis: 34px !important;
+  }
+
+  body .site-header .nav-right .mobile-menu-btn {
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    flex-basis: 40px !important;
+  }
+}
