@@ -137,7 +137,7 @@
         : loadScript('js/chat-client.js?v=20260512-productux');
 
       chatReady
-        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260520-android-keyboard-app'))
+        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260520-android-keyboard-app2'))
         .then(() =>
           Promise.all([
             loadScript('js/glass-ui-health.js?v=20260519-performance-pass'),

@@ -3547,6 +3547,7 @@ body.rv-overlay-open .glass-ui-widget {
 
   html.rv-chat-keyboard-open body::after,
   body.rv-chat-keyboard-open::after {
+    display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
   }
