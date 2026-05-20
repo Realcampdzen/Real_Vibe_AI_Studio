@@ -35,11 +35,13 @@ function videoMedia(slug, fileName, posterName, title, description, playlist = [
 const AI_VIDEO_SEEDANCE_FILE = 'seedance2_Video_20260520_050120.mp4';
 const AI_VIDEO_SEEDANCE_PART2_FILE = 'seedance2_Video_20260520_050120-part2.mp4';
 const AI_VIDEO_SEEDANCE_PART3_FILE = 'seedance2_Video_20260520_050120-part3.mp4';
+const AI_VIDEO_SEEDANCE_PART4_FILE = 'seedance2_Video_20260520_050120-part4.mp4';
 const AI_VIDEO_SEEDANCE_POSTER = 'seedance2_Video_20260520_050120-poster.jpg';
 const AI_VIDEO_SEEDANCE_SEQUENCE = [
   serviceAsset('ai-video', AI_VIDEO_SEEDANCE_FILE),
   serviceAsset('ai-video', AI_VIDEO_SEEDANCE_PART2_FILE),
   serviceAsset('ai-video', AI_VIDEO_SEEDANCE_PART3_FILE),
+  serviceAsset('ai-video', AI_VIDEO_SEEDANCE_PART4_FILE),
 ];
 
 const commonStart = [
@@ -82,7 +84,7 @@ const SERVICES_DATA = [
     heroVideoPlaylist: AI_VIDEO_SEEDANCE_SEQUENCE,
     heroPoster: serviceAsset('ai-video', AI_VIDEO_SEEDANCE_POSTER),
     detailMedia: [
-      videoMedia('ai-video', AI_VIDEO_SEEDANCE_FILE, AI_VIDEO_SEEDANCE_POSTER, 'AI-видео', 'Три последовательных куска одной сцены для первого впечатления и презентации возможностей AI-продакшна.', AI_VIDEO_SEEDANCE_SEQUENCE),
+      videoMedia('ai-video', AI_VIDEO_SEEDANCE_FILE, AI_VIDEO_SEEDANCE_POSTER, 'AI-видео', 'Четыре последовательных куска одной сцены для первого впечатления и презентации возможностей AI-продакшна.', AI_VIDEO_SEEDANCE_SEQUENCE),
       imageMedia('ai-video', 'detail-2.jpg', 'Кадры под рекламу', 'Визуалы для промо, digital-кампаний и посадочных страниц.'),
       imageMedia('ai-video', 'detail-3.jpg', 'Бренд-визуал', 'Запоминающийся кадр, который можно использовать как постер или баннер.'),
     ],

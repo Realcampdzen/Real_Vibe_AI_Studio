@@ -366,8 +366,11 @@ class VideoOptimizer {
   preloadNextPlaylistSource(video) {
     const state = this.states.get(video);
     if (!state?.playlistSources?.length) return;
-    const nextIndex = (state.playlistIndex + 1) % state.playlistSources.length;
-    this.preloadVideoSource(state.playlistSources[nextIndex]);
+    const lookaheadCount = Math.min(state.playlistSources.length - 1, 2);
+    for (let offset = 1; offset <= lookaheadCount; offset += 1) {
+      const nextIndex = (state.playlistIndex + offset) % state.playlistSources.length;
+      this.preloadVideoSource(state.playlistSources[nextIndex]);
+    }
   }
 
   applyPlaylistSource(video, index, { load = true } = {}) {
