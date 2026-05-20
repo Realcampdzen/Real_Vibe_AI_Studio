@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.89-20260520-agent-office-video';
+const CACHE_VERSION = 'v1.90-20260520-agent-office-showcase';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -42,7 +42,7 @@ const STATIC_ASSETS = [
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260518-market-prices'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260520-agent-office-video'),
+  withBase('/js/service-data.js?v=20260520-agent-office-showcase'),
   withBase('/js/service-detail-page.js?v=20260519-performance-pass'),
   withBase('/js/admin-prices.js?v=20260518-market-prices'),
   withBase('/js/auth-cart.js?v=20260520-mobile-commerce'),
