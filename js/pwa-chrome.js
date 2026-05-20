@@ -1,5 +1,5 @@
 (function initRealVibePwaChrome() {
-  const HOTFIX_VERSION = '20260520-mobile-detail-bottom-fix';
+  const HOTFIX_VERSION = '20260520-android-keyboard-app';
   const SW_URL = `sw.js?v=${HOTFIX_VERSION}`;
   const CACHE_RESET_KEY = `rv-cache-reset-${HOTFIX_VERSION}`;
   const CONTROLLER_RELOAD_KEY = `rv-sw-controller-reload-${HOTFIX_VERSION}`;

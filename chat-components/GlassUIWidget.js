@@ -18,6 +18,8 @@ class GlassUIWidget {
         this.isVisible = Boolean(options.isVisible);
         this.horizontalOffset = typeof options.horizontalOffset === 'number' ? options.horizontalOffset : 100;
         this.verticalOffset = typeof options.verticalOffset === 'number' ? options.verticalOffset : 20;
+        this.isKeyboardMode = false;
+        this.viewportRaf = 0;
 
         const bottomValue = parseInt(this.position.bottom, 10) || 0;
         this.zIndex = 10000 + Math.floor(bottomValue / 10);
@@ -75,6 +77,48 @@ class GlassUIWidget {
         const heights = [window.innerHeight, document.documentElement.clientHeight]
             .filter((value) => Number.isFinite(value) && value > 0);
         return heights.length ? Math.min(...heights) : 0;
+    }
+
+    isMobileViewport() {
+        return this.getViewportWidth() <= 900 || (navigator.maxTouchPoints || 0) > 0;
+    }
+
+    updateMobileViewportVars() {
+        if (!this.isMobileViewport()) return;
+
+        const visualViewport = window.visualViewport;
+        const viewportHeight = visualViewport?.height || window.innerHeight || document.documentElement.clientHeight || 0;
+        const viewportWidth = visualViewport?.width || window.innerWidth || document.documentElement.clientWidth || 0;
+        const offsetTop = Math.max(0, visualViewport?.offsetTop || 0);
+        const layoutHeight = window.innerHeight || document.documentElement.clientHeight || viewportHeight;
+        const keyboardInset = Math.max(0, layoutHeight - viewportHeight - offsetTop);
+        const rootStyle = document.documentElement.style;
+
+        rootStyle.setProperty('--rv-visual-viewport-height', `${Math.round(viewportHeight)}px`);
+        rootStyle.setProperty('--rv-visual-viewport-width', `${Math.round(viewportWidth)}px`);
+        rootStyle.setProperty('--rv-visual-viewport-offset-top', `${Math.round(offsetTop)}px`);
+        rootStyle.setProperty('--rv-keyboard-inset-bottom', `${Math.round(keyboardInset)}px`);
+    }
+
+    scheduleViewportSync() {
+        if (this.viewportRaf) return;
+        this.viewportRaf = window.requestAnimationFrame(() => {
+            this.viewportRaf = 0;
+            this.updateMobileViewportVars();
+            if (this.isVisible && !this.isKeyboardMode) {
+                this.applyPosition();
+            }
+        });
+    }
+
+    setKeyboardMode(isActive) {
+        if (!this.isMobileViewport()) return;
+        this.isKeyboardMode = Boolean(isActive);
+        this.updateMobileViewportVars();
+
+        document.documentElement.classList.toggle('rv-chat-keyboard-open', this.isKeyboardMode);
+        document.body?.classList.toggle('rv-chat-keyboard-open', this.isKeyboardMode);
+        this.container?.classList.toggle('is-keyboard-active', this.isKeyboardMode);
     }
 
     computeWidgetWidth() {
@@ -224,11 +268,13 @@ class GlassUIWidget {
     setupEventListeners() {
         if (!this.messageInput || !this.sendButton) return;
 
-        this.boundResetPosition = () => {
-            if (this.isVisible) this.applyPosition();
-        };
+        this.boundResetPosition = () => this.scheduleViewportSync();
         window.addEventListener('resize', this.boundResetPosition);
         window.addEventListener('orientationchange', this.boundResetPosition);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', this.boundResetPosition);
+            window.visualViewport.addEventListener('scroll', this.boundResetPosition);
+        }
 
         const sendMessage = () => {
             const message = this.messageInput.value.trim();
@@ -250,6 +296,20 @@ class GlassUIWidget {
         });
         this.messageInput.addEventListener('input', () => {
             this.inputContainer?.classList.remove('is-invalid');
+        });
+        this.messageInput.addEventListener('focus', () => {
+            this.setKeyboardMode(true);
+            window.setTimeout(() => {
+                this.messagesArea?.scrollTo({ top: this.messagesArea.scrollHeight, behavior: 'auto' });
+            }, 80);
+        });
+        this.messageInput.addEventListener('blur', () => {
+            window.setTimeout(() => {
+                if (document.activeElement !== this.messageInput) {
+                    this.setKeyboardMode(false);
+                    if (this.isVisible) this.applyPosition();
+                }
+            }, 120);
         });
     }
 
@@ -377,13 +437,19 @@ class GlassUIWidget {
         window.RealVibeAnalytics?.track?.('chat_open', {
             botId: this.botName,
         });
-        window.setTimeout(() => {
-            if (this.messageInput) this.messageInput.focus();
-        }, 240);
+        if (!this.isMobileViewport()) {
+            window.setTimeout(() => {
+                if (this.messageInput) this.messageInput.focus();
+            }, 240);
+        }
     }
 
     hide() {
         this.isVisible = false;
+        if (document.activeElement === this.messageInput) {
+            this.messageInput.blur();
+        }
+        this.setKeyboardMode(false);
         this.container.classList.remove('is-visible');
     }
 
@@ -408,7 +474,16 @@ class GlassUIWidget {
         if (this.boundResetPosition) {
             window.removeEventListener('resize', this.boundResetPosition);
             window.removeEventListener('orientationchange', this.boundResetPosition);
+            if (window.visualViewport) {
+                window.visualViewport.removeEventListener('resize', this.boundResetPosition);
+                window.visualViewport.removeEventListener('scroll', this.boundResetPosition);
+            }
         }
+        if (this.viewportRaf) {
+            window.cancelAnimationFrame(this.viewportRaf);
+            this.viewportRaf = 0;
+        }
+        this.setKeyboardMode(false);
         if (this.container && this.container.parentNode) {
             this.container.parentNode.removeChild(this.container);
         }
