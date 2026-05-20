@@ -2955,3 +2955,199 @@ body.rv-overlay-open .glass-ui-widget {
     transition: none !important;
   }
 }
+
+/* Mobile bottom dock stability hotfix */
+@media (max-width: 900px) {
+  :root {
+    --rv-mobile-dock-size: clamp(48px, 12.5vw, 54px);
+    --rv-mobile-dock-avatar: calc(var(--rv-mobile-dock-size) - 4px);
+    --rv-mobile-dock-gap: 6px;
+    --rv-mobile-dock-edge: max(8px, var(--rv-safe-area-right, env(safe-area-inset-right, 0px)));
+    --rv-mobile-dock-bottom: calc(12px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px)));
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button,
+  .glass-ui-bro-cat-button,
+  .glass-ui-valyusha-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-floating-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-health-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-hipych-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-bro-cat-button,
+  body.rv-mobile-scroll-chrome-hidden .glass-ui-valyusha-button,
+  body.rv-mobile-dense-zone .glass-ui-floating-button,
+  body.rv-mobile-dense-zone .glass-ui-health-button,
+  body.rv-mobile-dense-zone .glass-ui-hipych-button,
+  body.rv-mobile-dense-zone .glass-ui-bro-cat-button,
+  body.rv-mobile-dense-zone .glass-ui-valyusha-button,
+  body.rv-cookie-banner-visible .glass-ui-floating-button,
+  body.rv-cookie-banner-visible .glass-ui-health-button,
+  body.rv-cookie-banner-visible .glass-ui-hipych-button,
+  body.rv-cookie-banner-visible .glass-ui-bro-cat-button,
+  body.rv-cookie-banner-visible .glass-ui-valyusha-button {
+    position: fixed !important;
+    top: auto !important;
+    bottom: var(--rv-mobile-dock-bottom) !important;
+    left: auto !important;
+    width: var(--rv-mobile-dock-size) !important;
+    height: var(--rv-mobile-dock-size) !important;
+    min-width: var(--rv-mobile-dock-size) !important;
+    min-height: var(--rv-mobile-dock-size) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    animation: none !important;
+    transition: opacity 0.12s ease, visibility 0.12s ease, transform 0.12s ease !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
+    filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    contain: layout paint style !important;
+    will-change: auto !important;
+  }
+
+  .glass-ui-health-button,
+  .glass-ui-hipych-button {
+    right: var(--rv-mobile-dock-edge) !important;
+  }
+
+  .glass-ui-bro-cat-button {
+    right: calc(var(--rv-mobile-dock-edge) + (var(--rv-mobile-dock-size) + var(--rv-mobile-dock-gap))) !important;
+  }
+
+  .glass-ui-valyusha-button {
+    right: calc(var(--rv-mobile-dock-edge) + ((var(--rv-mobile-dock-size) + var(--rv-mobile-dock-gap)) * 2)) !important;
+  }
+
+  .glass-ui-health-button::before,
+  .glass-ui-hipych-button::before,
+  .glass-ui-bro-cat-button::before,
+  .glass-ui-valyusha-button::before,
+  .glass-ui-health-button::after,
+  .glass-ui-hipych-button::after,
+  .glass-ui-bro-cat-button::after,
+  .glass-ui-valyusha-button::after,
+  .glass-ui-floating-button-bg {
+    display: none !important;
+    opacity: 0 !important;
+    animation: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+    content: none !important;
+  }
+
+  .glass-ui-health-button .glass-ui-floating-avatar,
+  .glass-ui-hipych-button .glass-ui-floating-avatar,
+  .glass-ui-bro-cat-button .glass-ui-floating-avatar,
+  .glass-ui-valyusha-button .glass-ui-floating-avatar {
+    width: var(--rv-mobile-dock-avatar) !important;
+    height: var(--rv-mobile-dock-avatar) !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    display: block !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    box-shadow: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+
+  .glass-ui-health-button .glass-ui-notification-badge,
+  .glass-ui-hipych-button .glass-ui-notification-badge,
+  .glass-ui-bro-cat-button .glass-ui-notification-badge,
+  .glass-ui-valyusha-button .glass-ui-notification-badge {
+    top: 0 !important;
+    right: 0 !important;
+    width: 10px !important;
+    height: 10px !important;
+    min-width: 10px !important;
+    min-height: 10px !important;
+    border: 2px solid rgba(5, 6, 8, 0.92) !important;
+    background: #22c55e !important;
+    box-shadow: none !important;
+    animation: none !important;
+  }
+
+  .cookie-banner {
+    bottom: calc(var(--rv-mobile-dock-bottom) + var(--rv-mobile-dock-size) + 12px) !important;
+    width: min(calc(100% - 24px), 520px) !important;
+    padding: 0.72rem 0.78rem !important;
+    border-radius: 14px !important;
+    background: rgba(7, 7, 8, 0.96) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.36) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .cookie-banner:not(.visible) {
+    pointer-events: none !important;
+  }
+
+  .cookie-banner.visible {
+    pointer-events: auto !important;
+  }
+
+  .glass-ui-widget {
+    right: 10px !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: min(calc(100vw - 20px), 390px) !important;
+    max-width: calc(100vw - 20px) !important;
+    height: min(520px, calc(var(--rv-mobile-overlay-height) - var(--rv-mobile-dock-size) - 48px)) !important;
+    max-height: min(520px, calc(var(--rv-mobile-overlay-height) - var(--rv-mobile-dock-size) - 48px)) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  body.rv-cookie-banner-visible .glass-ui-widget.is-visible {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .glass-chat-avatar-glow,
+  .glass-chat-header-shine,
+  .glass-messages-bg-decor {
+    display: none !important;
+  }
+
+  html.mobile-nav-open .glass-ui-floating-button,
+  body.mobile-nav-open .glass-ui-floating-button,
+  body.rv-overlay-open .glass-ui-floating-button,
+  body:has(.glass-ui-widget.is-visible) .glass-ui-floating-button {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translate3d(0, 8px, 0) !important;
+  }
+
+  html.mobile-nav-open .glass-ui-widget,
+  body.mobile-nav-open .glass-ui-widget,
+  body.rv-overlay-open .glass-ui-widget {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-ui-widget {
+    right: 6px !important;
+    width: calc(100vw - 12px) !important;
+    max-width: calc(100vw - 12px) !important;
+    height: min(500px, calc(var(--rv-mobile-overlay-height) - var(--rv-mobile-dock-size) - 42px)) !important;
+    max-height: min(500px, calc(var(--rv-mobile-overlay-height) - var(--rv-mobile-dock-size) - 42px)) !important;
+  }
+}

@@ -494,103 +494,14 @@ function initMobileFloatingChromePolicy() {
   window.__rvMobileFloatingChromePolicyInitialized = true;
 
   const mobileQuery = window.matchMedia('(max-width: 900px)');
-  const denseSelectors = [
-    '.service-simple-card',
-    '.service-detail-hero',
-    '.service-detail-media-card',
-    '.service-detail-card',
-    '.service-detail-card-matte',
-    '.service-detail-content-section',
-    '.service-detail-cta-section',
-    '.polstan-portal-section',
-    '.process-step',
-    '.benefit-card',
-    '.assistants-section',
-    '.cta-section'
-  ].join(',');
-  let scrollIdleTimer = 0;
-  let denseObserver = null;
-  const denseTargets = new Set();
-
-  const hasOpenWidget = () => Boolean(document.querySelector('.glass-ui-widget.is-visible'));
-  const hasBlockingLayer = () => (
-    document.body.classList.contains('mobile-nav-open') ||
-    document.body.classList.contains('rv-overlay-open') ||
-    document.body.classList.contains('rv-cookie-banner-visible') ||
-    document.documentElement.classList.contains('mobile-nav-open')
-  );
-
-  const setScrolling = (isScrolling) => {
-    if (!mobileQuery.matches || hasBlockingLayer()) {
-      document.body.classList.remove('rv-mobile-scroll-chrome-hidden');
-      return;
-    }
-    document.body.classList.toggle('rv-mobile-scroll-chrome-hidden', isScrolling && !hasOpenWidget());
+  const clearFloatingDockSuppression = () => {
+    document.body.classList.remove('rv-mobile-scroll-chrome-hidden', 'rv-mobile-dense-zone');
   };
 
-  const syncDenseZone = () => {
-    if (!mobileQuery.matches || hasBlockingLayer()) {
-      document.body.classList.remove('rv-mobile-dense-zone');
-      return;
-    }
-    document.body.classList.toggle('rv-mobile-dense-zone', denseTargets.size > 0 && !hasOpenWidget());
-  };
-
-  const teardownDenseObserver = () => {
-    if (denseObserver) {
-      denseObserver.disconnect();
-      denseObserver = null;
-    }
-    denseTargets.clear();
-    document.body.classList.remove('rv-mobile-dense-zone');
-  };
-
-  const setupDenseObserver = () => {
-    teardownDenseObserver();
-    if (!mobileQuery.matches || !('IntersectionObserver' in window)) return;
-
-    denseObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          denseTargets.add(entry.target);
-        } else {
-          denseTargets.delete(entry.target);
-        }
-      });
-      syncDenseZone();
-    }, {
-      threshold: 0.01,
-      rootMargin: '-8% 0px -26% 0px'
-    });
-
-    document.querySelectorAll(denseSelectors).forEach((element) => denseObserver.observe(element));
-  };
-
-  const handleScroll = () => {
-    if (!mobileQuery.matches) return;
-    window.clearTimeout(scrollIdleTimer);
-    setScrolling(true);
-    scrollIdleTimer = window.setTimeout(() => {
-      setScrolling(false);
-      syncDenseZone();
-    }, 520);
-  };
-
-  const handleResize = () => {
-    window.clearTimeout(scrollIdleTimer);
-    document.body.classList.remove('rv-mobile-scroll-chrome-hidden');
-    if (mobileQuery.matches) {
-      setupDenseObserver();
-      syncDenseZone();
-    } else {
-      teardownDenseObserver();
-    }
-  };
-
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  window.addEventListener('resize', handleResize, { passive: true });
-  mobileQuery.addEventListener?.('change', handleResize);
-  setupDenseObserver();
+  clearFloatingDockSuppression();
+  window.addEventListener('pageshow', clearFloatingDockSuppression);
+  window.addEventListener('resize', clearFloatingDockSuppression, { passive: true });
+  mobileQuery.addEventListener?.('change', clearFloatingDockSuppression);
 }
 
 // Tilt Effect for Cards
