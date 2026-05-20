@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.01-20260520-mobile-hero-video-hotfix';
+const CACHE_VERSION = 'v2.02-20260520-mobile-detail-bottom-fix';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -31,11 +31,11 @@ const STATIC_ASSETS = [
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
   withBase('/css/style.css?v=20260520-mobile-rail-hotfix'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
-  withBase('/css/critical-fixes.css?v=20260518-social-preview'),
-  withBase('/css/mobile-improvements.css?v=20260520-mobile-rail-hotfix'),
+  withBase('/css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix'),
+  withBase('/css/mobile-improvements.css?v=20260520-mobile-detail-bottom-fix'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
-  withBase('/js/pwa-chrome.js?v=20260520-mobile-hero-video-hotfix'),
+  withBase('/js/pwa-chrome.js?v=20260520-mobile-detail-bottom-fix'),
   withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/video-optimizer.js?v=20260520-mobile-hero-video-hotfix'),
   withBase('/js/script.js?v=20260520-mobile-rail-hotfix'),

@@ -232,35 +232,9 @@ html body .message-avatar.fallback {
   background-repeat: no-repeat !important;
 }
 
-/* ===== ПРИНУДИТЕЛЬНОЕ СОЗДАНИЕ GLASS UI КНОПОК ===== */
-
-/* Если JavaScript не создал кнопки, создаем их через CSS */
+/* Floating bot buttons are owned by JavaScript. A body::after fallback created
+   unclickable mobile artifacts and conflicts with the bottom rail. */
 body::after {
-  content: '🩺';
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 70px;
-  height: 70px;
-  background: linear-gradient(135deg, #14b8a6dd, #0f766e);
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 15px 35px rgba(20, 184, 166, 0.4);
-  cursor: pointer;
-  z-index: 1002;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  visibility: visible;
-  opacity: 1;
-  color: #fff;
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
-  font-size: 30px;
-  line-height: 1;
+  content: none;
+  display: none;
 }
-
-/* Скрываем CSS кнопку если есть JavaScript кнопка */
-body:has(.glass-ui-health-button)::after,
-body:has(.glass-ui-hipych-button)::after {
-  display: none !important;
-} 

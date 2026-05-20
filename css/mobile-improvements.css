@@ -3365,6 +3365,7 @@ body.rv-overlay-open .glass-ui-widget {
   body::after {
     content: "" !important;
     position: fixed !important;
+    top: auto !important;
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
@@ -3373,14 +3374,25 @@ body.rv-overlay-open .glass-ui-widget {
     display: block !important;
     pointer-events: none !important;
     z-index: 940 !important;
+    box-sizing: border-box !important;
     background:
       linear-gradient(180deg, rgba(7, 8, 10, 0.78), rgba(3, 3, 5, 0.98)),
       var(--rv-app-bg, #050505) !important;
+    border: 0 !important;
     border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0 !important;
     box-shadow: none !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
     opacity: 1 !important;
     visibility: visible !important;
     transform: translate3d(0, 0, 0) !important;
+  }
+
+  body.detail-page:not(:has(#back-to-top.visible))::after {
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
 
   html.mobile-nav-open body::after,
@@ -3514,6 +3526,10 @@ body.rv-overlay-open .glass-ui-widget {
   .cookie-banner {
     bottom: calc(var(--rv-mobile-bottom-rail-height) + 10px) !important;
     box-shadow: none !important;
+  }
+
+  body.detail-page:not(:has(#back-to-top.visible)) .cookie-banner {
+    bottom: calc(10px + var(--rv-safe-area-bottom, env(safe-area-inset-bottom, 0px))) !important;
   }
 
   .glass-ui-widget {
