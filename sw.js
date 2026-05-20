@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.97-20260520-ai-video-sequence';
+const CACHE_VERSION = 'v1.98-20260520-ai-video-sequence-3';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -36,16 +36,16 @@ const STATIC_ASSETS = [
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
-  withBase('/js/pwa-chrome.js?v=20260520-ai-video-sequence'),
+  withBase('/js/pwa-chrome.js?v=20260520-ai-video-sequence-3'),
   withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
-  withBase('/js/video-optimizer.js?v=20260520-ai-video-sequence'),
+  withBase('/js/video-optimizer.js?v=20260520-ai-video-sequence-3'),
   withBase('/js/script.js?v=20260520-mobile-bottom-dock'),
   withBase('/js/page-common.js?v=20260520-mobile-bottom-dock'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260520-vps-launchpad'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260520-ai-video-sequence'),
-  withBase('/js/service-detail-page.js?v=20260520-ai-video-sequence'),
+  withBase('/js/service-data.js?v=20260520-ai-video-sequence-3'),
+  withBase('/js/service-detail-page.js?v=20260520-ai-video-sequence-3'),
   withBase('/js/admin-prices.js?v=20260520-vps-launchpad'),
   withBase('/js/auth-cart.js?v=20260520-desktop-header-icons'),
   withBase('/js/chat-client.js?v=20260512-productux'),
