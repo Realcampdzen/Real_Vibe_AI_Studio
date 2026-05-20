@@ -320,7 +320,8 @@ function initMobileMenu() {
   let transitionTimer = 0;
   let isTransitioning = false;
   const suppressedWidgetsSelector = '.glass-ui-floating-button, .glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget';
-  const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 360;
+  const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220;
+  const shouldAutoFocusClose = !('ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0);
 
   const suppressWidgets = (shouldSuppress) => {
     document.querySelectorAll(suppressedWidgetsSelector).forEach((widget) => {
@@ -370,9 +371,11 @@ function initMobileMenu() {
     lockScroll();
     suppressWidgets(true);
     markTransitioning();
-    requestAnimationFrame(() => {
-      mobileNavClose?.focus({ preventScroll: true });
-    });
+    if (shouldAutoFocusClose) {
+      requestAnimationFrame(() => {
+        mobileNavClose?.focus({ preventScroll: true });
+      });
+    }
   };
 
   const closeMenu = (options = {}) => {
@@ -832,16 +835,18 @@ function preloadImagesForUpcomingElements() {
   );
   
   const viewportHeight = window.innerHeight;
+  const isMobile = window.matchMedia('(max-width: 900px)').matches;
+  const preloadDistance = isMobile ? viewportHeight * 1.2 : viewportHeight * 3;
   
   animatedElements.forEach(el => {
     const rect = el.getBoundingClientRect();
-    // Если элемент в пределах 3 экранов от viewport, предзагружаем его изображения
-    const isNearViewport = rect.top < viewportHeight * 3 && rect.top > -viewportHeight;
+    const isNearViewport = rect.top < preloadDistance && rect.top > -viewportHeight;
     
     if (isNearViewport) {
       const images = el.querySelectorAll('img[loading="lazy"]');
       images.forEach(img => {
         if (img.classList.contains('service-simple-bg-image')) return;
+        if (isMobile && (img.closest('.process-step') || img.closest('.assistant-card'))) return;
         // Меняем на eager для предзагрузки
         img.loading = 'eager';
         // Принудительно загружаем изображение
@@ -857,10 +862,39 @@ function preloadImagesForUpcomingElements() {
   });
 }
 
+function initDeferredMobileImages() {
+  const deferredImages = Array.from(document.querySelectorAll('img[data-mobile-lazy-src]'));
+  if (!deferredImages.length) return;
+
+  const loadImage = (img) => {
+    const src = img.dataset.mobileLazySrc;
+    if (!src) return;
+    img.src = src;
+    img.removeAttribute('data-mobile-lazy-src');
+  };
+
+  if (!window.matchMedia('(max-width: 900px)').matches || !('IntersectionObserver' in window)) {
+    deferredImages.forEach(loadImage);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      loadImage(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: '160px 0px' });
+
+  deferredImages.forEach((img) => observer.observe(img));
+}
+
 // Main DOMContentLoaded Event
 document.addEventListener('DOMContentLoaded', () => {
   const isDetailPage = document.body.classList.contains('detail-page');
   // New Year seasonal code removed (no matching HTML elements)
+
+  initDeferredMobileImages();
   
   // Предзагружаем изображения для элементов, которые скоро появятся
   if (!isDetailPage) {

@@ -21,6 +21,7 @@ class VideoOptimizer {
     this.heroScrollIdleTimer = null;
     this.resumeAttemptMinGapMs = 700;
     this.viewportRefreshQueued = false;
+    this.mobileHeroWarmupDelayMs = 5000;
     this.init();
   }
 
@@ -236,6 +237,38 @@ class VideoOptimizer {
     return this.mobileQuery ? this.mobileQuery.matches : window.innerWidth <= 900;
   }
 
+  shouldDeferMobileHero(video) {
+    return this.isPrimaryHero(video) && this.isMobile();
+  }
+
+  warmMobileHero(video, reason = 'idle') {
+    const state = this.states.get(video);
+    if (!state || !state.mobileHeroDeferred || state.mobileHeroReady) return;
+
+    state.mobileHeroReady = true;
+    this.applySources(video, { load: false });
+    video.preload = 'metadata';
+    video.setAttribute('preload', 'metadata');
+    if (video.networkState === HTMLMediaElement.NETWORK_EMPTY && this.networkAllowsAutoPreload()) {
+      this.suppressInternalPause(video);
+      video.load();
+    }
+    video.dataset.mobileHeroWarmup = reason;
+  }
+
+  scheduleMobileHeroWarmup(video, reason = 'idle') {
+    const state = this.states.get(video);
+    if (!state || !state.mobileHeroDeferred || state.mobileHeroReady || state.mobileHeroWarmupQueued) return;
+
+    state.mobileHeroWarmupQueued = true;
+    const warm = () => {
+      state.mobileHeroWarmupQueued = false;
+      this.warmMobileHero(video, reason);
+    };
+
+    window.setTimeout(warm, this.mobileHeroWarmupDelayMs);
+  }
+
   networkAllowsAutoPreload() {
     if (!this.connection) return true;
     if (this.connection.saveData) return false;
@@ -354,11 +387,15 @@ class VideoOptimizer {
     video.dataset.videoOptimizerReady = '1';
     if (video.id === 'hero-reel-video') this.heroVideo = video;
 
-    const shouldAutoplay = video.dataset.autoplayDesktop !== 'false';
+    const mobileHeroDeferred = this.shouldDeferMobileHero(video);
+    const shouldAutoplay = !mobileHeroDeferred && video.dataset.autoplayDesktop !== 'false';
     const state = {
       visible: false,
       userPaused: !shouldAutoplay,
       shouldAutoplay,
+      mobileHeroDeferred,
+      mobileHeroReady: !mobileHeroDeferred,
+      mobileHeroWarmupQueued: false,
       pausedByVisibility: false,
       wasPlayingBeforeHidden: false,
       suppressPauseUntil: 0,
@@ -369,8 +406,8 @@ class VideoOptimizer {
     };
     this.states.set(video, state);
 
-    video.preload = 'metadata';
-    video.setAttribute('preload', 'metadata');
+    video.preload = mobileHeroDeferred ? 'none' : 'metadata';
+    video.setAttribute('preload', mobileHeroDeferred ? 'none' : 'metadata');
     video.playsInline = true;
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
@@ -392,6 +429,19 @@ class VideoOptimizer {
 
     this.setupManagedVideoEvents(video);
     this.observeVideoVisibility(video);
+
+    if (mobileHeroDeferred) {
+      video.dataset.mobileHeroDeferred = '1';
+      const heroSurface = video.closest('.hero-reel') || video;
+      ['pointerdown', 'touchstart', 'keydown'].forEach((eventName) => {
+        heroSurface.addEventListener(eventName, () => this.warmMobileHero(video, 'interaction'), {
+          once: true,
+          passive: true,
+        });
+      });
+      this.scheduleMobileHeroWarmup(video, 'idle');
+      return;
+    }
 
     if (this.isPrimaryHero(video) || this.isElementVisible(video)) {
       this.applySources(video);
@@ -505,6 +555,11 @@ class VideoOptimizer {
     state.visible = true;
     state.wasPlayingBeforeHidden = false;
 
+    if (state.mobileHeroDeferred && !state.mobileHeroReady) {
+      this.scheduleMobileHeroWarmup(video, 'visible');
+      return;
+    }
+
     if (this.networkAllowsAutoPreload()) {
       if (video.dataset.sourcesApplied !== '1') {
         this.applySources(video, { load: false });
@@ -529,6 +584,11 @@ class VideoOptimizer {
 
   playVideo(video) {
     if (!video || document.visibilityState === 'hidden') return Promise.resolve();
+
+    const state = this.states.get(video);
+    if (state?.mobileHeroDeferred && !state.mobileHeroReady) {
+      this.warmMobileHero(video, 'play');
+    }
 
     if (video.dataset.sourcesApplied !== '1') {
       this.applySources(video, { load: false });

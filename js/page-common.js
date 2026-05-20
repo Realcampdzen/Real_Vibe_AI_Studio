@@ -245,7 +245,8 @@
     let transitionTimer = 0;
     let isTransitioning = false;
     const suppressedWidgetsSelector = '.glass-ui-floating-button, .glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget';
-    const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 360;
+    const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220;
+    const shouldAutoFocusClose = !('ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0);
 
     const suppressWidgets = (shouldSuppress) => {
       document.querySelectorAll(suppressedWidgetsSelector).forEach((widget) => {
@@ -293,9 +294,11 @@
       lockScroll();
       suppressWidgets(true);
       markTransitioning();
-      requestAnimationFrame(() => {
-        mobileNavClose?.focus({ preventScroll: true });
-      });
+      if (shouldAutoFocusClose) {
+        requestAnimationFrame(() => {
+          mobileNavClose?.focus({ preventScroll: true });
+        });
+      }
     };
 
     const closeMenu = (options = {}) => {

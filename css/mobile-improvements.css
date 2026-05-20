@@ -2783,3 +2783,175 @@ body.rv-overlay-open .glass-ui-widget {
     font-size: 14px !important;
   }
 }
+
+/* Android mobile PWA/install and performance hotfix */
+@media (max-width: 900px) {
+  .mobile-nav {
+    background:
+      linear-gradient(160deg, rgba(8, 9, 12, 0.985), rgba(3, 3, 5, 0.995) 62%, rgba(9, 5, 14, 0.985)) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: translate3d(0, -6px, 0) !important;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease,
+      visibility 0s linear 0.18s !important;
+    contain: layout paint style !important;
+    will-change: opacity, transform !important;
+  }
+
+  .mobile-nav::before,
+  .mobile-nav::after {
+    display: none !important;
+  }
+
+  .mobile-nav.active {
+    transform: translate3d(0, 0, 0) !important;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease,
+      visibility 0s linear 0s !important;
+  }
+
+  .mobile-nav.rv-force-hidden {
+    transform: translate3d(0, -6px, 0) !important;
+    transition: none !important;
+  }
+
+  .mobile-nav.active .mobile-nav-header,
+  .mobile-nav.active .rv-mobile-commerce,
+  .mobile-nav.active .rv-pwa-install,
+  .mobile-nav.active .mobile-nav-meta,
+  .mobile-nav.active .mobile-nav-link {
+    animation: none !important;
+    animation-delay: 0s !important;
+  }
+
+  .mobile-nav-link {
+    transition:
+      background-color 0.12s ease,
+      color 0.12s ease !important;
+  }
+
+  .mobile-nav-meta {
+    content-visibility: auto !important;
+    contain-intrinsic-size: 260px !important;
+  }
+
+  .rv-mobile-commerce-btn,
+  .rv-pwa-install-btn,
+  .mobile-nav-chip {
+    box-shadow: none !important;
+    transition:
+      background-color 0.12s ease,
+      border-color 0.12s ease,
+      transform 0.08s ease !important;
+  }
+
+  .rv-mobile-commerce-btn::before {
+    display: none !important;
+  }
+
+  .rv-pwa-install {
+    width: min(calc(100% - (var(--rv-menu-gutter, 22px) * 2)), 680px) !important;
+    margin: -4px auto 14px !important;
+    display: none !important;
+  }
+
+  .rv-pwa-install.is-visible {
+    display: block !important;
+  }
+
+  .rv-pwa-install[hidden] {
+    display: none !important;
+  }
+
+  .rv-pwa-install-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    display: grid !important;
+    grid-template-columns: 28px minmax(0, 1fr) 18px !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 10px 14px !important;
+    border: 1px solid rgba(51, 245, 200, 0.24) !important;
+    border-radius: 999px !important;
+    background: rgba(51, 245, 200, 0.08) !important;
+    color: rgba(255, 252, 245, 0.96) !important;
+    text-align: left !important;
+  }
+
+  .rv-pwa-install-btn:active {
+    transform: translateY(1px) !important;
+    background: rgba(51, 245, 200, 0.12) !important;
+  }
+
+  .rv-pwa-install-btn:disabled {
+    opacity: 0.62 !important;
+  }
+
+  .rv-pwa-install-icon {
+    width: 28px !important;
+    height: 28px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #33f5c8 !important;
+    font-size: 15px !important;
+  }
+
+  .rv-pwa-install-copy {
+    min-width: 0 !important;
+    display: grid !important;
+    gap: 1px !important;
+  }
+
+  .rv-pwa-install-title,
+  .rv-pwa-install-subtitle {
+    min-width: 0 !important;
+    display: block !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    letter-spacing: 0 !important;
+  }
+
+  .rv-pwa-install-title {
+    font-size: 13px !important;
+    line-height: 1.05 !important;
+    font-weight: 750 !important;
+  }
+
+  .rv-pwa-install-subtitle {
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+    font-weight: 600 !important;
+    color: rgba(245, 242, 235, 0.54) !important;
+  }
+
+  .rv-pwa-install-arrow {
+    justify-self: end !important;
+    color: #33f5c8 !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+  }
+
+  html.rv-standalone .rv-pwa-install,
+  html.rv-ios-standalone .rv-pwa-install {
+    display: none !important;
+  }
+}
+
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .mobile-nav,
+  .mobile-nav.active,
+  .mobile-nav-link,
+  .rv-mobile-commerce,
+  .rv-mobile-commerce-btn,
+  .rv-pwa-install,
+  .rv-pwa-install-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
