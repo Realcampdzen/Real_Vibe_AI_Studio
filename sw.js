@@ -36,7 +36,7 @@ const STATIC_ASSETS = [
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/hero-reveal.js'),
-  withBase('/js/pwa-chrome.js?v=20260520-android-hotfix'),
+  withBase('/js/pwa-chrome.js?v=20260520-desktop-header-icons'),
   withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/video-optimizer.js?v=20260520-android-hotfix'),
   withBase('/js/script.js?v=20260520-android-hotfix'),
