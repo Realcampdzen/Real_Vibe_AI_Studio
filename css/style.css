@@ -3742,6 +3742,10 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+.agentic-dev-offer-wide {
+  grid-column: 1 / -1;
+}
+
 .agentic-dev-offer span,
 .agentic-dev-offer strong {
   display: block;

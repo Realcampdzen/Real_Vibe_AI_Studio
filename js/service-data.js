@@ -22,11 +22,14 @@ function videoMedia(slug, fileName, posterName, title, description) {
   return {
     type: 'video',
     src: serviceAsset(slug, fileName),
-    poster: serviceAsset(slug, posterName),
+    poster: posterName ? serviceAsset(slug, posterName) : '',
     title,
     description,
   };
 }
+
+const AI_VIDEO_SEEDANCE_FILE = 'seedance2_Video_20260520_050120.mp4';
+const AI_VIDEO_SEEDANCE_POSTER = 'seedance2_Video_20260520_050120-poster.jpg';
 
 const commonStart = [
   {
@@ -62,12 +65,12 @@ const SERVICES_DATA = [
       'Музыка, озвучка и SFX из нашей студии',
     ],
     price: 'от 80 000₽',
-    backgroundImage: serviceAsset('ai-video', 'cover-influencer-reel-2026.jpg'),
+    backgroundImage: serviceAsset('ai-video', AI_VIDEO_SEEDANCE_POSTER),
     avatarImage: serviceAsset('ai-video', 'detail-1.jpg'),
-    heroVideo: serviceAsset('ai-video', 'teaser.mp4'),
-    heroPoster: serviceAsset('ai-video', 'teaser-poster.jpg'),
+    heroVideo: serviceAsset('ai-video', AI_VIDEO_SEEDANCE_FILE),
+    heroPoster: serviceAsset('ai-video', AI_VIDEO_SEEDANCE_POSTER),
     detailMedia: [
-      videoMedia('ai-video', 'teaser.mp4', 'teaser-poster.jpg', 'AI-шоурил', 'Динамичный ролик для первого впечатления и презентации возможностей.'),
+      videoMedia('ai-video', AI_VIDEO_SEEDANCE_FILE, AI_VIDEO_SEEDANCE_POSTER, 'AI-видео', 'Новый короткий ролик для первого впечатления и презентации возможностей AI-продакшна.'),
       imageMedia('ai-video', 'detail-2.jpg', 'Кадры под рекламу', 'Визуалы для промо, digital-кампаний и посадочных страниц.'),
       imageMedia('ai-video', 'detail-3.jpg', 'Бренд-визуал', 'Запоминающийся кадр, который можно использовать как постер или баннер.'),
     ],
@@ -598,13 +601,13 @@ const SERVICES_DATA = [
     slug: 'agentic-ai-dev',
     title: '🧑‍💻 Вайбкодинг и agentic AI dev',
     cardTitle: 'ВАЙБКОДИНГ И AGENTIC AI DEV',
-    cardBenefit: 'MVP, SaaS, TMA, AI-боты и стабилизация AI-кода до production',
-    description: 'Agentic full-stack разработка под ключ: беру идею, сырой прототип или сломанный AI-код и довожу до стабильного релиза с Open Design, Codex и GPT Pro в frontend-пайплайне.',
+    cardBenefit: 'VPS, MVP, SaaS, TMA, AI-боты и стабилизация AI-кода до production',
+    description: 'Agentic full-stack разработка под ключ: беру идею, сырой прототип или сломанный AI-код и довожу до стабильного релиза с Open Design, Codex, GPT Pro и собственным VPS-контуром.',
     features: [
       'TypeScript, React, Next.js, Zustand',
       'Open Design, Codex и GPT Pro для UI/UX',
       'Python FastAPI/Django или Node.js backend',
-      'PostgreSQL, Supabase, Docker, Vercel',
+      'Timeweb VPS, PostgreSQL, Supabase, Docker, Vercel',
       'OpenAI API, Telegram Bot API и agentic workflow',
     ],
     price: 'разработка от 30 000₽',
@@ -623,15 +626,16 @@ const SERVICES_DATA = [
     ],
     relatedServiceIds: [6, 7, 8],
     seoTitle: 'Вайбкодинг и Agentic AI Dev | Реальный Vайб AI Studio',
-    seoDescription: 'Agentic full-stack разработка: MVP, SaaS, Telegram Mini Apps, AI-боты, Open Design frontend loop, стабилизация Cursor/Lovable/v0 и production-ready AI-код.',
+    seoDescription: 'Agentic full-stack разработка: VPS Launchpad на Timeweb, MVP, SaaS, Telegram Mini Apps, AI-боты, Open Design frontend loop, стабилизация Cursor/Lovable/v0 и production-ready AI-код.',
     buttonText: 'Разобрать задачу',
     buttonIcon: 'fab fa-telegram',
     detailTitle: 'Agentic Full-Stack Developer / Вайбкодер',
-    lead: 'Я не просто генерирую код через нейросети. Проектирую архитектуру, стабилизирую AI-код и довожу сложные веб-проекты до рабочего релиза: frontend, backend, база, API, деплой и понятный следующий этап. Для frontend и сайтов использую Open Design вместе с Codex и GPT Pro: дизайн-системы, быстрые прототипы, sandbox-preview и инженерную проверку перед релизом.',
+    lead: 'Я не просто генерирую код через нейросети. Проектирую архитектуру, стабилизирую AI-код и довожу сложные веб-проекты до рабочего релиза: frontend, backend, база, API, VPS, деплой и понятный следующий этап. Для frontend и сайтов использую Open Design вместе с Codex и GPT Pro: дизайн-системы, быстрые прототипы, sandbox-preview и инженерную проверку перед релизом.',
     useCasesTitle: 'С какими задачами приходят',
     useCases: [
       { title: 'Telegram Mini App для бизнеса', description: 'TMA до 3 экранов, API, авторизация initData, база данных, платежи и мобильный UX внутри Telegram.' },
       { title: 'AI-бот с базой и admin-панелью', description: 'Telegram-бот или веб-ассистент с OpenAI API, PostgreSQL/Supabase, ролями, заявками и управлением.' },
+      { title: 'VPS Launchpad на Timeweb', description: 'Помогаю арендовать и настроить облачный сервер, домен, SSL, deploy-контур и основу для сайта, web app, ботов или агентной платформы.' },
       { title: 'MVP веб-сервиса или SaaS', description: 'Авторизация, дашборды, роли, API, база, деплой и модульная архитектура для роста.' },
       { title: 'Стабилизация Cursor, Lovable, v0, Bolt', description: 'Аудит, типизация, state, БД, секреты, сборка, деплой и исправление критичных ошибок.' },
     ],
@@ -640,19 +644,22 @@ const SERVICES_DATA = [
       { title: 'Бесплатный первичный разбор', description: 'Смотрю задачу, текущий код или идею и предлагаю безопасный первый этап.' },
       { title: 'Аудит и архитектура', description: 'Фиксирую стек, данные, роли, API, риски, сборку, деплой и границы MVP.' },
       { title: 'Open Design прототипирование', description: 'Собираю UI-направления в agentic design loop: Codex/GPT Pro, дизайн-системы, live-preview и критика интерфейса до разработки.' },
+      { title: 'VPS и deploy-контур', description: 'Настраиваю Timeweb VPS, домен, SSL, окружение, Docker/Node/Python runtime и базовый путь к дальнейшему развитию продукта.' },
       { title: 'Agentic implementation', description: 'Использую AI-агентов как ускоритель, но оставляю инженерный контроль за архитектурой, тестами и качеством.' },
       { title: 'Release hardening', description: 'Убираю хаос AI-кода, выношу секреты, чиню state/типизацию/БД, прогоняю проверки и деплою.' },
     ],
     formatsTitle: 'Стек и форматы',
-    formats: ['Open Design / Codex / GPT Pro', 'React / Next.js / TypeScript', 'FastAPI / Django / Node.js', 'PostgreSQL / Supabase / Docker / Vercel', 'OpenAI API / Telegram Bot API'],
+    formats: ['Open Design / Codex / GPT Pro', 'React / Next.js / TypeScript', 'FastAPI / Django / Node.js', 'Timeweb VPS / PostgreSQL / Supabase / Docker / Vercel', 'OpenAI API / Telegram Bot API'],
     whatYouGet: [
       'Рабочий production-ready этап, а не “почти готовый” прототип.',
       'Более зрелый frontend: интерфейс проходит через дизайн-системы, preview и критику до финальной сборки.',
       'Понятную архитектуру, которую можно развивать после запуска.',
+      'Собственную техническую площадку: сервер, домен, SSL и deploy-контур, где можно дальше развивать сайт, приложение или агентный офис.',
       'Код, который можно поддерживать, показывать инвесторам и подключать к реальному бизнесу.',
     ],
     offersTitle: 'Быстрые офферы',
     offers: [
+      { id: 'vps-launchpad', title: 'VPS Launchpad', price: 'от 30 000₽', description: 'Timeweb VPS, домен, SSL, deploy-контур и базовая площадка под сайт, web app, ботов или AI-агентов.' },
       { id: 'telegram-mini-app', title: 'Telegram Mini App', price: 'от 30 000₽', description: 'Базовый TMA до 3 экранов + API, авторизация и мобильный UX внутри Telegram.' },
       { id: 'ai-bot-db-admin', title: 'AI-бот + база + admin', price: 'от 10 000₽', description: 'Бот с OpenAI API, базой данных, сценариями, заявками и панелью управления.' },
       { id: 'ai-code-rescue', title: 'AI-code rescue', price: 'от 7 000₽', description: 'Аудит и стабилизация проекта после Cursor, Lovable, Bolt, v0 или другого AI-генератора.' },
@@ -662,6 +669,7 @@ const SERVICES_DATA = [
     proofPoints: [
       'Флагманский опыт: SaaS-платформа для реального бизнеса с 8 ролями и 15+ дашбордами.',
       'Hermes / Agent OS: agentic control plane, kanban, roadmaps, library, approval-gated workflow.',
+      'Hermes Office VPS: агентный офис и сайт, развернутые на облачном сервере как база для дальнейшего развития AI-инструмента.',
       'Freelance OS: CRM-воронка, анализ лидов, proposal drafts и перевод сделки в проект.',
       'Open Design + Codex/GPT Pro: быстрые UI-прототипы, дизайн-системы, sandbox-preview и меньше случайного AI-интерфейса.',
     ],
@@ -671,6 +679,11 @@ const SERVICES_DATA = [
         title: 'Hermes Agent OS',
         description: 'Мультиагентная рабочая среда с задачами, ролями, workflow, roadmaps, библиотекой знаний и human approval.',
         points: ['Kanban + workflow engine', 'Product memory и standards registry', 'VPS/deploy контур и Telegram-агенты'],
+      },
+      {
+        title: 'Hermes Office VPS / VPS Launchpad',
+        description: 'Собственная облачная площадка под сайт, web app и агентный офис: сервер, домен, SSL, deploy, база для авторизации, личного кабинета, корзины и оплат.',
+        points: ['Timeweb VPS setup', 'Домен, SSL и deploy-контур', 'Платформа для дальнейшего вайбкодинга'],
       },
       {
         title: 'Freelance OS / Showcase',

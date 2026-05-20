@@ -1,7 +1,7 @@
 (function exposeServicePriceOverrides() {
   window.SERVICE_PRICE_OVERRIDES = {
   "version": 1,
-  "updatedAt": "2026-05-18T04:04:56.780Z",
+  "updatedAt": "2026-05-20T00:45:00.000Z",
   "services": {
     "ai-video": {
       "title": "AI-видео и рекламные рилсы",
@@ -66,6 +66,11 @@
   },
   "offers": {
     "agentic-ai-dev": {
+      "vps-launchpad": {
+        "title": "VPS Launchpad",
+        "price": "от 30 000₽",
+        "note": "Timeweb VPS, домен, SSL, deploy-контур и базовая площадка под сайт, web app, ботов или AI-агентов."
+      },
       "telegram-mini-app": {
         "title": "Telegram Mini App",
         "price": "от 30 000₽",

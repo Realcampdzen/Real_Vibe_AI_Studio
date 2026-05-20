@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v1.94-20260520-mobile-ui-bugs';
+const CACHE_VERSION = 'v1.95-20260520-ai-video-seedance';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -29,7 +29,7 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260520-android-hotfix'),
+  withBase('/css/style.css?v=20260520-vps-launchpad'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260518-social-preview'),
   withBase('/css/mobile-improvements.css?v=20260520-mobile-ui-bugs'),
@@ -42,11 +42,11 @@ const STATIC_ASSETS = [
   withBase('/js/script.js?v=20260520-mobile-bottom-dock'),
   withBase('/js/page-common.js?v=20260520-mobile-bottom-dock'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
-  withBase('/js/service-prices.js?v=20260518-market-prices'),
+  withBase('/js/service-prices.js?v=20260520-vps-launchpad'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260520-agent-office-showcase'),
+  withBase('/js/service-data.js?v=20260520-ai-video-seedance'),
   withBase('/js/service-detail-page.js?v=20260519-performance-pass'),
-  withBase('/js/admin-prices.js?v=20260518-market-prices'),
+  withBase('/js/admin-prices.js?v=20260520-vps-launchpad'),
   withBase('/js/auth-cart.js?v=20260520-desktop-header-icons'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),

@@ -1,6 +1,6 @@
 # Реальный Vайб AI Studio
 
-Сайт-витрина и рабочий репозиторий Real Vibe AI Studio: AI-контент, creative direction, SMM, музыка, озвучка, сайты, боты, AI-агенты и agentic full-stack development.
+Сайт-витрина и рабочий репозиторий Real Vibe AI Studio: AI-контент, creative direction, SMM, музыка, озвучка, сайты, боты, AI-агенты, VPS Launchpad и agentic full-stack development.
 
 Публичный сайт: [real-vibe.studio](https://real-vibe.studio/)
 
@@ -18,7 +18,7 @@
 | ID | Slug | Услуга | Ценовой якорь |
 |---:|---|---|---|
 | 0 | `ai-video` | AI-видео и рекламные рилсы | от 80 000 руб. |
-| 11 | `agentic-ai-dev` | Вайбкодинг / Agentic AI Dev | разработка от 30 000 руб. |
+| 11 | `agentic-ai-dev` | Вайбкодинг / Agentic AI Dev, VPS Launchpad | разработка от 30 000 руб. |
 | 3 | `smm-content` | SMM и контент | от 40 000 руб. |
 | 10 | `creative-production` | Creative Direction + AI Production | от 150 000 руб. |
 | 4 | `music` | Создание музыки | от 20 000 руб. |

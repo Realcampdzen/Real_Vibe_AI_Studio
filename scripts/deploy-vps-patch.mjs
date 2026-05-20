@@ -1,6 +1,6 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join } from 'node:path';
+import { dirname, isAbsolute, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const env = process.env;
@@ -13,16 +13,17 @@ const dryRun = env.DRY_RUN === 'true';
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
-    encoding: 'utf8',
+    encoding: options.buffer ? undefined : 'utf8',
     stdio: options.capture ? ['pipe', 'pipe', 'pipe'] : (options.input ? ['pipe', 'inherit', 'inherit'] : 'inherit'),
     input: options.input,
   });
 
   if (result.status !== 0) {
-    const stderr = result.stderr ? `\n${result.stderr}` : '';
+    const stderr = result.stderr ? `\n${result.stderr.toString()}` : '';
     throw new Error(`${command} ${args.join(' ')} failed${stderr}`);
   }
 
+  if (options.buffer) return result.stdout || Buffer.alloc(0);
   return (result.stdout || '').trim();
 }
 
@@ -35,6 +36,49 @@ function gitLines(args) {
   return output ? output.split(/\r?\n/).filter(Boolean) : [];
 }
 
+function resolveRepoPath(repoRoot, gitPath) {
+  return isAbsolute(gitPath) ? gitPath : join(repoRoot, gitPath);
+}
+
+function parseLfsPointer(blob) {
+  const text = blob.toString('utf8');
+  if (!text.startsWith('version https://git-lfs.github.com/spec/v1')) return null;
+
+  const oid = text.match(/^oid sha256:([0-9a-f]{64})$/m)?.[1];
+  const size = Number(text.match(/^size ([0-9]+)$/m)?.[1] || 0);
+  if (!oid || !size) return null;
+  return { oid, size };
+}
+
+function materializeHeadFiles(files, outputDir) {
+  const repoRoot = run('git', ['rev-parse', '--show-toplevel'], { capture: true });
+  const gitCommonDir = resolveRepoPath(repoRoot, run('git', ['rev-parse', '--git-common-dir'], { capture: true }));
+
+  for (const rel of files) {
+    if (rel.startsWith('/') || rel.includes('..') || rel.includes('\\')) {
+      throw new Error(`unsafe archive path: ${rel}`);
+    }
+
+    const outPath = join(outputDir, ...rel.split('/'));
+    mkdirSync(dirname(outPath), { recursive: true });
+
+    const blob = run('git', ['show', `HEAD:${rel}`], { capture: true, buffer: true });
+    const pointer = parseLfsPointer(blob);
+
+    if (!pointer) {
+      writeFileSync(outPath, blob);
+      continue;
+    }
+
+    const objectPath = join(gitCommonDir, 'lfs', 'objects', pointer.oid.slice(0, 2), pointer.oid.slice(2, 4), pointer.oid);
+    if (!existsSync(objectPath)) {
+      throw new Error(`Missing Git LFS object for ${rel}: ${pointer.oid}`);
+    }
+
+    copyFileSync(objectPath, outPath);
+  }
+}
+
 const commit = run('git', ['rev-parse', '--short', 'HEAD'], { capture: true });
 const changedFiles = gitLines(['diff-tree', '--no-commit-id', '--name-only', '--diff-filter=ACMRT', '-r', 'HEAD']);
 const deletedFiles = gitLines(['diff-tree', '--no-commit-id', '--name-only', '--diff-filter=D', '-r', 'HEAD']);
@@ -44,6 +88,7 @@ if (!changedFiles.length && !deletedFiles.length) {
 }
 
 const tempDir = mkdtempSync(join(tmpdir(), 'real-vibe-deploy-'));
+const patchDir = join(tempDir, 'patch');
 const archiveName = `real-vibe-${commit}-${label}.tar.gz`;
 const deleteName = `real-vibe-${commit}-${label}.deleted.txt`;
 const archivePath = join(tempDir, archiveName);
@@ -53,7 +98,11 @@ writeFileSync(deletePath, `${deletedFiles.join('\n')}${deletedFiles.length ? '\n
 
 try {
   if (changedFiles.length) {
-    run('git', ['archive', '--format=tar.gz', '-o', archivePath, 'HEAD', '--', ...changedFiles]);
+    // Materialize HEAD blobs into a patch directory so Git LFS media is
+    // packaged as real binary content instead of pointer text.
+    mkdirSync(patchDir, { recursive: true });
+    materializeHeadFiles(changedFiles, patchDir);
+    run('tar', ['-czf', archivePath, '-C', patchDir, '.']);
   } else {
     writeFileSync(archivePath, '');
   }
@@ -69,14 +118,12 @@ try {
 
   if (dryRun) {
     console.log('DRY_RUN=true: patch archive created locally only.');
-    process.exit(0);
-  }
+  } else {
+    const sshArgs = ['-i', vpsKey, '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=accept-new'];
+    run('scp', [...sshArgs, archivePath, `${vpsHost}:/tmp/${archiveName}`]);
+    run('scp', [...sshArgs, deletePath, `${vpsHost}:/tmp/${deleteName}`]);
 
-  const sshArgs = ['-i', vpsKey, '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=accept-new'];
-  run('scp', [...sshArgs, archivePath, `${vpsHost}:/tmp/${archiveName}`]);
-  run('scp', [...sshArgs, deletePath, `${vpsHost}:/tmp/${deleteName}`]);
-
-  const remoteScript = String.raw`
+    const remoteScript = String.raw`
 set -euo pipefail
 
 BASE="$VPS_BASE"
@@ -142,17 +189,18 @@ rm -f "$ARCHIVE" "$DELETE_LIST"
 exit 1
 `;
 
-  const remoteCommand = [
-    `VPS_BASE=${shellQuote(vpsBase)}`,
-    `ARCHIVE_NAME=${shellQuote(archiveName)}`,
-    `DELETE_NAME=${shellQuote(deleteName)}`,
-    `COMMIT=${shellQuote(commit)}`,
-    `LABEL=${shellQuote(label)}`,
-    `HEALTH_URL=${shellQuote(healthUrl)}`,
-    'bash -s',
-  ].join(' ');
+    const remoteCommand = [
+      `VPS_BASE=${shellQuote(vpsBase)}`,
+      `ARCHIVE_NAME=${shellQuote(archiveName)}`,
+      `DELETE_NAME=${shellQuote(deleteName)}`,
+      `COMMIT=${shellQuote(commit)}`,
+      `LABEL=${shellQuote(label)}`,
+      `HEALTH_URL=${shellQuote(healthUrl)}`,
+      'bash -s',
+    ].join(' ');
 
-  run('ssh', [...sshArgs, vpsHost, remoteCommand], { input: remoteScript });
+    run('ssh', [...sshArgs, vpsHost, remoteCommand], { input: remoteScript });
+  }
 } finally {
   rmSync(tempDir, { recursive: true, force: true });
 }

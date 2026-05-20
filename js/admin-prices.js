@@ -18,6 +18,7 @@
     },
     offers: {
       'agentic-ai-dev': {
+        'vps-launchpad': { group: 'Development', price: 'от 30 000₽', source: 'VPS setup + deploy floor', reason: 'Сервер, домен, SSL и deploy-контур продаются как площадка развития, а не как разовая настройка хостинга.' },
         'telegram-mini-app': { group: 'Development', price: 'от 30 000₽', source: 'webprod / Abilene TMA', reason: 'TMA с Telegram auth/initData, API и мобильным UX лучше держать выше 20К.' },
         'ai-bot-db-admin': { group: 'AI Automation', price: 'от 10 000₽', source: 'Custom bot floor', reason: 'AI-бот с БД и admin-панелью не должен выглядеть как микрофикс.' },
         'ai-code-rescue': { group: 'Development', price: 'от 7 000₽', source: 'AI-code rescue floor', reason: 'Небольшой аудит или один фикс можно оставить доступным, но не за 4К.' },

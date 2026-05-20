@@ -9,7 +9,7 @@ Real Vibe AI Studio sells AI production and agentic development services for bus
 Primary positioning:
 
 - AI-video, SMM, music, voice/sound, and creative direction for content production.
-- Agentic full-stack development: MVP, SaaS, Telegram Mini Apps, AI bots, sites, custom GPTs, and stabilization of AI-generated code.
+- Agentic full-stack development: VPS Launchpad on Timeweb, MVP, SaaS, Telegram Mini Apps, AI bots, sites, custom GPTs, and stabilization of AI-generated code.
 - Frontend/design quality loop: Open Design with Codex and GPT Pro for fast design-system based prototypes, sandbox previews, and cleaner design-to-code handoff.
 - The public site is a sales funnel, a portfolio, and a live demo of AI assistants.
 
@@ -58,7 +58,7 @@ Do not reintroduce the old `projects-showreel` section with demo cards such as "
 | ID | Slug | Service | Public price anchor |
 |---:|---|---|---|
 | 0 | `ai-video` | AI-video and advertising reels | from 80,000 RUB |
-| 11 | `agentic-ai-dev` | Vibe coding / Agentic AI Dev | development from 30,000 RUB |
+| 11 | `agentic-ai-dev` | Vibe coding / Agentic AI Dev | development from 30,000 RUB; VPS Launchpad from 30,000 RUB |
 | 3 | `smm-content` | SMM and content | from 40,000 RUB |
 | 10 | `creative-production` | Creative Direction + AI Production | from 150,000 RUB |
 | 4 | `music` | Music creation | from 20,000 RUB |
@@ -71,6 +71,8 @@ Do not reintroduce the old `projects-showreel` section with demo cards such as "
 | 2 | `ecom-animation` | AI animation and e-commerce infographics | from 35,000 RUB |
 
 Detailed descriptions, qualification questions, and deliverables are in [docs/business-services-guide.md](docs/business-services-guide.md).
+
+Agentic AI Dev includes `VPS Launchpad`: help the client rent and configure a Timeweb VPS, domain, SSL and deploy contour as a base for a site, web app, bots, AI agents, cabinet, cart, payments and future vibe-coding work. Position it as an owned product platform, not a generic hosting task.
 
 ## Operating Rules
 
