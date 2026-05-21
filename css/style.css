@@ -13873,8 +13873,8 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
 
 @media (min-width: 769px) {
   .hero-cta-row {
-    margin-top: -12px !important;
-    gap: 24px !important;
+    margin-top: 4px !important;
+    gap: 22px !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     justify-content: center !important;
@@ -13883,17 +13883,17 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
   .hero-cta-row .btn-primary,
   .hero-cta-row .btn-secondary,
   .hero-cta-row .btn-secondary.hero-secondary-btn {
-    width: 110px !important;
-    height: 110px !important;
-    min-width: 110px !important;
-    min-height: 110px !important;
-    max-width: 110px !important;
-    max-height: 110px !important;
-    flex: 0 0 110px !important;
+    width: 98px !important;
+    height: 98px !important;
+    min-width: 98px !important;
+    min-height: 98px !important;
+    max-width: 98px !important;
+    max-height: 98px !important;
+    flex: 0 0 98px !important;
     padding: 0 !important;
     border-radius: 50% !important;
     font-family: var(--font-display) !important;
-    font-size: 13px !important;
+    font-size: 12px !important;
     font-weight: 700 !important;
     line-height: 1.16 !important;
     letter-spacing: 0 !important;

@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.31-20260521-bots-desktop-portrait-cover';
+const CACHE_VERSION = 'v2.32-20260521-hero-cta-smaller-desktop';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -29,7 +29,7 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260521-bots-desktop-portrait-cover'),
+  withBase('/css/style.css?v=20260521-hero-cta-smaller-desktop'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix'),
   withBase('/css/mobile-improvements.css?v=20260521-mobile-menu-motion-polish'),
