@@ -16,10 +16,11 @@ Release focus:
 - DOMINIA links must use `https://www.dominia.info/`;
 - Real Camp Planner must not link to the temporary Vercel app from the public card; describe it as a RealCampGuide/Putevoditel module and standalone AI planning agent;
 - mobile menu behavior is a full-screen modal overlay controlled by `js/script.js` and polished in `css/mobile-improvements.css`;
-- current public cache marker is `2026-05-21-mobile-menu-motion-polish`;
-- current service worker cache version is `v2.17-20260521-mobile-menu-motion-polish`.
+- desktop hero CTA buttons are circular, readable, and do not duplicate the header portfolio action;
+- current public cache marker is `2026-05-21-hero-cta-circles`;
+- current service worker cache version is `v2.18-20260521-hero-cta-circles`.
 
-This release has been locally verified against both direct `file://` preview and `http://127.0.0.1:3001/index.html`. It has not been deployed by documentation update alone.
+This release has been locally verified against both direct `file://` preview and `http://127.0.0.1:3001/index.html`, then deployed by VPS patch deploy.
 
 ## Project Shape
 
@@ -468,8 +469,8 @@ After deploy:
 ```bash
 curl -I https://real-vibe.studio/
 curl -I https://real-vibe.studio/sw.js
-curl -s https://real-vibe.studio/ | grep -E 'mobile-menu-motion-polish|portfolio|Android/PWA'
-curl -s https://real-vibe.studio/sw.js | grep -E 'CACHE_VERSION|mobile-menu-motion-polish|portfolio'
+curl -s https://real-vibe.studio/ | grep -E 'hero-cta-circles|portfolio|Android/PWA'
+curl -s https://real-vibe.studio/sw.js | grep -E 'CACHE_VERSION|hero-cta-circles|portfolio'
 curl -I https://real-vibe.studio/public/og-real-vibe-ai-studio-YYYYMMDD.jpg
 ```
 

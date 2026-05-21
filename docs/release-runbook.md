@@ -16,15 +16,17 @@ Scope:
 - Real Camp Planner no longer links to the temporary Vercel app and is positioned as a RealCampGuide/Putevoditel planning module plus standalone AI planning agent;
 - `freelance-showcase` stays a GitHub/CV source, not a product card;
 - Open Design stays a workflow/tooling reference, not a product card;
+- desktop hero CTA buttons stay readable circular buttons without the duplicated portfolio action;
 - mobile hamburger menu now opens as a polished modal overlay and works in `file://` and local static preview;
 - homepage local preview suppresses analytics/auth-cart API noise in `file://`, `localhost`, and `127.0.0.1` contexts.
 
 Release cache markers:
 
-- `index.html` cache comment: `2026-05-21-mobile-menu-motion-polish`;
+- `index.html` cache comment: `2026-05-21-hero-cta-circles`;
+- `css/style.css`: `v=20260521-hero-cta-circles`;
 - `css/mobile-improvements.css`: `v=20260521-mobile-menu-motion-polish`;
 - `js/script.js`: `v=20260521-mobile-menu-motion-polish`;
-- `sw.js` cache version: `v2.17-20260521-mobile-menu-motion-polish`.
+- `sw.js` cache version: `v2.18-20260521-hero-cta-circles`.
 
 Local verification already run for this release:
 
@@ -40,7 +42,7 @@ Browser verification covered:
 - mobile menu open/close/reopen at `642x694` and `390x844`;
 - portfolio DOM checks for 8 cards, DOMINIA `www` href, and no public Real Camp Planner Vercel href.
 
-Deploy status: not deployed by the release-note/doc update. The patch deploy script packages Git `HEAD`, so commit the intended release files before running `npm run deploy:vps:patch`.
+Deploy status: deployed by VPS patch deploy after committing the intended release files. The patch deploy script packages Git `HEAD`.
 
 ## Preflight
 

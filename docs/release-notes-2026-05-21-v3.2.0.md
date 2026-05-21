@@ -23,6 +23,7 @@
 
 ## Mobile UX
 
+- Restored desktop hero CTA buttons as readable circular controls and removed the duplicated portfolio action from the hero row.
 - Fixed mobile menu initialization in `file://` preview by making analytics transport failures non-blocking.
 - Suppressed auth-cart `/api/...` calls during `file://`, `localhost`, and `127.0.0.1` static previews unless `window.__RV_ENABLE_LOCAL_API__` is set.
 - Polished the hamburger menu into a full-screen modal overlay:
@@ -34,10 +35,11 @@
 
 ## Cache
 
-- `index.html` cache marker: `2026-05-21-mobile-menu-motion-polish`.
+- `index.html` cache marker: `2026-05-21-hero-cta-circles`.
+- `css/style.css`: `v=20260521-hero-cta-circles`.
 - `css/mobile-improvements.css`: `v=20260521-mobile-menu-motion-polish`.
 - `js/script.js`: `v=20260521-mobile-menu-motion-polish`.
-- `sw.js`: `v2.17-20260521-mobile-menu-motion-polish`.
+- `sw.js`: `v2.18-20260521-hero-cta-circles`.
 
 ## Verification
 
@@ -62,6 +64,4 @@ Browser checks:
 
 ## Deploy Status
 
-Not deployed by this release-note update.
-
-Patch deploy still requires committing the intended release files first, because `npm run deploy:vps:patch` packages files from Git `HEAD`.
+Deployed to production by VPS patch deploy after committing the intended release files. `npm run deploy:vps:patch` packages files from Git `HEAD`.

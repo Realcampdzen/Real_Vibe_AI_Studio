@@ -63,7 +63,7 @@ Current release is `v3.2.0` / `2026-05-21-product-store`. Preserve these public 
 - DOMINIA links use `https://www.dominia.info/`.
 - Real Camp Planner has no public temporary Vercel href; describe it as a RealCampGuide/Putevoditel planning module and standalone AI planning agent.
 - The mobile menu must open as a smooth modal overlay and work in `file://` plus `http://127.0.0.1:3001` static preview.
-- Current storefront cache marker is `2026-05-21-mobile-menu-motion-polish`; current service worker cache version is `v2.17-20260521-mobile-menu-motion-polish`.
+- Current storefront cache marker is `2026-05-21-hero-cta-circles`; current service worker cache version is `v2.18-20260521-hero-cta-circles`.
 
 ## Service Catalog Snapshot
 
