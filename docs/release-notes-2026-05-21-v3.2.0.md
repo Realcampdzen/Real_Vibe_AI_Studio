@@ -35,11 +35,11 @@
 
 ## Cache
 
-- `index.html` cache marker: `2026-05-21-hero-cta-circles`.
-- `css/style.css`: `v=20260521-hero-cta-circles`.
+- `index.html` cache marker: `2026-05-21-hero-cta-fit`.
+- `css/style.css`: `v=20260521-hero-cta-fit`.
 - `css/mobile-improvements.css`: `v=20260521-mobile-menu-motion-polish`.
 - `js/script.js`: `v=20260521-mobile-menu-motion-polish`.
-- `sw.js`: `v2.18-20260521-hero-cta-circles`.
+- `sw.js`: `v2.19-20260521-hero-cta-fit`.
 
 ## Verification
 

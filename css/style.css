@@ -13873,7 +13873,7 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
 
 @media (min-width: 769px) {
   .hero-cta-row {
-    margin-top: -4px !important;
+    margin-top: -12px !important;
     gap: 28px !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
@@ -13890,10 +13890,10 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
     max-width: 118px !important;
     max-height: 118px !important;
     flex: 0 0 118px !important;
-    padding: 0 4px !important;
+    padding: 0 2px !important;
     border-radius: 50% !important;
     font-family: var(--font-body) !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
     font-weight: 700 !important;
     line-height: 1.18 !important;
     letter-spacing: 0 !important;
