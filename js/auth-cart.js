@@ -16,6 +16,8 @@
 
   const refs = {};
   const safeMethods = new Set(['GET', 'HEAD', 'OPTIONS']);
+  const isLocalStaticPreview = ['localhost', '127.0.0.1', '0.0.0.0'].includes(window.location.hostname) && !window.__RV_ENABLE_LOCAL_API__;
+  const canUseApi = ['http:', 'https:'].includes(window.location.protocol) && !isLocalStaticPreview;
 
   function createElement(tagName, options = {}) {
     const element = document.createElement(tagName);
@@ -47,6 +49,23 @@
   }
 
   async function apiFetch(path, options = {}) {
+    if (!canUseApi && String(path).startsWith('/api/')) {
+      state.apiAvailable = false;
+      if (path === '/api/auth/session') {
+        return { available: false, csrfToken: '', user: null, providers: state.providers };
+      }
+      if (path === '/api/cart') {
+        return { available: false, cart: { items: [], itemCount: 0 } };
+      }
+      if (path === '/api/orders/my') {
+        return { available: false, orders: [] };
+      }
+      const error = new Error('API доступен только через http/https');
+      error.status = 0;
+      error.payload = { available: false };
+      throw error;
+    }
+
     const method = String(options.method || 'GET').toUpperCase();
     const headers = new Headers(options.headers || {});
     let body = options.body;

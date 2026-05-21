@@ -6,10 +6,9 @@
     phone: { href: 'tel:+79319671483', display: '+7 931 967 14 83' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
+    telegramCommunity: { href: 'https://t.me/+hbY8nInX6Wk1M2E6', display: 'Telegram-сообщество' },
     whatsapp: { href: 'https://wa.me/79319671483' },
-    vk: { href: 'https://vk.com' },
-    youtube: { href: 'https://youtube.com' },
-    tiktok: { href: 'https://www.tiktok.com' },
+    vk: { href: 'https://vk.com/club238913969', display: 'VK' },
     primary: { href: 'tel:+79319671483' },
   };
 
@@ -54,6 +53,8 @@
       email: CONTACTS.email.display,
       telegram: CONTACTS.telegram.handle,
       telegramHandle: CONTACTS.telegram.handle,
+      telegramCommunity: CONTACTS.telegramCommunity.display,
+      vk: CONTACTS.vk.display,
     };
 
     document.querySelectorAll('[data-contact-link]').forEach((element) => {

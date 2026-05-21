@@ -1,7 +1,7 @@
 // AI Studio - Enhanced Interactive Features
 
 // Build marker (helps debug cache/service worker issues)
-window.__AI_STUDIO_BUILD = '20260519-mobile-stability';
+window.__AI_STUDIO_BUILD = '20260521-mobile-menu-motion-polish';
 
 // API base. Empty value means same-origin, which is the production VPS default.
 // Override before this script if needed: window.__AI_API_BASE__ = 'http://localhost:3000'
@@ -11,10 +11,9 @@ const CONTACTS = {
     phone: { href: 'tel:+79319671483', display: '+7 931 967 14 83' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
+    telegramCommunity: { href: 'https://t.me/+hbY8nInX6Wk1M2E6', display: 'Telegram-сообщество' },
     whatsapp: { href: 'https://wa.me/79319671483' },
-    vk: { href: 'https://vk.com' },
-    youtube: { href: 'https://youtube.com' },
-    tiktok: { href: 'https://www.tiktok.com' },
+    vk: { href: 'https://vk.com/club238913969', display: 'VK' },
     primary: { href: 'tel:+79319671483' }
 };
 
@@ -29,6 +28,8 @@ const ANALYTICS_TYPES = new Set([
 
 function trackEvent(type, details = {}) {
     if (!ANALYTICS_TYPES.has(type)) return;
+    if (!['http:', 'https:'].includes(window.location.protocol)) return;
+    if (['localhost', '127.0.0.1', '0.0.0.0'].includes(window.location.hostname)) return;
 
     const payload = {
         type,
@@ -41,16 +42,24 @@ function trackEvent(type, details = {}) {
     const body = JSON.stringify(payload);
 
     if (navigator.sendBeacon) {
-        const blob = new Blob([body], { type: 'application/json' });
-        if (navigator.sendBeacon(ANALYTICS_ENDPOINT, blob)) return;
+        try {
+            const blob = new Blob([body], { type: 'application/json' });
+            if (navigator.sendBeacon(ANALYTICS_ENDPOINT, blob)) return;
+        } catch {
+            // Ignore analytics transport failures; UI initialization must continue.
+        }
     }
 
-    fetch(ANALYTICS_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body,
-        keepalive: true,
-    }).catch(() => {});
+    try {
+        fetch(ANALYTICS_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            keepalive: true,
+        }).catch(() => {});
+    } catch {
+        // Ignore analytics transport failures; UI initialization must continue.
+    }
 }
 
 window.RealVibeAnalytics = {
@@ -61,12 +70,11 @@ function applyContactConfig() {
     const linkMap = {
         primary: CONTACTS.primary,
         telegram: CONTACTS.telegram,
+        telegramCommunity: CONTACTS.telegramCommunity,
         whatsapp: CONTACTS.whatsapp,
         phone: CONTACTS.phone,
         email: CONTACTS.email,
-        vk: CONTACTS.vk,
-        youtube: CONTACTS.youtube,
-        tiktok: CONTACTS.tiktok
+        vk: CONTACTS.vk
     };
 
     document.querySelectorAll('[data-contact-link]').forEach((element) => {
@@ -90,7 +98,9 @@ function applyContactConfig() {
         phone: CONTACTS.phone.display,
         email: CONTACTS.email.display,
         telegram: CONTACTS.telegram.handle || CONTACTS.telegram.display,
-        telegramHandle: CONTACTS.telegram.handle || CONTACTS.telegram.display
+        telegramHandle: CONTACTS.telegram.handle || CONTACTS.telegram.display,
+        telegramCommunity: CONTACTS.telegramCommunity.display,
+        vk: CONTACTS.vk.display
     };
 
     document.querySelectorAll('[data-contact-text]').forEach((element) => {
@@ -318,9 +328,10 @@ function initMobileMenu() {
   let scrollYBeforeOpen = 0;
   let lastFocusedElement = null;
   let transitionTimer = 0;
+  let closeCleanupTimer = 0;
   let isTransitioning = false;
   const suppressedWidgetsSelector = '.glass-ui-floating-button, .glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget';
-  const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220;
+  const transitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 360;
   const shouldAutoFocusClose = !('ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0);
 
   const suppressWidgets = (shouldSuppress) => {
@@ -363,6 +374,7 @@ function initMobileMenu() {
   
   const openMenu = () => {
     if (mobileNav.classList.contains('active') || isTransitioning) return;
+    window.clearTimeout(closeCleanupTimer);
     lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     mobileNav.classList.remove('rv-force-hidden');
     setButtonState(true);
@@ -382,19 +394,24 @@ function initMobileMenu() {
     const { immediate = false, restoreFocus = true, restoreScroll = true } = options;
     if (!mobileNav.classList.contains('active')) return;
     window.clearTimeout(transitionTimer);
+    window.clearTimeout(closeCleanupTimer);
     isTransitioning = false;
     setButtonState(false);
     mobileNav.classList.remove('active');
     mobileNav.classList.toggle('rv-force-hidden', immediate);
     mobileNav.setAttribute('aria-hidden', 'true');
-    if (restoreScroll) unlockScroll();
-    suppressWidgets(false);
-    if (restoreFocus && lastFocusedElement?.isConnected) {
-      lastFocusedElement.focus({ preventScroll: true });
-    }
+    const finishClose = () => {
+      if (restoreScroll) unlockScroll();
+      suppressWidgets(false);
+      if (restoreFocus && lastFocusedElement?.isConnected) {
+        lastFocusedElement.focus({ preventScroll: true });
+      }
+    };
     if (immediate) {
+      finishClose();
       window.setTimeout(() => mobileNav.classList.remove('rv-force-hidden'), 120);
     } else {
+      closeCleanupTimer = window.setTimeout(finishClose, transitionMs);
       markTransitioning();
     }
   };

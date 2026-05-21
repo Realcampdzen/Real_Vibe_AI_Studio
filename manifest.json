@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Реальный Vайб AI Studio",
   "short_name": "Реальный Vайб",
-  "description": "Реальный Vайб AI Studio — AI-видео, вайбкодинг, боты, сайты, SMM и creative direction для бизнеса и творческих проектов.",
+  "description": "Реальный Vайб AI Studio — Android/PWA-магазин AI-продуктов, портфолио, услуг, вайбкодинга, ботов, сайтов, SMM и creative direction.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -53,6 +53,19 @@
       "short_name": "Кот Бро",
       "description": "Открыть чат с AI ассистентом Котом Бро",
       "url": "/?chat=bro-cat",
+      "icons": [
+        {
+          "src": "public/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Портфолио и продукты",
+      "short_name": "Портфолио",
+      "description": "Открыть портфолио продуктов и live-демо Real Vibe AI Studio",
+      "url": "/#portfolio",
       "icons": [
         {
           "src": "public/icons/icon-192.png",

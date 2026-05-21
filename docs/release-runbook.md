@@ -1,6 +1,46 @@
 # Real Vibe Studio Release Runbook
 
-Last updated: 2026-05-20
+Last updated: 2026-05-21
+
+## Current Release
+
+Release: `v3.2.0` / `2026-05-21-product-store`.
+
+Scope:
+
+- homepage converted into the current Android/PWA product store and portfolio storefront;
+- `#portfolio` stabilized at 8 cards with Real Vibe Studio, GKS Delivery Platform, RealCampGuide, PolStan App, DOMINIA, DOMINIA Arena, Hermes Agent OS, and Real Camp Planner;
+- RealCampGuide promoted to a featured Camp CRM / Pedagogy OS card;
+- small portfolio cards received stronger screenshots, proof copy, tags and CTAs;
+- DOMINIA public links point to `https://www.dominia.info/`;
+- Real Camp Planner no longer links to the temporary Vercel app and is positioned as a RealCampGuide/Putevoditel planning module plus standalone AI planning agent;
+- `freelance-showcase` stays a GitHub/CV source, not a product card;
+- Open Design stays a workflow/tooling reference, not a product card;
+- mobile hamburger menu now opens as a polished modal overlay and works in `file://` and local static preview;
+- homepage local preview suppresses analytics/auth-cart API noise in `file://`, `localhost`, and `127.0.0.1` contexts.
+
+Release cache markers:
+
+- `index.html` cache comment: `2026-05-21-mobile-menu-motion-polish`;
+- `css/mobile-improvements.css`: `v=20260521-mobile-menu-motion-polish`;
+- `js/script.js`: `v=20260521-mobile-menu-motion-polish`;
+- `sw.js` cache version: `v2.17-20260521-mobile-menu-motion-polish`.
+
+Local verification already run for this release:
+
+```bash
+npm run check
+git diff --check
+```
+
+Browser verification covered:
+
+- direct `file://` preview of `index.html`;
+- `http://127.0.0.1:3001/index.html`;
+- mobile menu open/close/reopen at `642x694` and `390x844`;
+- portfolio DOM checks for 8 cards, DOMINIA `www` href, and no public Real Camp Planner Vercel href.
+
+Deploy status: not deployed by the release-note/doc update. The patch deploy script packages Git `HEAD`, so commit the intended release files before running `npm run deploy:vps:patch`.
 
 ## Preflight
 
@@ -106,7 +146,11 @@ Enforced CSP must include `script-src 'self'`, `style-src-attr 'none'`, and no `
 ## Browser Smoke
 
 - Homepage cold load, hero visible for 60 seconds, scroll to footer and back.
+- Mobile menu opens and closes smoothly: `aria-expanded`, `aria-hidden`, `.mobile-nav.active`, scroll lock, and overlay visibility all update correctly.
 - Confirm `hero-reel-desktop.webm` is used and old source master videos are not requested.
+- Confirm portfolio has 8 cards in the release order and does not show `freelance-showcase` or Open Design as products.
+- Confirm DOMINIA card/media links use `https://www.dominia.info/`.
+- Confirm Real Camp Planner has no public temporary Vercel href.
 - Service cards navigate to detail pages.
 - `service-detail.html?id=0..7` and `ai-photo-detail.html` render without console errors.
 - Chat widgets open, send invalid/limited requests gracefully, and stay visually usable.

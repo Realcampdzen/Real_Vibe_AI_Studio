@@ -9,9 +9,9 @@ Real Vibe AI Studio sells AI production and agentic development services for bus
 Primary positioning:
 
 - AI-video, SMM, music, voice/sound, and creative direction for content production.
-- Agentic full-stack development: VPS Launchpad on Timeweb, MVP, SaaS, Telegram Mini Apps, AI bots, sites, custom GPTs, and stabilization of AI-generated code.
+- Agentic full-stack development: VPS Launchpad on Timeweb, MVP, SaaS, Android/PWA apps, delivery/CRM platforms, Telegram Mini Apps, AI bots, sites, custom GPTs, 1C-ready automations, and stabilization of AI-generated code.
 - Frontend/design quality loop: Open Design with Codex and GPT Pro for fast design-system based prototypes, sandbox previews, and cleaner design-to-code handoff.
-- The public site is a sales funnel, a portfolio, and a live demo of AI assistants.
+- The public site is an Android/PWA-ready sales funnel, a portfolio/product store, and a live demo of AI assistants.
 
 Key person:
 
@@ -24,6 +24,7 @@ Primary docs:
 - [Business and Services Guide](docs/business-services-guide.md)
 - [Technical Operations Guide](docs/technical-operations-guide.md)
 - [Release Runbook](docs/release-runbook.md)
+- [Current Release Notes](docs/release-notes-2026-05-21-v3.2.0.md)
 
 ## Source of Truth
 
@@ -35,6 +36,7 @@ Use these files before changing copy, services, media, or behavior:
 - `index.html` - homepage funnel, hero, service order, CTA blocks, SEO/social meta.
 - `service-detail.html` and `js/service-detail-page.js` - shared detail page renderer.
 - `public/works/services/<slug>/` - service covers, detail media, posters, and video loops.
+- `public/works/portfolio/` - product portfolio screenshots used by the homepage portfolio/store section.
 - `sw.js` - service worker cache version and precache list.
 - `README.md`, `AGENTS.md`, `docs/business-services-guide.md`, `docs/technical-operations-guide.md` - agent-facing docs.
 
@@ -50,8 +52,18 @@ At the start of the homepage, the service order is intentionally:
 6. Voiceover and sound design
 7. Budget-saving CTA
 8. MVP/SaaS/apps, bots, websites, AI agents, AI-photo, e-commerce animation
+9. Agentic Dev showcase and portfolio/product store with live/Vercel links
 
 Do not reintroduce the old `projects-showreel` section with demo cards such as "AI-video for brand", "Click play", or repeated placeholder videos. That block was intentionally removed from the sales funnel.
+
+The portfolio/product store section should show real products and proof-of-work, not placeholders. Current products include Real Vibe Studio, GKS Delivery Platform, PolStan App, DOMINIA, DOMINIA Arena, Hermes Agent OS, RealCampGuide, and Real Camp Planner. Do not show `freelance-showcase` as a product; it is the GitHub/CV profile source. Do not show Open Design as a product; it is a frontend/design workflow used by the studio.
+
+Current release is `v3.2.0` / `2026-05-21-product-store`. Preserve these public rules:
+
+- DOMINIA links use `https://www.dominia.info/`.
+- Real Camp Planner has no public temporary Vercel href; describe it as a RealCampGuide/Putevoditel planning module and standalone AI planning agent.
+- The mobile menu must open as a smooth modal overlay and work in `file://` plus `http://127.0.0.1:3001` static preview.
+- Current storefront cache marker is `2026-05-21-mobile-menu-motion-polish`; current service worker cache version is `v2.17-20260521-mobile-menu-motion-polish`.
 
 ## Service Catalog Snapshot
 
@@ -72,7 +84,7 @@ Do not reintroduce the old `projects-showreel` section with demo cards such as "
 
 Detailed descriptions, qualification questions, and deliverables are in [docs/business-services-guide.md](docs/business-services-guide.md).
 
-Agentic AI Dev includes `VPS Launchpad`: help the client rent and configure a Timeweb VPS, domain, SSL and deploy contour as a base for a site, web app, bots, AI agents, cabinet, cart, payments and future vibe-coding work. Position it as an owned product platform, not a generic hosting task.
+Agentic AI Dev includes `VPS Launchpad`: help the client rent and configure a Timeweb VPS, domain, SSL and deploy contour as a base for a site, web app, bots, AI agents, cabinet, cart, payments and future vibe-coding work. It also includes Android/PWA app shells, delivery/CRM modules, 1C-ready automation adapters, and portfolio/product-store apps. Position it as an owned product platform, not a generic hosting task.
 
 ## Operating Rules
 
@@ -94,6 +106,7 @@ npm run check
 For homepage or detail-page changes, also run a browser check with Playwright or an equivalent script:
 
 - `index.html`
+- mobile menu open/close when header/menu JS or mobile CSS changes
 - `service-detail.html?id=0..11` when service data changes
 - production URL after deploy
 - social preview meta when OG tags change

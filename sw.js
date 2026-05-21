@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.04-20260520-android-keyboard-app2';
+const CACHE_VERSION = 'v2.17-20260521-mobile-menu-motion-polish';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -19,7 +19,7 @@ const STATIC_ASSETS = [
   withBase('/ai-photo-detail.html'),
   withBase('/robots.txt'),
   withBase('/sitemap.xml'),
-  withBase('/manifest.json?v=20260520-android-keyboard-app2'),
+  withBase('/manifest.json?v=20260521-portfolio-profile'),
   withBase('/public/icons/icon-192.png'),
   withBase('/public/icons/icon-192.png?v=20260520-android-hotfix'),
   withBase('/public/icons/icon-512.png'),
@@ -29,24 +29,24 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260520-mobile-rail-hotfix'),
+  withBase('/css/style.css?v=20260521-portfolio-small-cards'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix'),
-  withBase('/css/mobile-improvements.css?v=20260520-android-keyboard-app2'),
+  withBase('/css/mobile-improvements.css?v=20260521-mobile-menu-motion-polish'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css'),
   withBase('/js/pwa-chrome.js?v=20260520-android-keyboard-app2'),
   withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/video-optimizer.js?v=20260520-mobile-hero-video-hotfix'),
-  withBase('/js/script.js?v=20260520-mobile-rail-hotfix'),
-  withBase('/js/page-common.js?v=20260520-mobile-rail-hotfix'),
+  withBase('/js/script.js?v=20260521-mobile-menu-motion-polish'),
+  withBase('/js/page-common.js?v=20260521-social-agents'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
-  withBase('/js/service-prices.js?v=20260520-vps-launchpad'),
+  withBase('/js/service-prices.js?v=20260521-portfolio-profile'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260520-ai-video-sequence-4'),
-  withBase('/js/service-detail-page.js?v=20260520-ai-video-sequence-4'),
+  withBase('/js/service-data.js?v=20260521-portfolio-profile'),
+  withBase('/js/service-detail-page.js?v=20260521-portfolio-profile'),
   withBase('/js/admin-prices.js?v=20260520-vps-launchpad'),
-  withBase('/js/auth-cart.js?v=20260520-desktop-header-icons'),
+  withBase('/js/auth-cart.js?v=20260521-mobile-menu-preview-fix'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),
@@ -61,7 +61,15 @@ const STATIC_ASSETS = [
   withBase('/images/wellness-bro-avatar-384.webp'),
   withBase('/images/bro-avatar.jpg'),
   withBase('/images/neon-room.png'),
-  withBase('/public/works/polstan/polstan-home-portal-20260519.jpg'),
+  withBase('/public/works/portfolio/gks-delivery-platform.png'),
+  withBase('/public/works/portfolio/realcamp-guide-categories-20260521.jpg'),
+  withBase('/public/works/portfolio/realcamp-guide-home-20260521.jpg'),
+  withBase('/public/works/portfolio/polstan-app-20260521.jpg'),
+  withBase('/public/works/portfolio/dominia-site-20260521.jpg'),
+  withBase('/public/works/portfolio/dominia-arena-20260521.jpg'),
+  withBase('/public/works/portfolio/hermes-agent-os-20260521.jpg'),
+  withBase('/public/works/portfolio/real-camp-planner-20260521.jpg'),
+  withBase('/public/works/services/agentic-ai-dev/detail-3.jpg'),
   withBase('/public/works/services/music/polstan-hero-poster-20260519.jpg')
 ];
 

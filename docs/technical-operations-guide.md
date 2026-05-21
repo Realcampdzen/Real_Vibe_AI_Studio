@@ -1,14 +1,32 @@
 # Real Vibe AI Studio - Technical Operations Guide
 
-Last updated: 2026-05-20
+Last updated: 2026-05-21
 
 This guide is for AI agents and developers maintaining the Real Vibe AI Studio repository.
+
+## Current Release Snapshot
+
+Current release: `v3.2.0` / `2026-05-21-product-store`.
+
+Release focus:
+
+- the public site is now treated as an Android/PWA-ready product store and portfolio storefront;
+- `#portfolio` contains 8 real product cards: Real Vibe Studio, GKS Delivery Platform, RealCampGuide, PolStan App, DOMINIA, DOMINIA Arena, Hermes Agent OS, and Real Camp Planner;
+- featured cards are Real Vibe Studio, GKS Delivery Platform, and RealCampGuide;
+- DOMINIA links must use `https://www.dominia.info/`;
+- Real Camp Planner must not link to the temporary Vercel app from the public card; describe it as a RealCampGuide/Putevoditel module and standalone AI planning agent;
+- mobile menu behavior is a full-screen modal overlay controlled by `js/script.js` and polished in `css/mobile-improvements.css`;
+- current public cache marker is `2026-05-21-mobile-menu-motion-polish`;
+- current service worker cache version is `v2.17-20260521-mobile-menu-motion-polish`.
+
+This release has been locally verified against both direct `file://` preview and `http://127.0.0.1:3001/index.html`. It has not been deployed by documentation update alone.
 
 ## Project Shape
 
 The repository contains:
 
 - public website and sales funnel;
+- installable Android/PWA-style product store for services, products and portfolio demos;
 - shared service detail renderer;
 - Express backend for chat/API features;
 - bot persona scripts and Glass UI widgets;
@@ -21,10 +39,11 @@ The repository contains:
 
 | Area | Files |
 |---|---|
-| Homepage funnel | `index.html`, `css/style.css`, `css/mobile-improvements.css`, `js/script.js` |
+| Homepage funnel and portfolio | `index.html`, `css/style.css`, `css/mobile-improvements.css`, `js/script.js` |
 | Service data | `js/service-data.js`, `data/service-prices.json`, `js/service-prices.js` |
 | Detail pages | `service-detail.html`, `js/service-detail-page.js`, `ai-photo-detail.html` |
 | Service media | `public/works/services/<slug>/` |
+| Portfolio media | `public/works/portfolio/` plus selected service proof assets |
 | Social preview | versioned `public/og-real-vibe-ai-studio-YYYYMMDD.jpg`, OG/Twitter meta in `index.html` |
 | PWA/cache | `sw.js`, `manifest.json` |
 | Mobile/PWA runtime | viewport meta in `index.html`, `service-detail.html`, `ai-photo-detail.html`; `js/pwa-chrome.js`; mobile overrides in `css/mobile-improvements.css` |
@@ -70,6 +89,20 @@ When changing a service:
 5. Update `docs/business-services-guide.md` if price, positioning, deliverables, or qualification logic changes.
 6. Run `npm run check`.
 7. Browser-check the homepage and the affected `service-detail.html?id=<id>`.
+
+Product portfolio copy and links currently live in `index.html` in the `#portfolio` section. Keep product cards public-safe: use production URLs or service-detail links, never local filesystem paths or private endpoints. Do not list `freelance-showcase` or Open Design as products: `freelance-showcase` is a GitHub/CV profile source, and Open Design is a workflow/tooling reference.
+
+Current portfolio rules:
+
+- keep exactly 8 cards unless the owner explicitly changes the product set;
+- keep card order: Real Vibe Studio, GKS Delivery Platform, RealCampGuide, PolStan App, DOMINIA, DOMINIA Arena, Hermes Agent OS, Real Camp Planner;
+- use featured layout only for Real Vibe Studio, GKS Delivery Platform, and RealCampGuide;
+- RealCampGuide should stay positioned as a Camp CRM / Pedagogy OS with the category screen and home screen collage;
+- PolStan is a mobile storefront / PWA-TWA example for a producer, freelancer, expert, or personal brand;
+- DOMINIA is the official cinematic artist-world site and links to `https://www.dominia.info/`;
+- DOMINIA Arena is a cyberpunk/esports variant of the DOMINIA site, not the main DOMINIA site;
+- Hermes Agent OS is public-safe copy only; do not expose local paths, IPs, ports, bot handles, secrets, or internal infrastructure details;
+- Real Camp Planner is a planning module and standalone AI planning agent; do not add the temporary Vercel app link back to the public card.
 
 ## Price Dashboard
 
@@ -141,6 +174,28 @@ creative-production
 agentic-ai-dev
 ```
 
+Product portfolio assets belong in:
+
+```text
+public/works/portfolio/
+  <product-slug>.<ext>
+```
+
+Prefer lightweight 16:9 or 4:3 proof images. If a portfolio item already has strong service proof media, reuse that asset instead of duplicating it.
+
+Current release portfolio assets:
+
+```text
+public/works/portfolio/gks-delivery-platform.png
+public/works/portfolio/realcamp-guide-categories-20260521.jpg
+public/works/portfolio/realcamp-guide-home-20260521.jpg
+public/works/portfolio/polstan-app-20260521.jpg
+public/works/portfolio/dominia-site-20260521.jpg
+public/works/portfolio/dominia-arena-20260521.jpg
+public/works/portfolio/hermes-agent-os-20260521.jpg
+public/works/portfolio/real-camp-planner-20260521.jpg
+```
+
 ## Homepage Funnel
 
 The homepage service order is part of the sales strategy:
@@ -159,6 +214,7 @@ Websites
 AI agents
 AI-photo
 E-commerce animation
+Product portfolio / store
 ```
 
 The CTA block after the first six services is intentional:
@@ -170,7 +226,7 @@ The CTA block after the first six services is intentional:
 Оставить заявку
 ```
 
-Do not restore the removed legacy `projects-showreel` block.
+Do not restore the removed legacy `projects-showreel` block. The current product proof layer is the `#portfolio` section with real product links and app/store descriptions.
 
 ## Social Preview / Telegram Preview
 
@@ -225,11 +281,12 @@ bump:
 
 HTML navigation in `sw.js` should stay network-first. Do not change it to cache-first unless explicitly required.
 
-## Android PWA And Mobile Keyboard
+## Android PWA, Product Store And Mobile Keyboard
 
-The Android target is a PWA-first mobile app surface. A normal Chrome tab cannot programmatically hide the browser UI, so the production fallback is:
+The Android target is a PWA-first mobile app surface and product store. A normal Chrome tab cannot programmatically hide the browser UI, so the production fallback is:
 
 - make the site installable and launchable as a standalone PWA;
+- let the first screen and portfolio navigation work as a compact store/app, not just as a brochure page;
 - keep the normal mobile tab visually stable when Chrome's bottom bar moves;
 - prevent chat input focus from dragging the bottom rail, cookies, bots, or page content with the soft keyboard.
 
@@ -239,8 +296,18 @@ Current implementation files:
 - `index.html`, `service-detail.html`, `ai-photo-detail.html` - viewport must include `viewport-fit=cover` and `interactive-widget=resizes-content`.
 - `js/pwa-chrome.js` - registers the versioned `sw.js`, sets standalone classes, and handles one-time cache cleanup/update flows.
 - `css/mobile-improvements.css` - owns the mobile bottom rail, safe-area spacing, mobile fixed overlays, and keyboard-mode overrides.
+- `js/script.js` - owns the homepage mobile menu state, scroll lock, local analytics guard, and modal open/close timing.
+- `js/auth-cart.js` - adds header account/cart controls and suppresses `/api/...` calls during `file://`, `localhost`, and `127.0.0.1` static previews unless `window.__RV_ENABLE_LOCAL_API__` is set before load.
 - `chat-components/GlassUIWidget.js` - owns chat focus behavior, visualViewport variables, and keyboard-mode class toggles.
 - `js/performance-loader.js` - lazy-loads the current versioned chat widget bundle.
+
+Mobile hamburger menu rules:
+
+- opening the menu must set `.mobile-nav.active`, `aria-expanded="true"`, `aria-hidden="false"`, `html.mobile-nav-open`, `body.mobile-nav-open`, and `body.no-scroll`;
+- closing the menu must animate first, then release scroll lock and restore focus;
+- the menu must work in both `file://` preview and local static preview on `http://127.0.0.1:3001`;
+- analytics failures must never interrupt UI initialization;
+- local static preview should not produce noisy `/api/auth/session` or analytics errors unless local API is explicitly enabled.
 
 Mobile chat keyboard rules:
 
@@ -351,7 +418,10 @@ This runs:
 Recommended browser checks for UI/media work:
 
 - homepage service grid;
+- product portfolio section at `#portfolio`;
+- mobile menu open/close at `642x694`, `390x844`, and one desktop width where the menu button is hidden;
 - `service-detail.html?id=0..11` after catalog changes;
+- `service-detail.html?id=6` and `service-detail.html?id=11` after app/dev catalog changes;
 - old `ai-photo-detail.html` alias;
 - production URL after deploy;
 - mobile and desktop viewports when changing layout;
@@ -368,7 +438,7 @@ Mobile PWA/chat checks for Android work:
 
 Known allowed noise:
 
-- `/api/auth/session` may return 404 in some local browser checks if auth-cart work is mid-flight.
+- Plain static servers may still 404 for server-only endpoints if a script outside the current storefront path calls them, but the homepage release path suppresses auth-cart and analytics calls during `file://`, `localhost`, and `127.0.0.1` previews.
 
 ## Deploy
 
@@ -398,8 +468,8 @@ After deploy:
 ```bash
 curl -I https://real-vibe.studio/
 curl -I https://real-vibe.studio/sw.js
-curl -s https://real-vibe.studio/ | grep -E 'interactive-widget|android-keyboard|mobile'
-curl -s https://real-vibe.studio/sw.js | grep -E 'CACHE_VERSION|android-keyboard|mobile'
+curl -s https://real-vibe.studio/ | grep -E 'mobile-menu-motion-polish|portfolio|Android/PWA'
+curl -s https://real-vibe.studio/sw.js | grep -E 'CACHE_VERSION|mobile-menu-motion-polish|portfolio'
 curl -I https://real-vibe.studio/public/og-real-vibe-ai-studio-YYYYMMDD.jpg
 ```
 

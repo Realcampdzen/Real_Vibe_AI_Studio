@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-20T00:45:00.000Z",
+  "updatedAt": "2026-05-20T20:45:00.000Z",
   "services": {
     "ai-video": {
       "title": "AI-видео и рекламные рилсы",
@@ -35,7 +35,7 @@
     "apps": {
       "title": "MVP, SaaS и приложения с AI-функциями",
       "price": "от 50 000₽ за MVP-модуль",
-      "note": "Первый production-ready модуль: архитектура, база/API, роли или дашборд."
+      "note": "Первый production-ready модуль: архитектура, база/API, роли, Android/PWA, CRM или дашборд."
     },
     "bots": {
       "title": "Telegram-боты с AI, базой и admin-панелью",
@@ -60,7 +60,7 @@
     "agentic-ai-dev": {
       "title": "Вайбкодинг и agentic AI dev",
       "price": "разработка от 30 000₽",
-      "note": "Публичный якорь для разработки; маленький аудит вынесен в отдельный rescue-оффер."
+      "note": "Публичный якорь для разработки; Android/PWA, доставка, CRM, 1С и rescue считаются отдельными офферами."
     }
   },
   "offers": {
@@ -74,6 +74,26 @@
         "title": "Telegram Mini App",
         "price": "от 30 000₽",
         "note": "Базовый TMA до 3 экранов + API, Telegram auth/initData и мобильный UX."
+      },
+      "android-pwa-app": {
+        "title": "Android / PWA App",
+        "price": "от 40 000₽",
+        "note": "Manifest, service worker, icons, mobile UX, TWA/Capacitor shell и проверка installable-опыта."
+      },
+      "delivery-crm-platform": {
+        "title": "Доставка / CRM платформа",
+        "price": "от 80 000₽",
+        "note": "Калькулятор, заказы, tracking, роли, dispatch/admin, база данных и путь к Android-приложению."
+      },
+      "onec-agent-automation": {
+        "title": "1С + agent automation",
+        "price": "от 40 000₽",
+        "note": "Адаптеры, импорт/экспорт данных, статусы, уведомления и агент для контроля повторяемых операций."
+      },
+      "portfolio-store-app": {
+        "title": "Портфолио-магазин",
+        "price": "от 50 000₽",
+        "note": "Витрина продуктов, услуг, кейсов, ссылок на демо, заявок и PWA-установки для автора или студии."
       },
       "ai-bot-db-admin": {
         "title": "AI-бот + база + admin",
