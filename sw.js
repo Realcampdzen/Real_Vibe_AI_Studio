@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.19-20260521-hero-cta-fit';
+const CACHE_VERSION = 'v2.31-20260521-bots-desktop-portrait-cover';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -29,7 +29,7 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260521-hero-cta-fit'),
+  withBase('/css/style.css?v=20260521-bots-desktop-portrait-cover'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix'),
   withBase('/css/mobile-improvements.css?v=20260521-mobile-menu-motion-polish'),
@@ -43,7 +43,7 @@ const STATIC_ASSETS = [
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260521-portfolio-profile'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260521-portfolio-profile'),
+  withBase('/js/service-data.js?v=20260521-bots-workflow-clean-cover'),
   withBase('/js/service-detail-page.js?v=20260521-portfolio-profile'),
   withBase('/js/admin-prices.js?v=20260520-vps-launchpad'),
   withBase('/js/auth-cart.js?v=20260521-mobile-menu-preview-fix'),
@@ -70,7 +70,12 @@ const STATIC_ASSETS = [
   withBase('/public/works/portfolio/hermes-agent-os-20260521.jpg'),
   withBase('/public/works/portfolio/real-camp-planner-20260521.jpg'),
   withBase('/public/works/services/agentic-ai-dev/detail-3.jpg'),
-  withBase('/public/works/services/music/polstan-hero-poster-20260519.jpg')
+  withBase('/public/works/services/music/polstan-hero-poster-20260519.jpg'),
+  withBase('/public/works/services/sound-design/cover-modern-studio.png'),
+  withBase('/public/works/services/apps/cover-business-apps-2026.png'),
+  withBase('/public/works/services/ecom-animation/cover-vertical-2026.png'),
+  withBase('/public/works/services/bots/cover-bot-workflow-vertical-2026.png'),
+  withBase('/public/works/services/bots/cover-bot-workflow-clean-2026.png')
 ];
 
 // Установка Service Worker

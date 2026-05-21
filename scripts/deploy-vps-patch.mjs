@@ -14,9 +14,14 @@ const dryRun = env.DRY_RUN === 'true';
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
     encoding: options.buffer ? undefined : 'utf8',
+    maxBuffer: options.maxBuffer || 64 * 1024 * 1024,
     stdio: options.capture ? ['pipe', 'pipe', 'pipe'] : (options.input ? ['pipe', 'inherit', 'inherit'] : 'inherit'),
     input: options.input,
   });
+
+  if (result.error) {
+    throw new Error(`${command} ${args.join(' ')} failed\n${result.error.message}`);
+  }
 
   if (result.status !== 0) {
     const stderr = result.stderr ? `\n${result.stderr.toString()}` : '';

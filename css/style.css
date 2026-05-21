@@ -13874,7 +13874,7 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
 @media (min-width: 769px) {
   .hero-cta-row {
     margin-top: -12px !important;
-    gap: 28px !important;
+    gap: 24px !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     justify-content: center !important;
@@ -13883,19 +13883,19 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
   .hero-cta-row .btn-primary,
   .hero-cta-row .btn-secondary,
   .hero-cta-row .btn-secondary.hero-secondary-btn {
-    width: 118px !important;
-    height: 118px !important;
-    min-width: 118px !important;
-    min-height: 118px !important;
-    max-width: 118px !important;
-    max-height: 118px !important;
-    flex: 0 0 118px !important;
-    padding: 0 2px !important;
+    width: 110px !important;
+    height: 110px !important;
+    min-width: 110px !important;
+    min-height: 110px !important;
+    max-width: 110px !important;
+    max-height: 110px !important;
+    flex: 0 0 110px !important;
+    padding: 0 !important;
     border-radius: 50% !important;
-    font-family: var(--font-body) !important;
-    font-size: 14px !important;
+    font-family: var(--font-display) !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
-    line-height: 1.18 !important;
+    line-height: 1.16 !important;
     letter-spacing: 0 !important;
     white-space: normal !important;
     text-align: center !important;
@@ -13906,16 +13906,15 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
     transform: none !important;
     text-transform: uppercase !important;
     overflow: hidden !important;
-    background:
-      radial-gradient(circle at 58% 34%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.08) 42%, rgba(8, 8, 8, 0.2) 100%) !important;
-    border: 2px solid rgba(255, 255, 255, 0.62) !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    border: 2px solid rgba(235, 232, 236, 0.72) !important;
     color: #ffffff !important;
     box-shadow:
-      0 12px 28px rgba(0, 0, 0, 0.38),
+      0 12px 30px rgba(0, 0, 0, 0.36),
       inset 0 1px 0 rgba(255, 255, 255, 0.18),
-      inset 0 -22px 34px rgba(0, 0, 0, 0.18) !important;
-    backdrop-filter: blur(18px) saturate(135%) !important;
-    -webkit-backdrop-filter: blur(18px) saturate(135%) !important;
+      inset 0 -18px 28px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(4px) saturate(118%) brightness(0.92) !important;
+    -webkit-backdrop-filter: blur(4px) saturate(118%) brightness(0.92) !important;
     transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease, box-shadow 0.28s ease !important;
   }
 
@@ -13923,23 +13922,28 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
   .hero-cta-row .btn-secondary > span,
   .hero-cta-row .btn-secondary.hero-secondary-btn > span {
     display: block;
-    width: 100%;
-    max-width: 100%;
+    width: max-content;
+    max-width: none;
+    transform: scaleX(0.95);
+    transform-origin: center;
     pointer-events: none;
+  }
+
+  .hero-cta-row .btn-secondary:nth-child(3) > span {
+    transform: scaleX(0.86);
   }
 
   .hero-cta-row .btn-primary:hover,
   .hero-cta-row .btn-secondary:hover,
   .hero-cta-row .btn-secondary.hero-secondary-btn:hover {
     transform: translateY(-3px) scale(1.04) !important;
-    background:
-      radial-gradient(circle at 58% 34%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.12) 44%, rgba(12, 12, 12, 0.18) 100%) !important;
-    border-color: rgba(255, 255, 255, 0.78) !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-color: rgba(255, 255, 255, 0.86) !important;
     box-shadow:
       0 16px 34px rgba(0, 0, 0, 0.44),
-      0 0 22px rgba(255, 255, 255, 0.12),
+      0 0 18px rgba(255, 255, 255, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.26),
-      inset 0 -22px 34px rgba(0, 0, 0, 0.16) !important;
+      inset 0 -18px 28px rgba(0, 0, 0, 0.12) !important;
     filter: none !important;
   }
 

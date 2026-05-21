@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Cache buster: 2026-05-21-hero-cta-fit -->
+  <!-- Cache buster: 2026-05-21-bots-desktop-portrait-cover -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="color-scheme" content="dark">
@@ -42,7 +42,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <!-- Resource Hints для оптимизации загрузки -->
-  <link rel="preload" href="css/style.css?v=20260521-hero-cta-fit" as="style">
+  <link rel="preload" href="css/style.css?v=20260521-bots-desktop-portrait-cover" as="style">
   <link rel="preload" href="css/mobile-improvements.css?v=20260521-mobile-menu-motion-polish" as="style" media="(max-width: 900px)">
   <link rel="preload" href="public/works/hero-poster.jpg" as="image" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,7 +52,7 @@
   
   <!-- Styles -->
   <!-- Обновлённый cache-buster, чтобы подтянуть свежие стили шапки -->
-  <link rel="stylesheet" href="css/style.css?v=20260521-hero-cta-fit">
+  <link rel="stylesheet" href="css/style.css?v=20260521-bots-desktop-portrait-cover">
   
   <!-- Critical fixes -->
   <link rel="stylesheet" href="css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix">
@@ -265,10 +265,10 @@
           <button class="btn-primary hero-cta-submit" type="button" data-contact-link="telegram" data-stop-propagation>
             <span>Обсудить<br>проект</span>
           </button>
-          <button class="btn-secondary hero-secondary-btn" data-scroll-target="services" data-stop-propagation>
-            <span>Смотреть<br>направления</span>
+          <button class="btn-secondary hero-secondary-btn" data-location-href="service-detail.html?id=0" data-stop-propagation>
+            <span>AI<br>видео</span>
           </button>
-          <button class="btn-secondary hero-secondary-btn" data-scroll-target="agentic-dev" data-stop-propagation>
+          <button class="btn-secondary hero-secondary-btn" data-location-href="service-detail.html?id=11" data-stop-propagation>
             <span>Вайбкодинг</span>
           </button>
         </div>
@@ -423,7 +423,7 @@
           </article>
 
           <article class="service-simple-card" data-service-id="5">
-            <img class="service-simple-bg-image" src="public/works/services/sound-design/cover.jpg" alt="ОЗВУЧКА И САУНДДИЗАЙН" loading="lazy" fetchpriority="low" decoding="async">
+            <img class="service-simple-bg-image" src="public/works/services/sound-design/cover-modern-studio.png" alt="ОЗВУЧКА И САУНДДИЗАЙН" loading="lazy" fetchpriority="low" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">Голос, SFX и чистый звук под площадки</p>
@@ -457,7 +457,7 @@
       <div class="services-simple-grid">
         <div class="service-row service-row-big-left">
           <article class="service-simple-card" data-service-id="6">
-            <img class="service-simple-bg-image" src="public/works/services/apps/cover-ai-app-product-2026.jpg" alt="СОЗДАНИЕ ПРИЛОЖЕНИЙ С AI ФУНКЦИЯМИ" loading="lazy" fetchpriority="low" decoding="async">
+            <img class="service-simple-bg-image" src="public/works/services/apps/cover-business-apps-2026.png" alt="СОЗДАНИЕ ПРИЛОЖЕНИЙ С AI ФУНКЦИЯМИ" loading="lazy" fetchpriority="low" decoding="async">
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">MVP, дашборды и приложения с Open Design UX-прототипами</p>
@@ -466,7 +466,10 @@
           </article>
 
           <article class="service-simple-card" data-service-id="7">
-            <img class="service-simple-bg-image" src="public/works/services/bots/cover.jpg" alt="СОЗДАНИЕ AI-БОТОВ" loading="lazy" fetchpriority="low" decoding="async">
+            <picture>
+              <source media="(min-width: 1025px)" srcset="public/works/services/bots/cover-bot-workflow-vertical-2026.png">
+              <img class="service-simple-bg-image" src="public/works/services/bots/cover-bot-workflow-clean-2026.png" alt="СОЗДАНИЕ AI-БОТОВ" loading="lazy" fetchpriority="low" decoding="async">
+            </picture>
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">Консультации, заявки, поддержка и продажи 24/7</p>
@@ -506,7 +509,10 @@
           </article>
 
           <article class="service-simple-card service-card-animation" data-service-id="2">
-            <img class="service-simple-bg-image" src="public/works/services/ecom-animation/cover.jpg" alt="ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-COM" loading="lazy" fetchpriority="low" decoding="async">
+            <picture>
+              <source media="(min-width: 1025px)" srcset="public/works/services/ecom-animation/cover-vertical-2026.png">
+              <img class="service-simple-bg-image" src="public/works/services/ecom-animation/cover.jpg" alt="ИИ АНИМАЦИЯ И ИНФОГРАФИКА ДЛЯ E-COM" loading="lazy" fetchpriority="low" decoding="async">
+            </picture>
             <div class="service-simple-overlay"></div>
             <div class="service-simple-content">
               <p class="service-simple-benefit">Движение, товарные сцены и понятная визуальная подача</p>
