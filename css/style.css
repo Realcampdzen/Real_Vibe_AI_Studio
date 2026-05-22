@@ -288,6 +288,7 @@ body::before {
 .preloader.hidden {
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .preloader-content {
@@ -657,22 +658,61 @@ body::before {
   min-width: 46px;
   flex: 0 0 46px;
   margin-left: 0;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(7, 8, 10, 0.58);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.035)),
+    rgba(6, 7, 10, 0.72);
   color: rgba(255, 252, 245, 0.96);
   font-size: 20px;
   text-shadow: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 24px rgba(0, 0, 0, 0.24);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -10px 22px rgba(255, 255, 255, 0.025),
+    0 10px 24px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  isolation: isolate;
 }
 
 .site-header .nav-right .nav-icon-btn[data-contact-link="vk"] {
   color: #7ab7ff;
+  background:
+    radial-gradient(circle at 32% 22%, rgba(122, 183, 255, 0.42), transparent 33%),
+    linear-gradient(145deg, rgba(91, 151, 230, 0.18), rgba(255, 255, 255, 0.035)),
+    rgba(6, 7, 10, 0.74);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 24px rgba(0, 0, 0, 0.26),
+    0 0 20px rgba(91, 151, 230, 0.14);
 }
 
 .site-header .nav-right .nav-icon-btn[data-contact-link="telegramCommunity"] {
   color: var(--accent-contrast);
+  background:
+    radial-gradient(circle at 32% 22%, rgba(51, 245, 200, 0.38), transparent 34%),
+    linear-gradient(145deg, rgba(51, 245, 200, 0.16), rgba(255, 255, 255, 0.035)),
+    rgba(6, 7, 10, 0.74);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 24px rgba(0, 0, 0, 0.26),
+    0 0 20px rgba(51, 245, 200, 0.13);
+}
+
+.site-header .nav-right .nav-icon-btn[data-contact-link="vk"]::before,
+.site-header .nav-right .nav-icon-btn[data-contact-link="telegramCommunity"]::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 42%),
+    radial-gradient(circle at 65% 76%, currentColor, transparent 42%);
+  opacity: 0.12;
+  transform: scale(0.96);
+  transition: opacity 0.2s ease, transform 0.22s ease;
 }
 
 .site-header .nav-right .nav-icon-btn[data-contact-link="vk"] i,
@@ -680,27 +720,71 @@ body::before {
   display: none;
 }
 
+.nav-social-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  fill: currentColor;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, currentColor 44%, transparent));
+  transform: translateZ(0);
+}
+
+.nav-social-icon-vk {
+  width: 25px;
+  height: 25px;
+}
+
+.nav-social-icon-tg {
+  width: 23px;
+  height: 23px;
+  transform: translate3d(1px, 0, 0);
+}
+
 .nav-social-glyph {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  font-family: var(--font-heading, "Space Grotesk", system-ui, sans-serif);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0;
-  text-transform: uppercase;
-  text-shadow: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .site-header .nav-right .nav-icon-btn[data-contact-link="vk"]:hover,
 .site-header .nav-right .nav-icon-btn[data-contact-link="telegramCommunity"]:hover {
-  background: rgba(51, 245, 200, 0.12);
-  border-color: rgba(51, 245, 200, 0.32);
+  border-color: color-mix(in srgb, currentColor 52%, rgba(255, 255, 255, 0.2));
   color: var(--accent-contrast);
   transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 12px 28px rgba(0, 0, 0, 0.28),
+    0 0 24px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.site-header .nav-right .nav-icon-btn[data-contact-link="vk"]:hover::before,
+.site-header .nav-right .nav-icon-btn[data-contact-link="telegramCommunity"]:hover::before {
+  opacity: 0.22;
+  transform: scale(1);
+}
+
+@media (max-width: 900px) {
+  .site-header .nav-right .nav-icon-btn[data-contact-link="vk"],
+  .site-header .nav-right .nav-icon-btn[data-contact-link="telegramCommunity"] {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 8px 18px rgba(0, 0, 0, 0.24),
+      0 0 14px color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  .nav-social-icon-vk {
+    width: 22px;
+    height: 22px;
+  }
+
+  .nav-social-icon-tg {
+    width: 21px;
+    height: 21px;
+  }
 }
 
 .site-header .nav-right .nav-icon-btn[data-contact-link="telegramCommunity"] + .nav-cta {
@@ -12559,6 +12643,7 @@ body.rv-overlay-open .glass-ui-widget {
   }
 
   .site-header .nav-right .nav-icon-btn[data-contact-link="whatsapp"],
+  .site-header .nav-right .nav-icon-btn[data-contact-link="vk"],
   .site-header .nav-right .nav-icon-btn[data-contact-link="telegram"],
   .site-header .nav-right .nav-icon-btn[data-contact-link="telegramCommunity"] {
     width: 42px !important;
@@ -12744,6 +12829,7 @@ body.rv-overlay-open .glass-ui-widget {
   }
 
   .site-header .nav-right .nav-icon-btn[data-contact-link="whatsapp"],
+  .site-header .nav-right .nav-icon-btn[data-contact-link="vk"],
   .site-header .nav-right .nav-icon-btn[data-contact-link="telegram"],
   .site-header .nav-right .nav-icon-btn[data-contact-link="telegramCommunity"] {
     width: 38px !important;
