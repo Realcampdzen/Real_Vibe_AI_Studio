@@ -723,22 +723,28 @@ body::before {
 .nav-social-icon {
   width: 24px;
   height: 24px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
   display: block;
   fill: currentColor;
   flex: 0 0 auto;
   filter: drop-shadow(0 0 8px color-mix(in srgb, currentColor 44%, transparent));
-  transform: translateZ(0);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
 }
 
 .nav-social-icon-vk {
   width: 25px;
   height: 25px;
+  transform: translate(-50%, -50%) translate(-0.75px, 0);
 }
 
 .nav-social-icon-tg {
   width: 23px;
   height: 23px;
-  transform: translate3d(1px, 0, 0);
+  transform: translate(-50%, -50%) translate(-0.4px, -0.45px);
 }
 
 .nav-social-glyph {
