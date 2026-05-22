@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.32-20260521-hero-cta-smaller-desktop';
+const CACHE_VERSION = 'v2.35-20260522-header-social-cart';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -29,35 +29,32 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260521-hero-cta-smaller-desktop'),
+  withBase('/css/style.css?v=20260522-header-social-cart'),
+  withBase('/css/ambient-lamps.css?v=20260521-ambient-lamps-lab'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix'),
-  withBase('/css/mobile-improvements.css?v=20260521-mobile-menu-motion-polish'),
+  withBase('/css/mobile-improvements.css?v=20260522-header-social-cart'),
   withBase('/css/mobile-improvements.css'),
-  withBase('/css/mobile-advanced.css'),
+  withBase('/css/mobile-advanced.css?v=20260521-front-perf-scroll-socials'),
   withBase('/js/pwa-chrome.js?v=20260520-android-keyboard-app2'),
-  withBase('/js/scroll-manager.js?v=20260519-mobile-premium-recovery'),
-  withBase('/js/video-optimizer.js?v=20260520-mobile-hero-video-hotfix'),
-  withBase('/js/script.js?v=20260521-mobile-menu-motion-polish'),
-  withBase('/js/page-common.js?v=20260521-social-agents'),
+  withBase('/js/scroll-manager.js?v=20260521-front-perf-scroll-socials'),
+  withBase('/js/video-optimizer.js?v=20260521-front-perf-scroll-socials'),
+  withBase('/js/script.js?v=20260522-header-social-cart'),
+  withBase('/js/page-common.js?v=20260522-header-social-cart'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260521-portfolio-profile'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260521-bots-workflow-clean-cover'),
+  withBase('/js/service-data.js?v=20260521-front-perf-scroll-socials'),
   withBase('/js/service-detail-page.js?v=20260521-portfolio-profile'),
   withBase('/js/admin-prices.js?v=20260520-vps-launchpad'),
-  withBase('/js/auth-cart.js?v=20260521-mobile-menu-preview-fix'),
+  withBase('/js/auth-cart.js?v=20260522-header-social-cart'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),
-  withBase('/js/performance-loader.js?v=20260520-android-keyboard-app2'),
+  withBase('/js/performance-loader.js?v=20260521-front-perf-scroll-socials'),
   withBase('/js/image-optimizer.js?v=20260519-performance-pass'),
   withBase('/js/mobile-enhancements.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/pull-to-refresh.js?v=20260512-productux'),
-  withBase('/js/glass-ui-health.js?v=20260519-performance-pass'),
-  withBase('/js/glass-ui-bro-cat.js?v=20260518-wellness-bro-ui'),
-  withBase('/js/glass-ui-valyusha.js?v=20260518-wellness-bro-ui'),
-  withBase('/chat-components/GlassUIWidget.js?v=20260520-android-keyboard-app2'),
   withBase('/images/wellness-bro-avatar-384.webp'),
   withBase('/images/bro-avatar.jpg'),
   withBase('/images/neon-room.png'),
@@ -72,10 +69,15 @@ const STATIC_ASSETS = [
   withBase('/public/works/services/agentic-ai-dev/detail-3.jpg'),
   withBase('/public/works/services/music/polstan-hero-poster-20260519.jpg'),
   withBase('/public/works/services/sound-design/cover-modern-studio.png'),
+  withBase('/public/works/services/sound-design/cover-modern-studio.webp'),
   withBase('/public/works/services/apps/cover-business-apps-2026.png'),
+  withBase('/public/works/services/apps/cover-business-apps-2026.webp'),
   withBase('/public/works/services/ecom-animation/cover-vertical-2026.png'),
+  withBase('/public/works/services/ecom-animation/cover-vertical-2026.webp'),
   withBase('/public/works/services/bots/cover-bot-workflow-vertical-2026.png'),
-  withBase('/public/works/services/bots/cover-bot-workflow-clean-2026.png')
+  withBase('/public/works/services/bots/cover-bot-workflow-vertical-2026.webp'),
+  withBase('/public/works/services/bots/cover-bot-workflow-clean-2026.png'),
+  withBase('/public/works/services/bots/cover-bot-workflow-clean-2026.webp')
 ];
 
 // Установка Service Worker

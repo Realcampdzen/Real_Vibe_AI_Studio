@@ -6,7 +6,7 @@
     phone: { href: 'tel:+79319671483', display: '+7 931 967 14 83' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
-    telegramCommunity: { href: 'https://t.me/+hbY8nInX6Wk1M2E6', display: 'Telegram-сообщество' },
+    telegramCommunity: { href: 'https://t.me/RealVibeAI', display: 'Telegram-сообщество' },
     whatsapp: { href: 'https://wa.me/79319671483' },
     vk: { href: 'https://vk.com/club238913969', display: 'VK' },
     primary: { href: 'tel:+79319671483' },
@@ -89,7 +89,11 @@
       return;
     }
 
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const header = document.querySelector('.navbar, .site-header');
+    const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+    const extraGap = window.innerWidth <= 900 ? 12 : 18;
+    const targetTop = element.getBoundingClientRect().top + window.scrollY - headerHeight - extraGap;
+    window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
   }
 
   function initServiceCardNavigation() {

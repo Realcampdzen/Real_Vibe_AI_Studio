@@ -886,9 +886,11 @@
   function renderCart() {
     document.querySelectorAll('.rv-cart-count').forEach((badge) => {
       const count = state.cart?.itemCount || 0;
+      const isEmpty = count === 0;
       badge.textContent = String(count);
-      badge.classList.toggle('is-empty', count === 0);
-      badge.setAttribute('aria-hidden', count === 0 ? 'true' : 'false');
+      badge.hidden = isEmpty;
+      badge.classList.toggle('is-empty', isEmpty);
+      badge.setAttribute('aria-hidden', isEmpty ? 'true' : 'false');
     });
     document.querySelectorAll('[data-rv-cart-open]').forEach((button) => {
       const count = state.cart?.itemCount || 0;

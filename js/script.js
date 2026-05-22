@@ -1,7 +1,7 @@
 // AI Studio - Enhanced Interactive Features
 
 // Build marker (helps debug cache/service worker issues)
-window.__AI_STUDIO_BUILD = '20260521-mobile-menu-motion-polish';
+window.__AI_STUDIO_BUILD = '20260522-header-social-cart';
 
 // API base. Empty value means same-origin, which is the production VPS default.
 // Override before this script if needed: window.__AI_API_BASE__ = 'http://localhost:3000'
@@ -11,7 +11,7 @@ const CONTACTS = {
     phone: { href: 'tel:+79319671483', display: '+7 931 967 14 83' },
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
-    telegramCommunity: { href: 'https://t.me/+hbY8nInX6Wk1M2E6', display: 'Telegram-сообщество' },
+    telegramCommunity: { href: 'https://t.me/RealVibeAI', display: 'Telegram-сообщество' },
     whatsapp: { href: 'https://wa.me/79319671483' },
     vk: { href: 'https://vk.com/club238913969', display: 'VK' },
     primary: { href: 'tel:+79319671483' }
@@ -260,9 +260,13 @@ function scrollToSection(sectionId) {
     if (window.scrollManager) {
       window.scrollManager.scrollToElement(element, { block: 'start' });
     } else {
-      element.scrollIntoView({
+      const header = document.querySelector('.navbar, .site-header');
+      const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+      const extraGap = window.innerWidth <= 900 ? 12 : 18;
+      const targetTop = element.getBoundingClientRect().top + window.scrollY - headerHeight - extraGap;
+      window.scrollTo({
+        top: Math.max(0, targetTop),
         behavior: 'smooth',
-        block: 'start'
       });
     }
   }
@@ -1028,11 +1032,7 @@ function initScrollRevealV2(force = false) {
       '.projects-grid > *',
       '.portfolio-grid > *',
       '.cta-panel',
-      '.cta-copy > *',
-      '.card',
-      '.panel',
-      '.box',
-      '.feature-item'
+      '.cta-copy > *'
     ];
 
     // Defensive selector collection: if any selector is invalid in a given browser,
@@ -1055,6 +1055,20 @@ function initScrollRevealV2(force = false) {
       if (el.classList.contains('hero') || el.closest('.hero')) return;
       if (el.classList.contains('process-step') || el.closest('.process-step')) return;
       el.dataset.scrollRevealReady = '1';
+      if (prefersReducedMotion) {
+        el.dataset.scrollRevealed = '1';
+        el.classList.add('is-visible');
+        el.classList.remove(
+          'section-hidden',
+          'scroll-animate',
+          'scroll-animate--visible',
+          'reveal-base',
+          'reveal-base--left',
+          'reveal-base--right',
+          'reveal-show'
+        );
+        return;
+      }
       // Ensure no leftover classes from previous systems
       el.classList.remove('scroll-animate', 'scroll-animate--visible');
       el.classList.remove('reveal-base', 'reveal-base--left', 'reveal-base--right', 'reveal-show');
@@ -1111,6 +1125,7 @@ function initScrollRevealV2(force = false) {
     };
 
     const showVisibleImmediately = () => {
+      if (prefersReducedMotion) return;
       const visible = prepared
         .filter((el) => {
           const rect = el.getBoundingClientRect();
