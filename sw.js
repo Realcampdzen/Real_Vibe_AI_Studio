@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.36-20260522-mobile-polish-prod';
+const CACHE_VERSION = 'v2.37-20260522-mobile-nav-modal';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -39,7 +39,7 @@ const STATIC_ASSETS = [
   withBase('/js/pwa-chrome.js?v=20260520-android-keyboard-app2'),
   withBase('/js/scroll-manager.js?v=20260522-mobile-polish-prod'),
   withBase('/js/video-optimizer.js?v=20260522-mobile-polish-prod'),
-  withBase('/js/script.js?v=20260522-mobile-polish-prod'),
+  withBase('/js/script.js?v=20260522-mobile-nav-modal'),
   withBase('/js/page-common.js?v=20260522-header-social-cart'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260521-portfolio-profile'),

@@ -1,7 +1,7 @@
 // AI Studio - Enhanced Interactive Features
 
 // Build marker (helps debug cache/service worker issues)
-window.__AI_STUDIO_BUILD = '20260522-mobile-polish-prod';
+window.__AI_STUDIO_BUILD = '20260522-mobile-nav-modal';
 
 // API base. Empty value means same-origin, which is the production VPS default.
 // Override before this script if needed: window.__AI_API_BASE__ = 'http://localhost:3000'
@@ -368,12 +368,45 @@ function initMobileMenu() {
     document.body.classList.add('mobile-nav-open');
   };
 
-  const unlockScroll = () => {
+  const unlockScroll = ({ restoreScroll = true } = {}) => {
     document.body.classList.remove('no-scroll');
     document.documentElement.classList.remove('mobile-nav-open');
     document.body.classList.remove('mobile-nav-open');
     document.body.style.removeProperty('--rv-mobile-nav-scroll-top');
-    window.scrollTo(0, scrollYBeforeOpen);
+    if (restoreScroll) {
+      window.scrollTo(0, scrollYBeforeOpen);
+    }
+  };
+
+  const normalizeNavPath = (path) => {
+    const normalized = path.replace(/\/index\.html$/i, '/');
+    return normalized || '/';
+  };
+
+  const getSamePageTarget = (link) => {
+    const rawHref = link.getAttribute('href') || '';
+    if (!rawHref) return null;
+
+    let url;
+    try {
+      url = new URL(rawHref, window.location.href);
+    } catch {
+      return null;
+    }
+
+    const currentPath = normalizeNavPath(window.location.pathname);
+    const targetPath = normalizeNavPath(url.pathname);
+    if (url.origin !== window.location.origin || targetPath !== currentPath || !url.hash) {
+      return null;
+    }
+
+    const targetId = decodeURIComponent(url.hash.slice(1));
+    if (!targetId || !document.getElementById(targetId)) return null;
+
+    return {
+      hash: url.hash,
+      targetId,
+    };
   };
   
   const openMenu = () => {
@@ -395,8 +428,18 @@ function initMobileMenu() {
   };
 
   const closeMenu = (options = {}) => {
-    const { immediate = false, restoreFocus = true, restoreScroll = true } = options;
-    if (!mobileNav.classList.contains('active')) return;
+    const {
+      immediate = false,
+      restoreFocus = true,
+      restoreScroll = true,
+      onClosed = null,
+    } = options;
+
+    if (!mobileNav.classList.contains('active')) {
+      if (typeof onClosed === 'function') onClosed();
+      return;
+    }
+
     window.clearTimeout(transitionTimer);
     window.clearTimeout(closeCleanupTimer);
     isTransitioning = false;
@@ -405,11 +448,12 @@ function initMobileMenu() {
     mobileNav.classList.toggle('rv-force-hidden', immediate);
     mobileNav.setAttribute('aria-hidden', 'true');
     const finishClose = () => {
-      if (restoreScroll) unlockScroll();
+      unlockScroll({ restoreScroll });
       suppressWidgets(false);
       if (restoreFocus && lastFocusedElement?.isConnected) {
         lastFocusedElement.focus({ preventScroll: true });
       }
+      if (typeof onClosed === 'function') onClosed();
     };
     if (immediate) {
       finishClose();
@@ -444,10 +488,23 @@ function initMobileMenu() {
     mobileNavClose.addEventListener('click', closeMenu);
   }
 
-  // Close mobile menu when clicking on links
+  // Mobile section links need to close the modal before scrolling.
   document.querySelectorAll('.mobile-nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      closeMenu();
+    link.addEventListener('click', (event) => {
+      const samePageTarget = getSamePageTarget(link);
+      if (!samePageTarget) return;
+
+      event.preventDefault();
+      closeMenu({
+        restoreFocus: false,
+        restoreScroll: false,
+        onClosed: () => {
+          window.history.pushState(null, '', `${window.location.pathname}${window.location.search}${samePageTarget.hash}`);
+          requestAnimationFrame(() => {
+            scrollToSection(samePageTarget.targetId);
+          });
+        },
+      });
     });
   });
 
@@ -908,7 +965,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Navigation links smooth scrolling
-  document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+  document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const targetId = link.getAttribute('href').substring(1);
