@@ -19,6 +19,7 @@ class VideoOptimizer {
     this.heroOffscreenPauseDelayMs = 1200;
     this.heroScrollActive = false;
     this.heroScrollIdleTimer = null;
+    this.scrollPlaybackSuppressed = false;
     this.resumeAttemptMinGapMs = 700;
     this.viewportRefreshQueued = false;
     this.mobileHeroWarmupDelayMs = 1200;
@@ -112,6 +113,7 @@ class VideoOptimizer {
     if (!video || !state) return false;
     if (!state.shouldAutoplay || state.userPaused) return false;
     if (document.visibilityState !== 'visible' || video.error) return false;
+    if (this.scrollPlaybackSuppressed) return false;
     if (this.isPrimaryHero(video) && this.heroScrollActive) return false;
 
     const threshold = this.isPrimaryHero(video) ? 0.1 : 0.15;
@@ -170,7 +172,11 @@ class VideoOptimizer {
   }
 
   setupViewportPlaybackRefresh() {
-    const schedule = () => {
+    const scheduleScroll = () => {
+      this.handleActiveScrollPlayback();
+    };
+
+    const scheduleRefresh = () => {
       this.handleActiveScrollPlayback();
       if (this.viewportRefreshQueued) return;
       this.viewportRefreshQueued = true;
@@ -180,19 +186,21 @@ class VideoOptimizer {
       });
     };
 
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
+    window.addEventListener('scroll', scheduleScroll, { passive: true });
+    window.addEventListener('resize', scheduleRefresh);
   }
 
   handleActiveScrollPlayback() {
-    const hero = this.heroVideo || document.getElementById('hero-reel-video');
-    const state = hero ? this.states.get(hero) : null;
-    if (!hero || !state || state.userPaused || !state.shouldAutoplay) return;
-
+    this.scrollPlaybackSuppressed = true;
     this.heroScrollActive = true;
-    if (!hero.paused) {
-      this.pauseVideoInternally(hero);
-    }
+    document
+      .querySelectorAll('video[data-video-optimizer-ready="1"]')
+      .forEach((video) => {
+        const videoState = this.states.get(video);
+        if (!videoState || videoState.userPaused || !videoState.shouldAutoplay || video.paused) return;
+        videoState.wasPlayingBeforeHidden = true;
+        this.pauseVideoInternally(video);
+      });
 
     if (this.heroScrollIdleTimer) {
       clearTimeout(this.heroScrollIdleTimer);
@@ -200,9 +208,10 @@ class VideoOptimizer {
 
     this.heroScrollIdleTimer = setTimeout(() => {
       this.heroScrollActive = false;
+      this.scrollPlaybackSuppressed = false;
       this.heroScrollIdleTimer = null;
       this.refreshVisiblePlayback({ refreshDom: false });
-    }, 220);
+    }, 280);
   }
 
   prepareLazyVideoSource(video) {
@@ -375,12 +384,12 @@ class VideoOptimizer {
 
   preloadNextPlaylistSource(video) {
     const state = this.states.get(video);
-    if (!state?.playlistSources?.length) return;
-    const lookaheadCount = Math.min(state.playlistSources.length - 1, 2);
-    for (let offset = 1; offset <= lookaheadCount; offset += 1) {
-      const nextIndex = (state.playlistIndex + offset) % state.playlistSources.length;
-      this.preloadVideoSource(state.playlistSources[nextIndex]);
-    }
+    if (!state?.playlistSources?.length || !state.visible) return;
+    if (!this.isElementVisible(video, 0.45)) return;
+    const duration = video.duration || 0;
+    if (duration && video.currentTime < duration - 3) return;
+    const nextIndex = (state.playlistIndex + 1) % state.playlistSources.length;
+    this.preloadVideoSource(state.playlistSources[nextIndex]);
   }
 
   applyPlaylistSource(video, index, { load = true } = {}) {
@@ -396,7 +405,6 @@ class VideoOptimizer {
     video.removeAttribute('src');
     video.querySelectorAll('source').forEach((source) => source.remove());
     video.appendChild(this.createMp4Source(src));
-    this.preloadNextPlaylistSource(video);
 
     if (load) {
       this.suppressInternalPause(video);
@@ -474,7 +482,6 @@ class VideoOptimizer {
     }
 
     video.dataset.sourcesApplied = '1';
-    this.preloadNextPlaylistSource(video);
     if (load) {
       this.suppressInternalPause(video);
       video.load();
@@ -517,8 +524,9 @@ class VideoOptimizer {
       video.dataset.desktopSrc = state.playlistSources[state.playlistIndex] || state.playlistSources[0];
     }
 
-    video.preload = mobileHeroDeferred ? 'none' : 'metadata';
-    video.setAttribute('preload', mobileHeroDeferred ? 'none' : 'metadata');
+    const initialPreload = mobileHeroDeferred || this.isServiceBackgroundVideo(video) ? 'none' : 'metadata';
+    video.preload = initialPreload;
+    video.setAttribute('preload', initialPreload);
     video.playsInline = true;
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
@@ -534,9 +542,7 @@ class VideoOptimizer {
       video.removeAttribute('autoplay');
     }
 
-    if (this.isServiceBackgroundVideo(video)) {
-      this.setCardVideoState(video, 'loading');
-    }
+    if (this.isServiceBackgroundVideo(video)) this.setCardVideoState(video, null);
 
     this.setupManagedVideoEvents(video);
     this.observeVideoVisibility(video);
@@ -554,7 +560,7 @@ class VideoOptimizer {
       return;
     }
 
-    if (this.isPrimaryHero(video) || this.isElementVisible(video)) {
+    if (this.isPrimaryHero(video) || this.isElementVisible(video, 0.2)) {
       this.applySources(video);
     }
   }
@@ -635,11 +641,11 @@ class VideoOptimizer {
 
     const state = this.states.get(video);
     const isHero = video.id === 'hero-reel-video';
-    const isMusicCardVideo = this.isMusicCardVideo(video) && this.isServiceBackgroundVideo(video);
+    const isServiceVideo = this.isServiceBackgroundVideo(video);
     const rootMargin = isHero || state?.shouldAutoplay === false
       ? '0px'
-      : isMusicCardVideo
-        ? (this.isMobile() ? '1100px 0px' : '300px 0px')
+      : isServiceVideo
+        ? '0px'
         : '200px 0px';
     const observer = new IntersectionObserver(
       (entries) => {
@@ -678,8 +684,9 @@ class VideoOptimizer {
       if (video.dataset.sourcesApplied !== '1') {
         this.applySources(video, { load: false });
       }
-      video.preload = 'auto';
-      video.setAttribute('preload', 'auto');
+      const preload = this.isServiceBackgroundVideo(video) ? 'metadata' : 'auto';
+      video.preload = preload;
+      video.setAttribute('preload', preload);
       if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
         this.suppressInternalPause(video);
         video.load();
@@ -694,6 +701,7 @@ class VideoOptimizer {
     ) {
       this.scheduleGuardedResume(video, 'visible');
     }
+    this.preloadNextPlaylistSource(video);
   }
 
   playVideo(video) {

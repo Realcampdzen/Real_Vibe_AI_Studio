@@ -300,3 +300,73 @@
   }
 }
 
+/* Final mobile performance override: keep reveal as a light fade only. */
+@media (max-width: 900px) {
+  .reveal-base,
+  .reveal-base--left,
+  .reveal-base--right,
+  .animate-on-scroll,
+  .services-primary .service-simple-card.reveal-base,
+  .services-primary .service-simple-card.reveal-base--left,
+  .services-primary .service-simple-card.reveal-base--right,
+  .service-simple-card.reveal-base,
+  .service-simple-card.reveal-base--left,
+  .service-simple-card.reveal-base--right,
+  .process-step,
+  .process-step--left,
+  .process-step--right,
+  .section-title.reveal-base,
+  .section-subtitle.reveal-base,
+  .section-description.reveal-base {
+    transform: none !important;
+    transition: opacity 0.18s ease !important;
+    will-change: auto !important;
+  }
+
+  .reveal-base.is-visible,
+  .reveal-base--left.is-visible,
+  .reveal-base--right.is-visible,
+  .animate-on-scroll.is-visible,
+  .services-primary .service-simple-card.is-visible,
+  .services-primary .service-simple-card.reveal-base.is-visible,
+  .services-primary .service-simple-card.reveal-base--left.is-visible,
+  .services-primary .service-simple-card.reveal-base--right.is-visible,
+  .service-simple-card.reveal-base.is-visible,
+  .service-simple-card.reveal-base--left.is-visible,
+  .service-simple-card.reveal-base--right.is-visible,
+  .process-step.is-visible,
+  .process-step--left.is-visible,
+  .process-step--right.is-visible,
+  .section-title.reveal-base.is-visible,
+  .section-subtitle.reveal-base.is-visible,
+  .section-description.reveal-base.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+}
+
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .reveal-base,
+  .reveal-base--left,
+  .reveal-base--right,
+  .animate-on-scroll,
+  .services-primary .service-simple-card.reveal-base,
+  .services-primary .service-simple-card.reveal-base--left,
+  .services-primary .service-simple-card.reveal-base--right,
+  .service-simple-card.reveal-base,
+  .service-simple-card.reveal-base--left,
+  .service-simple-card.reveal-base--right,
+  .process-step,
+  .process-step--left,
+  .process-step--right,
+  .section-title.reveal-base,
+  .section-subtitle.reveal-base,
+  .section-description.reveal-base {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+}
+

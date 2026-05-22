@@ -9,6 +9,7 @@ class ScrollManager {
     this.isTicking = false;
     this.lastScrollY = 0;
     this.scrollDirection = 'down';
+    this.scrollIdleTimer = null;
     this.init();
   }
 
@@ -24,6 +25,15 @@ class ScrollManager {
    * Главный обработчик прокрутки с оптимизацией
    */
   handleScroll() {
+    document.documentElement.classList.add('rv-is-scrolling');
+    if (this.scrollIdleTimer) {
+      clearTimeout(this.scrollIdleTimer);
+    }
+    this.scrollIdleTimer = setTimeout(() => {
+      document.documentElement.classList.remove('rv-is-scrolling');
+      this.scrollIdleTimer = null;
+    }, 180);
+
     if (!this.isTicking) {
       requestAnimationFrame(() => {
         const currentScrollY = window.scrollY;
@@ -97,13 +107,20 @@ class ScrollManager {
     if (!element) return;
     window.RealVibeHaptics?.markProgrammaticScroll?.(900);
 
-    const defaultOptions = {
-      behavior: 'smooth',
-      block: 'start',
-      inline: 'nearest'
-    };
+    const behavior = options.behavior || 'smooth';
+    const block = options.block || 'start';
+    const inline = options.inline || 'nearest';
 
-    element.scrollIntoView({ ...defaultOptions, ...options });
+    if (block === 'start') {
+      const header = document.querySelector('.navbar, .site-header');
+      const headerHeight = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+      const extraGap = window.innerWidth <= 900 ? 12 : 18;
+      const targetTop = element.getBoundingClientRect().top + window.scrollY - headerHeight - extraGap;
+      this.scrollToPosition(Math.max(0, targetTop), behavior);
+      return;
+    }
+
+    element.scrollIntoView({ behavior, block, inline });
   }
 
   /**

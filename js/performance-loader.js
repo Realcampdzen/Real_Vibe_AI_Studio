@@ -22,10 +22,36 @@
     window.matchMedia('(max-width: 900px)').matches;
   const isDetailPage = document.body && document.body.classList.contains('detail-page');
   const shouldAutoStartChat = !isDetailPage;
-  const chatIdleDelay = shouldAutoStartChat ? 900 : 0;
 
   const loadedScripts = new Set();
   const loadedStyles = new Set();
+  const assistantLaunchers = [
+    {
+      id: 'health',
+      globalName: 'glassUIHealth',
+      className: 'glass-ui-health-button',
+      label: 'Открыть чат Wellness Bro',
+      tooltip: 'Wellness Bro • ассистент по здоровью',
+      avatar: 'images/wellness-bro-avatar-384.webp',
+    },
+    {
+      id: 'broCat',
+      globalName: 'glassUIBroCat',
+      className: 'glass-ui-bro-cat-button',
+      label: 'Открыть чат Кота Бро',
+      tooltip: 'Кот Бро • мемный AI-гид',
+      avatar: 'images/bro-avatar.jpg',
+    },
+    {
+      id: 'valyusha',
+      globalName: 'glassUIValyusha',
+      className: 'glass-ui-valyusha-button',
+      label: 'Открыть чат НейроВалюши',
+      tooltip: 'НейроVалюша • вожатая Реального Лагеря',
+      avatar: 'public/НейроВалюша_аватар.jpg',
+    },
+  ];
+  let assistantBundlePromise = null;
 
   function loadScript(src) {
     if (loadedScripts.has(src)) return Promise.resolve();
@@ -119,6 +145,82 @@
   let deferredStarted = false;
   let chatWakeBound = false;
 
+  function createAssistantLaunchers() {
+    if (!shouldAutoStartChat || document.querySelector('[data-rv-assistant-launcher]')) return;
+
+    assistantLaunchers.forEach((config) => {
+      const button = document.createElement('div');
+      button.className = `glass-ui-floating-button ${config.className} rv-assistant-launcher`;
+      button.dataset.rvAssistantLauncher = config.id;
+      button.dataset.tooltip = config.tooltip;
+      button.setAttribute('role', 'button');
+      button.setAttribute('tabindex', '0');
+      button.setAttribute('aria-label', config.label);
+
+      const background = document.createElement('div');
+      background.className = 'glass-ui-floating-button-bg';
+      button.appendChild(background);
+
+      const avatar = document.createElement('img');
+      avatar.className = 'glass-ui-floating-avatar';
+      avatar.src = config.avatar;
+      avatar.alt = '';
+      avatar.loading = 'lazy';
+      avatar.decoding = 'async';
+      button.appendChild(avatar);
+
+      const badge = document.createElement('div');
+      badge.className = 'glass-ui-notification-badge glass-online-badge';
+      button.appendChild(badge);
+
+      const open = () => loadAssistantBundle(config.id);
+      button.addEventListener('click', open);
+      button.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        open();
+      });
+
+      document.body.appendChild(button);
+    });
+  }
+
+  function removeAssistantLaunchers() {
+    document
+      .querySelectorAll('[data-rv-assistant-launcher]')
+      .forEach((element) => element.remove());
+  }
+
+  function loadAssistantBundle(openId) {
+    removeAssistantLaunchers();
+    if (!assistantBundlePromise) {
+      const chatReady = window.RealVibeChat
+        ? Promise.resolve()
+        : loadScript('js/chat-client.js?v=20260512-productux');
+
+      assistantBundlePromise = chatReady
+        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260521-front-perf-scroll-socials'))
+        .then(() =>
+          Promise.all([
+            loadScript('js/glass-ui-health.js?v=20260521-front-perf-scroll-socials'),
+            loadScript('js/glass-ui-bro-cat.js?v=20260521-front-perf-scroll-socials'),
+            loadScript('js/glass-ui-valyusha.js?v=20260521-front-perf-scroll-socials'),
+          ])
+        )
+        .catch((err) => {
+          assistantBundlePromise = null;
+          createAssistantLaunchers();
+          console.warn('[perf-loader] Glass UI skipped', err);
+        });
+    }
+
+    return assistantBundlePromise.then(() => {
+      const config = assistantLaunchers.find((item) => item.id === openId);
+      const instance = config ? window[config.globalName] : null;
+      instance?.showChat?.();
+    });
+  }
+
   function startDeferredExtras() {
     if (deferredStarted) return;
     deferredStarted = true;
@@ -130,25 +232,7 @@
       schedule(() => loadScript('js/haptic-feedback.js?v=20260519-mobile-premium-recovery'), 300);
     }
 
-    // Glass UI widgets
-    schedule(() => {
-      const chatReady = window.RealVibeChat
-        ? Promise.resolve()
-        : loadScript('js/chat-client.js?v=20260512-productux');
-
-      chatReady
-        .then(() => loadScript('chat-components/GlassUIWidget.js?v=20260520-android-keyboard-app2'))
-        .then(() =>
-          Promise.all([
-            loadScript('js/glass-ui-health.js?v=20260519-performance-pass'),
-            loadScript('js/glass-ui-bro-cat.js?v=20260518-wellness-bro-ui'),
-            loadScript('js/glass-ui-valyusha.js?v=20260518-wellness-bro-ui'),
-          ])
-        )
-        .catch((err) => {
-          console.warn('[perf-loader] Glass UI skipped', err);
-        });
-    }, chatIdleDelay);
+    createAssistantLaunchers();
   }
 
   function bindChatWakeEvents() {
@@ -175,21 +259,21 @@
       runCoreOptimizers();
       bindChatWakeEvents();
       if (shouldAutoStartChat) {
-        scheduleDeferredStart(500);
+        schedule(() => createAssistantLaunchers(), 900);
       }
     });
   } else {
     runCoreOptimizers();
     bindChatWakeEvents();
     if (shouldAutoStartChat) {
-      scheduleDeferredStart(500);
+      schedule(() => createAssistantLaunchers(), 900);
     }
   }
 
   window.addEventListener('load', () => {
     bindChatWakeEvents();
     if (shouldAutoStartChat) {
-      scheduleDeferredStart(600);
+      schedule(() => createAssistantLaunchers(), 900);
     }
   }, { once: true });
 })();

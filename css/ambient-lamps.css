@@ -185,12 +185,23 @@ body.ambient-lamp-lab .cta-panel {
   }
 
   .ambient-light-field {
-    opacity: 0.84;
+    display: none !important;
+    opacity: 0 !important;
+    mix-blend-mode: normal;
+    filter: none;
   }
 
   .ambient-light-field::before {
+    display: none;
     background-size: 64px 64px;
     opacity: 0.22;
+  }
+
+  .ambient-light-field::after,
+  .ambient-lamp {
+    display: none !important;
+    animation: none !important;
+    filter: none !important;
   }
 
   .ambient-lamp--warm {
@@ -220,9 +231,17 @@ body.ambient-lamp-lab .cta-panel {
 
   body.ambient-lamp-lab .hero-reel {
     box-shadow:
-      0 20px 44px rgba(0, 0, 0, 0.72),
-      0 0 0 1px rgba(255, 255, 255, 0.065),
-      0 0 56px rgba(255, 155, 74, 0.1);
+      0 18px 38px rgba(0, 0, 0, 0.58),
+      0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+
+  body.ambient-lamp-lab .service-simple-card,
+  body.ambient-lamp-lab .assistant-card,
+  body.ambient-lamp-lab .portfolio-product-card,
+  body.ambient-lamp-lab .cta-panel {
+    box-shadow:
+      0 12px 30px rgba(0, 0, 0, 0.34),
+      0 0 0 1px rgba(255, 255, 255, 0.052);
   }
 }
 
