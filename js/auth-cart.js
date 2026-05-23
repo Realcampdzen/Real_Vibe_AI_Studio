@@ -229,11 +229,16 @@
         svgPath('M4 21a8 8 0 0 1 16 0'),
       ]);
     }
-    if (iconSet.has('fa-bag-shopping')) {
-      return makeSvgIcon('bag', [
-        svgPath('M6 7h12l-1 14H7L6 7Z'),
-        svgPath('M9 7a3 3 0 0 1 6 0'),
+    if (iconSet.has('fa-cart-shopping') || iconSet.has('fa-shopping-cart')) {
+      const icon = makeSvgIcon('cart', [
+        svgPath('M3.5 4.5h2.1l2.15 10.1a2 2 0 0 0 1.96 1.58h7.72a2 2 0 0 0 1.92-1.45l1.18-4.23H7.1'),
+        svgPath('M8.2 7.2h12.1'),
+        svgCircle({ cx: '10', cy: '20', r: '1.35' }),
+        svgCircle({ cx: '18', cy: '20', r: '1.35' }),
       ]);
+      icon.setAttribute('width', '1.2em');
+      icon.setAttribute('height', '1.2em');
+      return icon;
     }
     return null;
   }
@@ -320,7 +325,7 @@
       });
       const cart = appendChildren(makeNavAction({
         className: 'rv-cart-nav-btn',
-        iconClass: 'fas fa-bag-shopping',
+        iconClass: 'fas fa-cart-shopping',
         label: 'Корзина',
         attrs: { 'data-rv-cart-open': '', 'aria-label': 'Открыть корзину', title: 'Корзина' },
       }), [
@@ -352,7 +357,7 @@
           className: 'rv-mobile-commerce-btn rv-mobile-cart-btn',
           attrs: { type: 'button', 'data-rv-cart-open': '', 'aria-label': 'Открыть корзину' },
         }), [
-          appendChildren(createElement('span', { className: 'rv-mobile-commerce-icon' }), [makeIcon('fas fa-bag-shopping')]),
+          appendChildren(createElement('span', { className: 'rv-mobile-commerce-icon' }), [makeIcon('fas fa-cart-shopping')]),
           appendChildren(createElement('span', { className: 'rv-mobile-commerce-copy' }), [
             createElement('span', { className: 'rv-mobile-commerce-title', text: 'Корзина' }),
             createElement('span', { className: 'rv-mobile-commerce-subtitle', text: 'Пусто' }),
@@ -747,7 +752,7 @@
       createElement('span', { className: 'rv-cart-step', text: 'Оформление', attrs: { 'data-cart-step': 'checkout' } }),
     ]);
     const header = appendChildren(createElement('div', { className: 'rv-panel-header rv-cart-header' }), [
-      appendChildren(createElement('span', { className: 'rv-panel-icon' }), [makeIcon('fas fa-bag-shopping')]),
+      appendChildren(createElement('span', { className: 'rv-panel-icon' }), [makeIcon('fas fa-cart-shopping')]),
       appendChildren(createElement('div', { className: 'rv-panel-heading' }), [
         createElement('p', { className: 'rv-panel-kicker', text: 'Корзина' }),
         createElement('h2', { className: 'rv-panel-title', text: 'Корзина', attrs: { id: 'rv-cart-title' } }),
@@ -858,7 +863,7 @@
 
   function createEmptyCartState() {
     return appendChildren(createElement('div', { className: 'rv-empty-state' }), [
-      appendChildren(createElement('span', { className: 'rv-empty-icon' }), [makeIcon('fas fa-bag-shopping')]),
+      appendChildren(createElement('span', { className: 'rv-empty-icon' }), [makeIcon('fas fa-cart-shopping')]),
       createElement('h3', { className: 'rv-empty-title', text: 'Корзина пока пустая' }),
       createElement('p', { className: 'rv-muted', text: 'Добавьте одну или несколько услуг, а потом отправьте brief без оплаты.' }),
       createElement('button', { className: 'btn-secondary rv-empty-link', text: 'К услугам', attrs: { type: 'button', 'data-rv-continue-shopping': '' } }),

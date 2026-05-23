@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.40-20260523-remove-ambient-lab';
+const CACHE_VERSION = 'v2.41-20260523-shop-cart-icon';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -38,7 +38,7 @@ const STATIC_ASSETS = [
   withBase('/js/pwa-chrome.js?v=20260520-android-keyboard-app2'),
   withBase('/js/scroll-manager.js?v=20260522-mobile-polish-prod'),
   withBase('/js/video-optimizer.js?v=20260522-mobile-polish-prod'),
-  withBase('/js/script.js?v=20260523-remove-ambient-lab'),
+  withBase('/js/script.js?v=20260523-shop-cart-icon'),
   withBase('/js/page-common.js?v=20260522-header-social-cart'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260521-portfolio-profile'),
@@ -46,7 +46,7 @@ const STATIC_ASSETS = [
   withBase('/js/service-data.js?v=20260521-front-perf-scroll-socials'),
   withBase('/js/service-detail-page.js?v=20260521-portfolio-profile'),
   withBase('/js/admin-prices.js?v=20260520-vps-launchpad'),
-  withBase('/js/auth-cart.js?v=20260522-header-social-cart'),
+  withBase('/js/auth-cart.js?v=20260523-shop-cart-icon'),
   withBase('/js/chat-client.js?v=20260512-productux'),
   withBase('/js/chat.js?v=20260512-productux'),
   withBase('/js/services-carousel.js'),
