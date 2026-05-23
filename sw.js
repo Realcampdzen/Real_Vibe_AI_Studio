@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.44-20260523-dark-matte-labels';
+const CACHE_VERSION = 'v2.45-20260523-light-matte-labels';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -29,7 +29,7 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260523-dark-matte-labels'),
+  withBase('/css/style.css?v=20260523-light-matte-labels'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix'),
   withBase('/css/mobile-improvements.css?v=20260522-mobile-polish-prod'),
@@ -38,7 +38,7 @@ const STATIC_ASSETS = [
   withBase('/js/pwa-chrome.js?v=20260520-android-keyboard-app2'),
   withBase('/js/scroll-manager.js?v=20260522-mobile-polish-prod'),
   withBase('/js/video-optimizer.js?v=20260522-mobile-polish-prod'),
-  withBase('/js/script.js?v=20260523-dark-matte-labels'),
+  withBase('/js/script.js?v=20260523-light-matte-labels'),
   withBase('/js/page-common.js?v=20260522-header-social-cart'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260521-portfolio-profile'),
