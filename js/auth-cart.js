@@ -988,22 +988,6 @@
   }
 
   function injectServiceButtons(root = document) {
-    root.querySelectorAll?.('.service-simple-card[data-service-id]').forEach((card) => {
-      if (card.querySelector('[data-cart-service-id]')) return;
-      const serviceId = card.getAttribute('data-service-id');
-      const content = card.querySelector('.service-simple-content') || card;
-      const button = appendChildren(createElement('button', {
-        className: 'service-cart-action',
-        attrs: {
-          type: 'button',
-          'data-cart-service-id': serviceId,
-          'data-stop-propagation': '',
-          'aria-label': 'Добавить услугу в корзину',
-        },
-      }), [makeIcon('fas fa-plus'), createElement('span', { text: 'В корзину' })]);
-      content.appendChild(button);
-    });
-
     const serviceId = new URLSearchParams(window.location.search).get('id');
     if (serviceId !== null) {
       document.querySelectorAll('.service-detail-cta-btn, .service-detail-card .service-btn').forEach((button) => {
