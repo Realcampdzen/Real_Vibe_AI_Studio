@@ -1,7 +1,7 @@
 // AI Studio - Enhanced Interactive Features
 
 // Build marker (helps debug cache/service worker issues)
-window.__AI_STUDIO_BUILD = '20260523-matte-card-labels';
+window.__AI_STUDIO_BUILD = '20260523-dark-matte-labels';
 
 // API base. Empty value means same-origin, which is the production VPS default.
 // Override before this script if needed: window.__AI_API_BASE__ = 'http://localhost:3000'
