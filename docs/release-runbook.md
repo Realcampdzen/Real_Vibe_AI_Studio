@@ -109,8 +109,9 @@ Defaults:
 - `VPS_KEY=%USERPROFILE%/.ssh/realcampguide_timeweb_ed25519` on Windows or `$HOME/.ssh/realcampguide_timeweb_ed25519`
 - `VPS_HEALTH_URL=http://127.0.0.1:4300/health`
 - `RELEASE_LABEL=patch`
+- `VPS_RELEASE_RETENTION=1`
 
-The script builds a patch archive from the current commit, creates a new release from the current symlink target, applies changed/deleted files, links production `.env` and `data`, builds the Docker image, switches `/srv/real-vibe-studio/current`, and runs the health check. If health fails, it switches the symlink back and restarts the previous release.
+The script builds a patch archive from the current commit, creates a new release from the current symlink target, applies changed/deleted files, links production `.env` and `data`, builds the Docker image, switches `/srv/real-vibe-studio/current`, and runs the health check. If health fails, it switches the symlink back and restarts the previous release. After a successful health check, it prunes old release directories according to `VPS_RELEASE_RETENTION`; the default keeps only the active release on disk.
 
 For a full checkout-based deploy, use the commands below only if `/srv/real-vibe-studio` is a Git worktree:
 
@@ -197,6 +198,8 @@ The `Site Quality Gate` workflow runs:
 Keep VPS deployment manually triggered; GitHub Actions must not auto-deploy production without a separate approval flow and secret review.
 
 ## Rollback
+
+With the default `VPS_RELEASE_RETENTION=1`, successful deploys do not keep older release directories on the VPS. To keep local rollback directories for a specific deploy, run it with a higher retention value, for example `VPS_RELEASE_RETENTION=2 npm run deploy:vps:patch`.
 
 ```bash
 ssh root@89.223.126.190

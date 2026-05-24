@@ -454,6 +454,7 @@ Critical behavior:
 - `scripts/deploy-vps-patch.mjs` packages files from current Git `HEAD`.
 - Uncommitted local changes are not included.
 - Commit intended files before running the patch deploy.
+- After a successful health check, the deploy prunes old VPS release directories. `VPS_RELEASE_RETENTION=1` is the default and keeps only the active release on disk.
 
 Recommended patch flow:
 

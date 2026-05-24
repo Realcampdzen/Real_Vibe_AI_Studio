@@ -9,6 +9,7 @@ const vpsBase = env.VPS_BASE || '/srv/real-vibe-studio';
 const vpsKey = env.VPS_KEY || join(env.USERPROFILE || env.HOME || '', '.ssh', 'realcampguide_timeweb_ed25519');
 const label = (env.RELEASE_LABEL || 'patch').replace(/[^a-zA-Z0-9._-]/g, '-');
 const healthUrl = env.VPS_HEALTH_URL || 'http://127.0.0.1:4300/health';
+const releaseRetention = Math.max(1, Number.parseInt(env.VPS_RELEASE_RETENTION || '1', 10) || 1);
 const dryRun = env.DRY_RUN === 'true';
 
 function run(command, args, options = {}) {
@@ -117,6 +118,7 @@ try {
     vpsBase,
     commit,
     label,
+    releaseRetention,
     changedFiles,
     deletedFiles,
   }, null, 2));
@@ -139,6 +141,44 @@ DELETE_LIST="/tmp/$DELETE_NAME"
 COMMIT="$COMMIT"
 LABEL="$LABEL"
 HEALTH_URL="$HEALTH_URL"
+RELEASE_RETENTION="$RELEASE_RETENTION"
+
+prune_old_releases() {
+  local active="$1"
+  local retention="$2"
+  local kept=1
+  local deleted=0
+  local dir resolved
+
+  if ! [[ "$retention" =~ ^[0-9]+$ ]] || [ "$retention" -lt 1 ]; then
+    retention=1
+  fi
+
+  active="$(readlink -f "$active")"
+
+  mapfile -t release_dirs < <(find "$RELEASES" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' | sort -rn | cut -d' ' -f2-)
+  for dir in "\${release_dirs[@]}"; do
+    resolved="$(readlink -f "$dir")"
+    case "$resolved" in
+      "$RELEASES"/*) ;;
+      *) echo "refusing to prune outside releases: $resolved" >&2; exit 1 ;;
+    esac
+
+    if [ "$resolved" = "$active" ]; then
+      continue
+    fi
+
+    if [ "$kept" -lt "$retention" ]; then
+      kept=$((kept + 1))
+      continue
+    fi
+
+    rm -rf -- "$resolved"
+    deleted=$((deleted + 1))
+  done
+
+  echo "release retention kept=$kept deleted=$deleted"
+}
 
 if [ ! -L "$CURRENT" ] && [ ! -d "$CURRENT" ]; then
   echo "current release not found: $CURRENT" >&2
@@ -179,6 +219,7 @@ docker compose -p current up -d
 for attempt in $(seq 1 30); do
   if curl -fsS "$HEALTH_URL" >/tmp/real-vibe-health-$COMMIT.json; then
     docker compose -p current ps
+    prune_old_releases "$RELEASE" "$RELEASE_RETENTION"
     rm -f "$ARCHIVE" "$DELETE_LIST"
     echo "$RELEASE"
     exit 0
@@ -201,6 +242,7 @@ exit 1
       `COMMIT=${shellQuote(commit)}`,
       `LABEL=${shellQuote(label)}`,
       `HEALTH_URL=${shellQuote(healthUrl)}`,
+      `RELEASE_RETENTION=${shellQuote(releaseRetention)}`,
       'bash -s',
     ].join(' ');
 
