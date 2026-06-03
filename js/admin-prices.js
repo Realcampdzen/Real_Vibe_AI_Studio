@@ -3,7 +3,7 @@
 
   const MARKET = {
     services: {
-      'ai-video': { group: 'Production', price: 'от 80 000₽', source: 'VIDEOGLOBAL / 3dgryz', reason: 'Премиальный AI-ролик: концепция, сцены, монтаж, звук и версии под площадки.' },
+      'ai-video': { group: 'Production', price: 'от 9 000₽', source: 'Real Vibe AI-video ladder', reason: 'Входной товарный ролик/Reels от 9К; 15К за более длинный ролик из нескольких нейросетей; 30К за сложный ролик 15-25 сек с монтажом.' },
       'smm-content': { group: 'Production', price: 'от 40 000₽', source: 'SMM retainer рынок', reason: 'Нижний порог для регулярной контент-системы, редакторики и AI-процессов.' },
       'creative-production': { group: 'Production', price: 'от 150 000₽', source: 'Creative production scope', reason: 'Creative direction, visual world, промо, сайт и roadmap запуска не должны стоить как одиночный ассет.' },
       music: { group: 'Production', price: 'от 20 000₽', source: 'Музыка / джинглы', reason: 'Минимальная авторская тема, джингл или трек под ролик с правками.' },
@@ -421,7 +421,9 @@
     ]);
 
     const quickActions = appendChildren(createElement('div', { className: 'quick-actions' }), [
+      quickButton('от 9К', 'от 9 000₽'),
       quickButton('от 10К', 'от 10 000₽'),
+      quickButton('15К', '15 000₽'),
       quickButton('от 20К', 'от 20 000₽'),
       quickButton('от 30К', 'от 30 000₽'),
       quickButton('от 50К', 'от 50 000₽'),

@@ -71,7 +71,7 @@ Reasoning:
 
 | ID | Slug | Public service | Price anchor | Main buyer intent |
 |---:|---|---|---|---|
-| 0 | `ai-video` | AI-video and advertising reels | from 80,000 RUB | Launch video, reels, promo, clip, product ad |
+| 0 | `ai-video` | AI-video and advertising reels | from 9,000 RUB; 15,000 RUB longer multi-model reel; 30,000 RUB complex 15-25 sec edit | Product ad, packaging, label, reels, promo, clip |
 | 11 | `agentic-ai-dev` | Codex, Hermes and Agentic AI Dev | development from 30,000 RUB; base agent ecosystem 15,000 RUB | Codex orchestrator, Hermes, Timeweb VPS, local Codex app, Android/PWA, delivery/CRM, 1C/CRM automation, MVP, TMA, AI bot, SaaS module, broken AI-code rescue, office/document agents |
 | 3 | `smm-content` | SMM and content | from 40,000 RUB | Regular content system, strategy, scripts, social production |
 | 10 | `creative-production` | Creative Direction + AI Production | from 150,000 RUB | Creative world, release, visual identity, DOMINIA-like project packaging |

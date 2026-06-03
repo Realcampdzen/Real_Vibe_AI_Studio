@@ -1619,6 +1619,10 @@ body::before {
   animation: heroFadeUpBlur 0.7s ease-out 0.45s both;
 }
 
+.hero.hero-enter .hero-content > *:nth-child(5) {
+  animation: heroFadeUpBlur 0.7s ease-out 0.6s both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero.hero-enter .hero-content > * {
     animation: none;
@@ -1808,6 +1812,7 @@ body::before {
 .hero-fullscreen-active .hero-title-reel,
 .hero-fullscreen-active .hero-subtitle,
 .hero-fullscreen-active .hero-cta-row,
+.hero-fullscreen-active .hero-offer-strip,
 .hero-fullscreen-active .hero-video-tagline,
 .hero-fullscreen-active .hero-mobile-cta {
   opacity: 0;
@@ -2030,6 +2035,69 @@ body::before {
   flex-wrap: wrap;
   justify-content: center;
   gap: 1.25rem;
+}
+
+.hero-offer-strip {
+  width: min(100%, 760px);
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.hero-offer-chip {
+  min-height: 68px;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.045)),
+    rgba(4, 8, 10, 0.48);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.16rem;
+  cursor: pointer;
+  text-align: left;
+  backdrop-filter: blur(14px) saturate(1.22);
+  -webkit-backdrop-filter: blur(14px) saturate(1.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 14px 40px rgba(0, 0, 0, 0.32);
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.hero-offer-chip span {
+  max-width: 100%;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-primary);
+  font-size: clamp(0.72rem, 0.86vw, 0.86rem);
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.hero-offer-chip strong {
+  max-width: 100%;
+  color: var(--accent-contrast);
+  font-family: var(--font-display);
+  font-size: clamp(1.08rem, 1.55vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.hero-offer-chip:hover,
+.hero-offer-chip:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(51, 245, 200, 0.54);
+  background:
+    linear-gradient(145deg, rgba(51, 245, 200, 0.13), rgba(255, 255, 255, 0.055)),
+    rgba(4, 8, 10, 0.58);
+  outline: none;
 }
 
 .hero-mobile-cta {
@@ -3597,6 +3665,51 @@ article.service-simple-card:has(video.service-simple-bg-video) {
   width: 100%;
 }
 
+.service-simple-meta {
+  position: absolute;
+  top: clamp(14px, 2vw, 22px);
+  left: clamp(14px, 2vw, 22px);
+  right: clamp(14px, 2vw, 22px);
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.service-simple-meta span {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.64rem;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  background: rgba(3, 7, 8, 0.56);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-primary);
+  font-size: clamp(0.68rem, 0.78vw, 0.82rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 12px 28px rgba(0, 0, 0, 0.32);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.service-simple-meta span:first-child {
+  color: var(--accent-contrast);
+  border-color: rgba(51, 245, 200, 0.36);
+  background: rgba(0, 23, 20, 0.6);
+}
+
 .service-simple-benefit {
   display: none;
 }
@@ -4524,6 +4637,31 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
     padding-top: 60px;
   }
 
+  .hero-offer-strip {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .hero-offer-chip {
+    min-height: 58px;
+    padding: 0.68rem 0.72rem;
+    border-radius: 14px;
+  }
+
+  .hero-offer-chip:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .hero-offer-chip span {
+    font-size: 0.68rem;
+  }
+
+  .hero-offer-chip strong {
+    font-size: 1.06rem;
+  }
+
   .services-simple-grid {
     width: 100%;
     gap: 0.875rem;
@@ -4550,6 +4688,19 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
   .service-row-two-small-one-big .service-simple-card:nth-child(3) {
     grid-row: auto;
     height: var(--service-card-height-mobile);
+  }
+
+  .service-simple-meta {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    gap: 0.34rem;
+  }
+
+  .service-simple-meta span {
+    min-height: 28px;
+    padding: 0.38rem 0.52rem;
+    font-size: 0.64rem;
   }
 
   .service-simple-card {
@@ -14576,6 +14727,26 @@ html body.rv-cookie-banner-visible .glass-ui-floating-button::after {
 
   .hero-cta-row {
     margin-top: 4px !important;
+  }
+
+  .hero-offer-strip {
+    width: min(100%, 650px);
+    margin-top: 10px;
+    gap: 0.55rem;
+  }
+
+  .hero-offer-chip {
+    min-height: 56px;
+    padding: 0.58rem 0.7rem;
+    border-radius: 14px;
+  }
+
+  .hero-offer-chip span {
+    font-size: 0.68rem;
+  }
+
+  .hero-offer-chip strong {
+    font-size: 1.02rem;
   }
 
   .hero-cta-row .btn-primary,
