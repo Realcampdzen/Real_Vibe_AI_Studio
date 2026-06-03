@@ -4025,6 +4025,17 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
   align-items: stretch;
 }
 
+.codex-office-case-evidence {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.8rem, 1.8vw, 1.15rem);
+  align-items: start;
+}
+
+.codex-office-case-evidence .codex-office-case-article-shot {
+  margin: 0;
+}
+
 .codex-office-case-story {
   display: grid;
   align-content: center;
@@ -4483,6 +4494,10 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
 
   .codex-office-case-layout,
   .codex-office-offer-band {
+    grid-template-columns: 1fr;
+  }
+
+  .codex-office-case-evidence {
     grid-template-columns: 1fr;
   }
 

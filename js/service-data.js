@@ -710,7 +710,7 @@ const SERVICES_DATA = [
     offersTitle: 'Быстрые офферы',
     offers: [
       { id: 'vps-launchpad', title: 'Базовая агентская экосистема', price: '15 000₽', description: 'Timeweb VPS, Hermes, подключение вашей ChatGPT-подписки или другой модели, локальный Codex app, роли, инструкции и первый рабочий контур.' },
-      { id: 'agent-modules-constructor', title: 'Модули агентов как конструктор', price: '5 / 10 / 15 / 30 тыс. ₽', description: 'SMM, документы, ЭДО/бухгалтерия, 1С, юридические черновики, обучение, здоровье, личные ассистенты и бизнес-операционка.' },
+      { id: 'agent-modules-constructor', title: 'Модули агентов как конструктор', price: '5 000 / 10 000 / 15 000 / 30 000₽', description: 'SMM, документы, ЭДО/бухгалтерия, 1С, юридические черновики, обучение, здоровье, личные ассистенты и бизнес-операционка.' },
       { id: 'telegram-mini-app', title: 'Telegram Mini App', price: 'от 30 000₽', description: 'Базовый TMA до 3 экранов + API, авторизация и мобильный UX внутри Telegram.' },
       { id: 'android-pwa-app', title: 'Android / PWA App', price: 'от 40 000₽', description: 'Manifest, service worker, icons, mobile UX, TWA/Capacitor shell и проверка installable-опыта.' },
       { id: 'delivery-crm-platform', title: 'Доставка / CRM платформа', price: 'от 80 000₽', description: 'Калькулятор, заказы, tracking, роли, dispatch/admin, база данных и путь к Android-приложению.' },

@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.44-20260603-codex-office-case-screens';
+const CACHE_VERSION = 'v2.45-20260603-funnel-design-prices';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -29,7 +29,7 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260603-codex-office-case-screens'),
+  withBase('/css/style.css?v=20260603-funnel-design-prices'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix'),
   withBase('/css/mobile-improvements.css?v=20260523-mono-nav-controls'),
@@ -41,9 +41,9 @@ const STATIC_ASSETS = [
   withBase('/js/script.js?v=20260603-codex-office-case-screens'),
   withBase('/js/page-common.js?v=20260522-header-social-cart'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
-  withBase('/js/service-prices.js?v=20260603-codex-office-case'),
+  withBase('/js/service-prices.js?v=20260603-funnel-design-prices'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),
-  withBase('/js/service-data.js?v=20260603-codex-office-case-screens'),
+  withBase('/js/service-data.js?v=20260603-funnel-design-prices'),
   withBase('/js/service-detail-page.js?v=20260521-portfolio-profile'),
   withBase('/js/admin-prices.js?v=20260520-vps-launchpad'),
   withBase('/js/auth-cart.js?v=20260523-shop-cart-icon'),
