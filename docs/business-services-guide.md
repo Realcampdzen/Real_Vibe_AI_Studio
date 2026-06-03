@@ -300,7 +300,7 @@ Ask before quoting:
 Offer:
 
 - custom GPTs, knowledge-base assistants, workflow agents, marketing GPTs, training assistants;
-- operator agents for 1C/CRM/order workflows with human approval before external actions;
+- operator agents for 1C/CRM/order workflows with owner approval before external actions;
 - role, instructions, memory boundaries, test scenarios and team onboarding.
 
 Price anchor:

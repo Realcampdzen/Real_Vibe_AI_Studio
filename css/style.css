@@ -4039,6 +4039,39 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
   line-height: 1.75;
 }
 
+.codex-office-case-article-shot {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.25rem 0 0.45rem;
+  min-width: 0;
+}
+
+.codex-office-case-article-shot picture,
+.codex-office-case-article-shot img {
+  display: block;
+  width: 100%;
+}
+
+.codex-office-case-article-shot picture {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34);
+}
+
+.codex-office-case-article-shot img {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.codex-office-case-article-shot figcaption {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
 .codex-office-case-proof {
   position: relative;
   min-height: clamp(320px, 35vw, 520px);
@@ -4531,6 +4564,22 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
 
   .codex-office-case-layout {
     gap: 1.1rem;
+  }
+
+  .codex-office-case-article-shot {
+    margin: 0.15rem 0 0.35rem;
+  }
+
+  .codex-office-case-article-shot picture {
+    border-radius: 14px;
+  }
+
+  .codex-office-case-article-shot img {
+    aspect-ratio: 3 / 4;
+  }
+
+  .codex-office-case-article-shot figcaption {
+    font-size: 0.8rem;
   }
 
   .codex-office-case-proof {

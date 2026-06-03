@@ -608,19 +608,28 @@ function initCodexOfficeCaseChromePolicy() {
     });
   };
 
-  if (!('IntersectionObserver' in window)) {
-    return;
+  const updateSuppression = () => {
+    const rect = section.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const topBand = viewportHeight * 0.18;
+    const bottomBand = viewportHeight * 0.82;
+    const crossesReadingBand = rect.top < bottomBand && rect.bottom > topBand;
+    setSuppressed(crossesReadingBand);
+  };
+
+  updateSuppression();
+  window.addEventListener('scroll', updateSuppression, { passive: true });
+  window.addEventListener('resize', updateSuppression, { passive: true });
+  window.addEventListener('pageshow', updateSuppression);
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(updateSuppression, {
+      rootMargin: '-8% 0px -8% 0px',
+      threshold: [0, 0.01, 0.12, 0.32],
+    });
+
+    observer.observe(section);
   }
-
-  const observer = new IntersectionObserver((entries) => {
-    const shouldSuppress = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio > 0.18);
-    setSuppressed(shouldSuppress);
-  }, {
-    rootMargin: '-12% 0px -18% 0px',
-    threshold: [0, 0.18, 0.45],
-  });
-
-  observer.observe(section);
 }
 
 // Tilt Effect for Cards

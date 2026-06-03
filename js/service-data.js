@@ -695,7 +695,7 @@ const SERVICES_DATA = [
       { title: 'Аудит и архитектура', description: 'Фиксирую стек, данные, роли, API, риски, сборку, деплой и границы MVP.' },
       { title: 'Open Design прототипирование', description: 'Собираю UI-направления в agentic design loop: Codex/GPT Pro, дизайн-системы, live-preview и критика интерфейса до разработки.' },
       { title: 'VPS и агентский контур', description: 'Настраиваю Timeweb VPS, Hermes, локальный Codex app, окружение, инструкции и базовый путь для новых модулей.' },
-      { title: 'Agentic implementation', description: 'Использую AI-агентов как ускоритель, но оставляю инженерный контроль, human approval, тесты и ответственность за качеством.' },
+      { title: 'Agentic implementation', description: 'Использую AI-агентов как ускоритель, но оставляю инженерный контроль, согласование критичных действий, тесты и ответственность за качеством.' },
       { title: 'Release hardening', description: 'Убираю хаос AI-кода, выношу секреты, чиню state/типизацию/БД, прогоняю проверки и деплою.' },
     ],
     formatsTitle: 'Стек и форматы',
@@ -741,7 +741,7 @@ const SERVICES_DATA = [
       },
       {
         title: 'Hermes Agent OS',
-        description: 'Мультиагентная рабочая среда с задачами, ролями, workflow, roadmaps, библиотекой знаний и human approval.',
+        description: 'Мультиагентная рабочая среда с задачами, ролями, workflow, roadmaps, библиотекой знаний и согласованием критичных действий.',
         points: ['Kanban + workflow engine', 'Product memory и standards registry', 'VPS/deploy контур и Telegram-агенты'],
       },
       {
