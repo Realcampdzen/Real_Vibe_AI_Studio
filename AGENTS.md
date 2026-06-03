@@ -70,7 +70,7 @@ Current release is `v3.2.0` / `2026-05-21-product-store`. Preserve these public 
 | ID | Slug | Service | Public price anchor |
 |---:|---|---|---|
 | 0 | `ai-video` | AI-video and advertising reels | from 80,000 RUB |
-| 11 | `agentic-ai-dev` | Vibe coding / Agentic AI Dev | development from 30,000 RUB; VPS Launchpad from 30,000 RUB |
+| 11 | `agentic-ai-dev` | Codex, Hermes / Agentic AI Dev | development from 30,000 RUB; base agent ecosystem from 15,000 RUB |
 | 3 | `smm-content` | SMM and content | from 40,000 RUB |
 | 10 | `creative-production` | Creative Direction + AI Production | from 150,000 RUB |
 | 4 | `music` | Music creation | from 20,000 RUB |
@@ -84,7 +84,7 @@ Current release is `v3.2.0` / `2026-05-21-product-store`. Preserve these public 
 
 Detailed descriptions, qualification questions, and deliverables are in [docs/business-services-guide.md](docs/business-services-guide.md).
 
-Agentic AI Dev includes `VPS Launchpad`: help the client rent and configure a Timeweb VPS, domain, SSL and deploy contour as a base for a site, web app, bots, AI agents, cabinet, cart, payments and future vibe-coding work. It also includes Android/PWA app shells, delivery/CRM modules, 1C-ready automation adapters, and portfolio/product-store apps. Position it as an owned product platform, not a generic hosting task.
+Agentic AI Dev includes the base agent ecosystem offer: Timeweb VPS, Hermes, client ChatGPT subscription or another model, local Codex app, role structure, instructions and first working contour from 15,000 RUB. Add-on agent modules are sold as a constructor at 5,000 / 10,000 / 15,000 / 30,000 RUB for SMM, documents, EDO/accounting, 1C, legal drafts, education, health, personal assistants, business assistants and workflow automation. It also includes Android/PWA app shells, delivery/CRM modules, 1C-ready automation adapters, and portfolio/product-store apps. Position it as an owned product and agentic operations platform, not a generic hosting task.
 
 ## Operating Rules
 

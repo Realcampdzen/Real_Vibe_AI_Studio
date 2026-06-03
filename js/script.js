@@ -1,7 +1,7 @@
 // AI Studio - Enhanced Interactive Features
 
 // Build marker (helps debug cache/service worker issues)
-window.__AI_STUDIO_BUILD = '20260523-frosted-glass-labels';
+window.__AI_STUDIO_BUILD = '20260523-shop-cart-icon';
 
 // API base. Empty value means same-origin, which is the production VPS default.
 // Override before this script if needed: window.__AI_API_BASE__ = 'http://localhost:3000'
@@ -593,6 +593,36 @@ function initMobileFloatingChromePolicy() {
   mobileQuery.addEventListener?.('change', clearFloatingDockSuppression);
 }
 
+function initCodexOfficeCaseChromePolicy() {
+  if (window.__rvCodexOfficeCaseChromePolicyInitialized) return;
+  window.__rvCodexOfficeCaseChromePolicyInitialized = true;
+
+  const section = document.getElementById('codex-office-case');
+  const widgetsSelector = '.glass-ui-floating-button, .glass-ui-health-button, .glass-ui-hipych-button, .glass-ui-bro-cat-button, .glass-ui-valyusha-button, .glass-ui-widget, .back-to-top';
+  if (!section) return;
+
+  const setSuppressed = (shouldSuppress) => {
+    document.body.classList.toggle('rv-codex-office-case-active', shouldSuppress);
+    document.querySelectorAll(widgetsSelector).forEach((widget) => {
+      widget.classList.toggle('is-suppressed', shouldSuppress);
+    });
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    const shouldSuppress = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio > 0.18);
+    setSuppressed(shouldSuppress);
+  }, {
+    rootMargin: '-12% 0px -18% 0px',
+    threshold: [0, 0.18, 0.45],
+  });
+
+  observer.observe(section);
+}
+
 // Tilt Effect for Cards
 function initTiltEffect() {
   const tiltElements = document.querySelectorAll('[data-tilt]');
@@ -1044,6 +1074,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Process scroll animation
     initProcessScrollAnimation();
+
+    initCodexOfficeCaseChromePolicy();
   }
 
   // Scroll reveal animations (single system)

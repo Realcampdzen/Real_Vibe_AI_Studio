@@ -1,7 +1,7 @@
 (function exposeServicePriceOverrides() {
   window.SERVICE_PRICE_OVERRIDES = {
   "version": 1,
-  "updatedAt": "2026-05-20T20:45:00.000Z",
+  "updatedAt": "2026-06-03T00:00:00.000Z",
   "services": {
     "ai-video": {
       "title": "AI-видео и рекламные рилсы",
@@ -59,17 +59,22 @@
       "note": "Creative direction, AI production, visual world, сайт/промо и roadmap запуска."
     },
     "agentic-ai-dev": {
-      "title": "Вайбкодинг и agentic AI dev",
+      "title": "Codex, Hermes и agentic AI dev",
       "price": "разработка от 30 000₽",
-      "note": "Публичный якорь для разработки; Android/PWA, доставка, CRM, 1С и rescue считаются отдельными офферами."
+      "note": "Публичный якорь для разработки и агентских экосистем; базовая сборка, модули, Android/PWA, CRM, 1С и rescue считаются отдельными офферами."
     }
   },
   "offers": {
     "agentic-ai-dev": {
       "vps-launchpad": {
-        "title": "VPS Launchpad",
-        "price": "от 30 000₽",
-        "note": "Timeweb VPS, домен, SSL, deploy-контур и базовая площадка под сайт, web app, ботов или AI-агентов."
+        "title": "Базовая агентская экосистема",
+        "price": "15 000₽",
+        "note": "Timeweb VPS, Hermes, подключение клиентской модели или ChatGPT-подписки, локальный Codex app, роли, инструкции и первый рабочий контур."
+      },
+      "agent-modules-constructor": {
+        "title": "Модули агентов как конструктор",
+        "price": "5 / 10 / 15 / 30 тыс. ₽",
+        "note": "SMM, документы, ЭДО/бухгалтерия, 1С, юридический блок, обучение, здоровье, личные и бизнес-ассистенты."
       },
       "telegram-mini-app": {
         "title": "Telegram Mini App",

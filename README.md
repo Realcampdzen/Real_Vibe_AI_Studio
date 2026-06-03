@@ -1,6 +1,6 @@
 # Реальный Vайб AI Studio
 
-Android/PWA-магазин и рабочий репозиторий Real Vibe AI Studio: AI-контент, creative direction, SMM, музыка, озвучка, сайты, боты, AI-агенты, VPS Launchpad, Android/PWA-приложения, delivery/CRM-платформы, 1C/CRM automation и agentic full-stack development.
+Android/PWA-магазин и рабочий репозиторий Real Vibe AI Studio: AI-контент, creative direction, SMM, музыка, озвучка, сайты, боты, AI-агенты, Codex/Hermes экосистемы, Android/PWA-приложения, delivery/CRM-платформы, 1C/CRM automation и agentic full-stack development.
 
 Публичный сайт: [real-vibe.studio](https://real-vibe.studio/)
 
@@ -21,7 +21,7 @@ Android/PWA-магазин и рабочий репозиторий Real Vibe AI
 | ID | Slug | Услуга | Ценовой якорь |
 |---:|---|---|---|
 | 0 | `ai-video` | AI-видео и рекламные рилсы | от 80 000 руб. |
-| 11 | `agentic-ai-dev` | Вайбкодинг / Agentic AI Dev, VPS Launchpad, Android/PWA, delivery/CRM, 1C automation | разработка от 30 000 руб. |
+| 11 | `agentic-ai-dev` | Codex/Hermes экосистемы, Agentic AI Dev, Android/PWA, delivery/CRM, 1C automation | разработка от 30 000 руб.; базовая агентская экосистема от 15 000 руб. |
 | 3 | `smm-content` | SMM и контент | от 40 000 руб. |
 | 10 | `creative-production` | Creative Direction + AI Production | от 150 000 руб. |
 | 4 | `music` | Создание музыки | от 20 000 руб. |
