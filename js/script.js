@@ -1,7 +1,7 @@
 // AI Studio - Enhanced Interactive Features
 
 // Build marker (helps debug cache/service worker issues)
-window.__AI_STUDIO_BUILD = '20260523-shop-cart-icon';
+window.__AI_STUDIO_BUILD = '20260611-max-channel';
 
 // API base. Empty value means same-origin, which is the production VPS default.
 // Override before this script if needed: window.__AI_API_BASE__ = 'http://localhost:3000'
@@ -12,6 +12,7 @@ const CONTACTS = {
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
     telegramCommunity: { href: 'https://t.me/RealVibeAI', display: 'Telegram-сообщество' },
+    maxChannel: { href: 'https://max.ru/id780434969398_biz', display: 'MAX-канал' },
     whatsapp: { href: 'https://wa.me/79319671483' },
     vk: { href: 'https://vk.com/club238913969', display: 'VK' },
     primary: { href: 'tel:+79319671483' }
@@ -71,6 +72,7 @@ function applyContactConfig() {
         primary: CONTACTS.primary,
         telegram: CONTACTS.telegram,
         telegramCommunity: CONTACTS.telegramCommunity,
+        maxChannel: CONTACTS.maxChannel,
         whatsapp: CONTACTS.whatsapp,
         phone: CONTACTS.phone,
         email: CONTACTS.email,
@@ -100,6 +102,7 @@ function applyContactConfig() {
         telegram: CONTACTS.telegram.handle || CONTACTS.telegram.display,
         telegramHandle: CONTACTS.telegram.handle || CONTACTS.telegram.display,
         telegramCommunity: CONTACTS.telegramCommunity.display,
+        maxChannel: CONTACTS.maxChannel.display,
         vk: CONTACTS.vk.display
     };
 

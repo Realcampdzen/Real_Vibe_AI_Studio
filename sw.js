@@ -1,6 +1,6 @@
 // Service Worker для AI Studio
 // Версия кэша
-const CACHE_VERSION = 'v2.47-20260603-ai-video-price-ladder';
+const CACHE_VERSION = 'v2.48-20260611-max-channel';
 const CACHE_NAME = `ai-studio-${CACHE_VERSION}`;
 const STATIC_CACHE = `ai-studio-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `ai-studio-dynamic-${CACHE_VERSION}`;
@@ -29,17 +29,17 @@ const STATIC_ASSETS = [
   withBase('/public/icons/apple-touch-icon.png'),
   withBase('/public/icons/apple-touch-icon.png?v=20260520-android-hotfix'),
   withBase('/public/og-real-vibe-ai-studio-20260519.jpg'),
-  withBase('/css/style.css?v=20260603-home-services-design'),
+  withBase('/css/style.css?v=20260611-max-channel'),
   withBase('/css/admin-prices.css?v=20260518-market-prices'),
   withBase('/css/critical-fixes.css?v=20260520-mobile-detail-bottom-fix'),
-  withBase('/css/mobile-improvements.css?v=20260523-mono-nav-controls'),
+  withBase('/css/mobile-improvements.css?v=20260611-max-channel'),
   withBase('/css/mobile-improvements.css'),
   withBase('/css/mobile-advanced.css?v=20260522-mobile-polish-prod'),
   withBase('/js/pwa-chrome.js?v=20260520-android-keyboard-app2'),
   withBase('/js/scroll-manager.js?v=20260522-mobile-polish-prod'),
   withBase('/js/video-optimizer.js?v=20260522-mobile-polish-prod'),
-  withBase('/js/script.js?v=20260603-codex-office-case-screens'),
-  withBase('/js/page-common.js?v=20260522-header-social-cart'),
+  withBase('/js/script.js?v=20260611-max-channel'),
+  withBase('/js/page-common.js?v=20260611-max-channel'),
   withBase('/js/haptic-feedback.js?v=20260519-mobile-premium-recovery'),
   withBase('/js/service-prices.js?v=20260603-ai-video-price-ladder'),
   withBase('/js/service-price-bindings.js?v=20260518-market-prices'),

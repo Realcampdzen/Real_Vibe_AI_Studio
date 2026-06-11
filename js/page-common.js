@@ -7,6 +7,7 @@
     email: { href: 'mailto:polstan1986@gmail.com', display: 'polstan1986@gmail.com' },
     telegram: { href: 'https://t.me/Stivanovv', handle: '@Stivanovv' },
     telegramCommunity: { href: 'https://t.me/RealVibeAI', display: 'Telegram-сообщество' },
+    maxChannel: { href: 'https://max.ru/id780434969398_biz', display: 'MAX-канал' },
     whatsapp: { href: 'https://wa.me/79319671483' },
     vk: { href: 'https://vk.com/club238913969', display: 'VK' },
     primary: { href: 'tel:+79319671483' },
@@ -54,6 +55,7 @@
       telegram: CONTACTS.telegram.handle,
       telegramHandle: CONTACTS.telegram.handle,
       telegramCommunity: CONTACTS.telegramCommunity.display,
+      maxChannel: CONTACTS.maxChannel.display,
       vk: CONTACTS.vk.display,
     };
 

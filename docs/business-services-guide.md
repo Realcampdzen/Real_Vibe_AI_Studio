@@ -22,6 +22,7 @@ Public domains:
 Main contact:
 
 - Telegram: `https://t.me/Stivanovv`
+- MAX channel: `https://max.ru/id780434969398_biz`
 - Phone shown on site: `+7 931 967 14 83`
 - Email shown in footer: `polstan1986@gmail.com`
 
