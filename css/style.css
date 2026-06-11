@@ -733,17 +733,22 @@ body::before {
 }
 
 .nav-social-icon-max {
-  width: 29px;
-  height: 18px;
+  width: 34px;
+  height: 21px;
   transform: translate(-50%, -50%) translate(0, 0.1px);
 }
 
 .nav-social-icon-max text {
   fill: currentColor;
   font-family: var(--font-numerals);
-  font-size: 9.4px;
+  font-size: 16px;
   font-weight: 900;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
+}
+
+.site-header .nav-right .nav-icon-btn[data-contact-link="maxChannel"] .nav-social-icon-max {
+  width: 34px;
+  height: 21px;
 }
 
 .nav-social-glyph {
@@ -794,8 +799,13 @@ body::before {
   }
 
   .nav-social-icon-max {
-    width: 25px;
-    height: 16px;
+    width: 31px;
+    height: 19px;
+  }
+
+  .site-header .nav-right .nav-icon-btn[data-contact-link="maxChannel"] .nav-social-icon-max {
+    width: 31px;
+    height: 19px;
   }
 }
 
