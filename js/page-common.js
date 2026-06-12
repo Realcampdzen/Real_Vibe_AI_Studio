@@ -24,6 +24,8 @@
 
   function trackEvent(type, details = {}) {
     if (!ANALYTICS_TYPES.has(type)) return;
+    if (!['http:', 'https:'].includes(window.location.protocol)) return;
+    if (['localhost', '127.0.0.1', '0.0.0.0'].includes(window.location.hostname)) return;
 
     const payload = {
       type,

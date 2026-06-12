@@ -990,6 +990,9 @@
   function injectServiceButtons(root = document) {
     const serviceId = new URLSearchParams(window.location.search).get('id');
     if (serviceId !== null) {
+      const service = window.getServiceById?.(serviceId);
+      if (service?.cartDisabled) return;
+
       document.querySelectorAll('.service-detail-cta-btn, .service-detail-card .service-btn').forEach((button) => {
         button.removeAttribute('href');
         button.removeAttribute('data-contact-link');

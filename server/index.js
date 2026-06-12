@@ -24,6 +24,7 @@ import authRoutes from './routes/auth.js';
 import accountRoutes from './routes/account.js';
 import cartRoutes from './routes/cart.js';
 import adminPriceRoutes from './routes/admin-prices.js';
+import maxFunnelRoutes from './routes/max-funnel.js';
 
 // Services (for health check)
 import { isConnected } from './services/openai-client.js';
@@ -120,6 +121,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/account', accountRoutes);
 app.use('/api', adminPriceRoutes);
 app.use('/api', cartRoutes);
+app.use('/api', maxFunnelRoutes);
 app.use(chatRoutes);
 
 // ────── Static pages ──────

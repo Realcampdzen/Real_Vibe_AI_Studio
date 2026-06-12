@@ -55,12 +55,20 @@
   }
 
   function createServiceButton(service) {
+    const customHref = service.buttonHref && isSafeAssetUrl(service.buttonHref)
+      ? service.buttonHref
+      : '';
+    const href = customHref || TELEGRAM_URL;
+    const attrs = { href };
+    if (service.buttonContactLink) {
+      attrs['data-contact-link'] = service.buttonContactLink;
+    } else if (!customHref) {
+      attrs['data-contact-link'] = 'telegram';
+    }
+
     const button = createElement('a', {
       className: 'service-btn',
-      attrs: {
-        href: TELEGRAM_URL,
-        'data-contact-link': 'telegram',
-      },
+      attrs,
     });
     appendChildren(button, [
       createIcon(service.buttonIcon),
@@ -520,11 +528,26 @@
   function updateCtaCopy(service) {
     const left = document.querySelector('.service-detail-cta-text .cta-text-left');
     const right = document.querySelector('.service-detail-cta-text .cta-text-right');
+    const cta = document.querySelector('.service-detail-cta-btn');
     if (!left || !right) return;
 
     const title = service.cardTitle || service.detailTitle || service.title || 'AI-решение под задачу';
     const description = service.seoDescription || service.description || service.lead || 'Обсудим формат, сроки и результат до старта.';
     const price = service.price || 'Стоимость уточняется';
+    const customHref = service.buttonHref && isSafeAssetUrl(service.buttonHref)
+      ? service.buttonHref
+      : '';
+
+    if (cta) {
+      cta.textContent = service.buttonText || 'Оставить заявку';
+      if (customHref) {
+        cta.setAttribute('href', customHref);
+        cta.removeAttribute('data-contact-link');
+      } else {
+        cta.setAttribute('href', TELEGRAM_URL);
+        cta.setAttribute('data-contact-link', service.buttonContactLink || 'telegram');
+      }
+    }
 
     left.replaceChildren(
       createElement('p', { className: 'cta-text-line', text: title.replace(/^[^\p{L}\p{N}]+/u, '') }),
@@ -532,7 +555,7 @@
     );
     right.replaceChildren(
       createElement('p', { className: 'cta-text-line', text: description }),
-      createElement('p', { className: 'cta-text-line', text: 'Первый шаг - написать в Telegram и прислать вводные.' }),
+      createElement('p', { className: 'cta-text-line', text: service.ctaNextStep || 'Первый шаг - написать в Telegram и прислать вводные.' }),
     );
   }
 

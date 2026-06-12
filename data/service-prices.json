@@ -61,6 +61,11 @@
       "title": "Codex, Hermes и agentic AI dev",
       "price": "разработка от 30 000₽",
       "note": "Публичный якорь для разработки и агентских экосистем; базовая сборка, модули, Android/PWA, CRM, 1С и rescue считаются отдельными офферами."
+    },
+    "max-business": {
+      "title": "MAX Business, боты и mini apps",
+      "price": "от 7 000₽; AI-агент от 15 000₽",
+      "note": "Старт с MAX Business для ИП/ООО, каналом, ботами, mini app и AI/VPS апселлом."
     }
   },
   "offers": {
@@ -136,6 +141,38 @@
         "title": "MVP / SaaS модуль",
         "price": "от 50 000₽",
         "note": "Считать по ролям, экранам, базе, API и деплою."
+      }
+    },
+    "max-business": {
+      "max-business-setup": {
+        "title": "MAX Business Setup",
+        "price": "от 7 000₽",
+        "note": "Подготовка Business-профиля, канала, стартовой структуры и карты запуска под ИП/ООО."
+      },
+      "max-bot-pack": {
+        "title": "MAX Bot Pack",
+        "price": "от 12 000₽",
+        "note": "Бот для заявок, FAQ, кнопок, контактов и уведомлений менеджеру."
+      },
+      "max-mini-app": {
+        "title": "MAX Mini App",
+        "price": "от 24 000₽",
+        "note": "Mini app с каталогом, квизом, формой заявки, записью или MVP-витриной."
+      },
+      "max-ai-agent-vps": {
+        "title": "MAX AI Agent on VPS",
+        "price": "от 15 000₽ старт",
+        "note": "Webhook, VPS-адаптер, AI/Hermes роль, allowlist, health-check и smoke-тест."
+      },
+      "telegram-max-migration": {
+        "title": "Telegram -> MAX Migration",
+        "price": "от 15 000₽",
+        "note": "Аудит Telegram-бота/канала и перенос ключевых сценариев, текстов, кнопок и заявок в MAX."
+      },
+      "max-funnel-under-key": {
+        "title": "MAX Funnel Under Key",
+        "price": "от 45 000₽ MVP",
+        "note": "Business setup, канал, бот, mini app, маршрут заявок и интеграция с таблицей, CRM или Hermes."
       }
     }
   }

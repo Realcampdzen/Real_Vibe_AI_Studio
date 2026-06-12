@@ -4142,6 +4142,211 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
   line-height: 1.55;
 }
 
+.max-business-section {
+  position: relative;
+  overflow: hidden;
+  scroll-margin-top: 128px;
+  padding: clamp(58px, 7.6vw, 112px) 0;
+  background:
+    linear-gradient(180deg, rgba(12, 14, 13, 0.98), rgba(5, 5, 5, 0.98)),
+    linear-gradient(135deg, rgba(0, 220, 176, 0.1), rgba(226, 181, 74, 0.07) 44%, rgba(255, 255, 255, 0.025));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.max-business-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.78fr);
+  align-items: stretch;
+  gap: clamp(1.25rem, 4.5vw, 4rem);
+}
+
+.max-business-title {
+  max-width: 960px;
+  margin: 0 0 1rem;
+  text-align: left;
+}
+
+.max-business-lead {
+  max-width: 900px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 1.3vw, 1.18rem);
+  line-height: 1.72;
+}
+
+.max-business-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: clamp(1.4rem, 2.8vw, 2rem);
+}
+
+.max-business-flow div {
+  min-width: 0;
+  min-height: 168px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.052);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.max-business-flow span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 28px;
+  margin-bottom: 0.85rem;
+  border-radius: 999px;
+  color: #050505;
+  background: #00f0c8;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.max-business-flow strong,
+.max-business-package-list strong,
+.max-business-panel-badge strong {
+  display: block;
+  color: #ffffff;
+  font-family: var(--font-display);
+  letter-spacing: 0;
+}
+
+.max-business-flow strong {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1rem, 1.35vw, 1.22rem);
+  line-height: 1.12;
+}
+
+.max-business-flow p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.48;
+}
+
+.max-business-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  margin-top: clamp(1.4rem, 2.8vw, 2rem);
+}
+
+.max-business-actions .btn-primary,
+.max-business-actions .btn-secondary {
+  width: auto;
+  min-height: 52px;
+}
+
+.max-business-panel {
+  display: grid;
+  align-content: start;
+  gap: 0.95rem;
+  min-width: 0;
+  padding: 0.95rem;
+  border: 1px solid rgba(0, 240, 200, 0.22);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 28px 92px rgba(0, 0, 0, 0.46);
+}
+
+.max-business-panel-media {
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #050505;
+}
+
+.max-business-panel-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+  filter: saturate(1.05) contrast(1.04);
+}
+
+.max-business-panel-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.82));
+  pointer-events: none;
+}
+
+.max-business-panel-badge {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 2;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(5, 5, 5, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.max-business-panel-badge span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #00f0c8;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.max-business-panel-badge strong {
+  font-size: clamp(1.7rem, 3.2vw, 3.2rem);
+  line-height: 0.95;
+}
+
+.max-business-package-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.max-business-package-list div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 54px;
+  padding: 0.78rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  background: rgba(5, 5, 5, 0.34);
+}
+
+.max-business-package-list span {
+  min-width: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.92rem;
+  line-height: 1.28;
+}
+
+.max-business-package-list strong {
+  color: #00f0c8;
+  font-size: 0.9rem;
+  line-height: 1.15;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.max-business-note {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.86rem;
+  line-height: 1.58;
+}
+
 .codex-office-case-section {
   position: relative;
   overflow: hidden;
@@ -4647,8 +4852,13 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
     height: var(--service-card-height-tablet);
   }
 
-  .agentic-dev-inner {
+  .agentic-dev-inner,
+  .max-business-inner {
     grid-template-columns: 1fr;
+  }
+
+  .max-business-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .codex-office-case-layout,
@@ -4757,6 +4967,11 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
     padding: 56px 0;
   }
 
+  .max-business-section {
+    scroll-margin-top: 96px;
+    padding: 52px 0;
+  }
+
   .codex-office-case-section {
     scroll-margin-top: 96px;
     padding: 52px 0;
@@ -4770,8 +4985,30 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
     grid-template-columns: 1fr;
   }
 
+  .max-business-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .max-business-flow div {
+    min-height: 148px;
+    padding: 0.85rem;
+  }
+
+  .max-business-actions,
   .agentic-dev-actions {
     flex-direction: column;
+  }
+
+  .max-business-package-list div {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+    min-height: 0;
+  }
+
+  .max-business-package-list strong {
+    text-align: left;
+    white-space: normal;
   }
 
   .codex-office-case-layout {
@@ -4817,6 +5054,8 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
 
   .agentic-dev-actions .btn-primary,
   .agentic-dev-actions .btn-secondary,
+  .max-business-actions .btn-primary,
+  .max-business-actions .btn-secondary,
   .codex-office-case-actions .btn-primary,
   .codex-office-case-actions .btn-secondary {
     width: 100%;
@@ -4834,6 +5073,14 @@ body[data-service-slug="music"] .service-detail-hero .hero-reel-overlay {
   .agentic-dev-proof {
     min-height: 320px;
     border-radius: 20px;
+  }
+
+  .max-business-panel {
+    border-radius: 20px;
+  }
+
+  .max-business-panel-media {
+    min-height: 260px;
   }
 
   .polstan-portal-section {

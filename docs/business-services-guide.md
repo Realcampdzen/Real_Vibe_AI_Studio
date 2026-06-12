@@ -57,7 +57,8 @@ The first services on the homepage are ordered for conversion:
 6. Voiceover and sound design
 7. Budget-saving CTA: "До 10 раз дешевле традиционного продакшна"
 8. Additional technical and visual services: MVP/SaaS/apps, bots, websites, AI agents, AI-photo, e-commerce animation
-9. Product portfolio and store: launch-ready apps, creative platforms, internal agent systems, and public demos that clients can inspect.
+9. MAX Business funnel: client-owned MAX Business setup, channel, bots, mini app and AI/VPS agent upsell.
+10. Product portfolio and store: launch-ready apps, creative platforms, internal agent systems, and public demos that clients can inspect.
 
 Reasoning:
 
@@ -82,6 +83,7 @@ Reasoning:
 | 7 | `bots` | Telegram bots with AI, DB, admin panel | from 10,000 RUB | Telegram bot, AI assistant, admin panel, CRM flow |
 | 8 | `websites` | Sites and web services with AI functions | from 70,000 RUB | Landing, company site, web service, AI chat, forms |
 | 9 | `ai-agents` | AI agents and GPT assistants | from 25,000 RUB | Knowledge assistant, workflow agent, custom GPT |
+| 12 | `max-business` | MAX Business, bots, mini apps and AI agents | from 7,000 RUB; AI agent from 15,000 RUB | Client-owned MAX Business setup, channel, up to 5 bots, mini app, webhook/VPS agent, Telegram to MAX migration |
 | 1 | `ai-photo` | AI-photo for e-commerce and key visual | from 20,000 RUB per set | Product visuals, banners, campaign key visuals |
 | 2 | `ecom-animation` | AI animation and e-commerce infographics | from 35,000 RUB | Product loops, visual explanation, e-commerce motion |
 
@@ -172,6 +174,45 @@ Proof points:
 - Hermes Agent OS: agentic control plane, Kanban, Library, Roadmaps, product memory and approval-gated workflow;
 - Open Design frontend loop: local-first agentic design workflow with Codex/GPT Pro, reusable design systems, live preview, and quality checklists before production hardening.
 - `freelance-showcase` is a GitHub/CV profile and portfolio source for Stepan's positioning, not a product card or public app.
+
+### MAX Business, Bots, Mini Apps and AI Agents
+
+Offer:
+
+- client-owned MAX Business setup for the client's IP/OOO, with safe access workflow and no secrets in open chat;
+- MAX channel, first bot, and a map for up to 5 bots: sales, support, booking, content, internal assistant;
+- MAX mini app for catalog, quiz, request form, booking, MVP storefront or service selection;
+- webhook/VPS adapter for an AI agent that can answer, triage, create drafts, check statuses and route requests through Hermes or another backend;
+- Telegram -> MAX migration for existing channels, bots, forms and lead flows;
+- site funnel integration: header/social links, landing block, service detail page, qualification quiz and marketplace-ready product cards.
+
+Public sub-offers:
+
+| Offer | Price anchor | Scope |
+|---|---:|---|
+| MAX Business Setup | from 7,000 RUB | Business profile, channel, launch map, first access/security instructions |
+| MAX Bot Pack | from 12,000 RUB | Request bot, FAQ, buttons, contact capture and manager notifications |
+| MAX Mini App | from 24,000 RUB | Catalog, quiz, request form, booking or MVP storefront inside MAX |
+| MAX AI Agent on VPS | from 15,000 RUB start | Webhook, VPS adapter, AI/Hermes role, allowlist, health-check and smoke test |
+| Telegram -> MAX Migration | from 15,000 RUB | Audit and transfer of key bot/channel scenarios, texts, buttons and requests |
+| MAX Funnel Under Key | from 45,000 RUB MVP | Business setup, channel, bot, mini app, lead routing and CRM/table/Hermes integration |
+
+Good lead signals:
+
+- client already has IP/OOO and wants to enter MAX early;
+- client has Telegram assets and wants a MAX copy or migration path;
+- client needs a Russian messenger flow without VPN for customers;
+- client wants not just FAQ, but requests, mini app UI and AI agent escalation;
+- client is ready to confirm business ownership and critical MAX Business actions personally.
+
+Ask before quoting:
+
+- whether MAX Business is already approved and under whose legal entity;
+- what exists now: Telegram bot, channel, website, CRM, spreadsheet, FAQ, catalog, booking flow;
+- how many bots/roles are needed in the first stage and which one starts first;
+- where the request should go: Telegram/MAX notification, spreadsheet, CRM, Hermes/Kanban, email or admin panel;
+- whether AI can answer publicly or only prepare drafts for owner approval;
+- moderation, API and platform constraints must be framed as constraints, not guaranteed outcomes.
 
 ### SMM and Content
 

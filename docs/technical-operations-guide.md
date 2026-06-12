@@ -173,6 +173,7 @@ websites
 ai-agents
 creative-production
 agentic-ai-dev
+max-business
 ```
 
 Product portfolio assets belong in:
